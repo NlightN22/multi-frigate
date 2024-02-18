@@ -5,7 +5,8 @@ import {pathRoutes} from "./routes.path";
 import RetryError from "../pages/RetryError";
 import Forbidden from "../pages/403";
 import NotFound from "../pages/404";
-import AdminPage from "../pages/Admin";
+import SettingsPage from "../pages/SettingsPage";
+import FrigateHostsPage from "../pages/FrigateHostsPage";
 
 interface IRoute {
     path: string,
@@ -18,8 +19,12 @@ export const routes: IRoute[] = [
         component: <Test />,
     },
     {
-        path: pathRoutes.ADMIN_PATH,
-        component: <AdminPage />,
+        path: pathRoutes.SETTINGS_PATH,
+        component: <SettingsPage />,
+    },
+    {
+        path: pathRoutes.HOST_CONFIG_PATH,
+        component: <FrigateHostsPage />,
     },
     {
         path: pathRoutes.MAIN_PATH,

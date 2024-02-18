@@ -1,9 +1,9 @@
 import { makeAutoObservable, runInAction } from "mobx"
 import { User } from "oidc-client-ts";
-import { keycloakConfig } from "../services/keycloack";
 import { Resource } from "../utils/resource"
 import { sleep } from "../utils/async.sleep";
 import { z } from 'zod'
+import { keycloakConfig } from "../..";
 
 
 export interface UserServer {

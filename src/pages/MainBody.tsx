@@ -1,5 +1,5 @@
 import { Container, Flex, Group, Text } from '@mantine/core';
-import ProductTable, { TableAdapter } from '../shared/components/table.aps/ProductTable';
+import ProductTable, { TableAdapter } from '../widgets/ProductTable';
 import HeadSearch from '../shared/components/HeadSearch';
 import ViewSelector, { SelectorViewState } from '../shared/components/ViewSelector';
 import { useContext, useState, useEffect } from 'react';

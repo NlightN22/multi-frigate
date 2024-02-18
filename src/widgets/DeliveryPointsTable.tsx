@@ -1,8 +1,8 @@
 import { Button, Table } from '@mantine/core';
 import React, { useState } from 'react';
-import SortedTh from './SortedTh';
-import { DeliveryPoint } from '../../stores/user.store';
-import { strings } from '../../strings/strings';
+import SortedTh from '../shared/components/table.aps/SortedTh';
+import { DeliveryPoint } from '../shared/stores/user.store';
+import { strings } from '../shared/strings/strings';
 import { v4 as uuidv4 } from 'uuid'
 
 
@@ -20,34 +20,34 @@ const DeliveryPointsTable = ({ data }: DeliveryPointsTableProps) => {
     const handleSort = (headName: string, dataIndex: number) => {
         const reverse = headName === sortedName ? !reversed : false;
         setReversed(reverse)
+        const keys = Object.keys(data[0]) as Array<keyof DeliveryPoint>
+        const key = keys[dataIndex]
         if (reverse) {
-            setData(sortByKey(data, dataIndex).reverse())
+            setData(sortByKey(data, key).reverse())
         } else {
-            setData(sortByKey(data, dataIndex))
+            setData(sortByKey(data, key))
         }
         setSortedName(headName)
     }
 
-    const sortByKey = (deliveryPoints: DeliveryPoint[], keyIndex: number): DeliveryPoint[] => {
-        const keys = Object.keys(deliveryPoints[0]) as Array<keyof DeliveryPoint>
-        return deliveryPoints.sort((a, b) => {
-            const valueA = a[keys[keyIndex]].toLowerCase();
-            const valueB = b[keys[keyIndex]].toLowerCase();
+    function sortByKey<T, K extends keyof T>(array: T[], key: K): T[] {
+        return array.sort((a, b) => {
+            let valueA = a[key];
+            let valueB = b[key];
 
-            if (valueA < valueB) {
-                return -1;
-            }
-            if (valueA > valueB) {
-                return 1;
-            }
+            const stringValueA = String(valueA).toLowerCase();
+            const stringValueB = String(valueB).toLowerCase();
+
+            if (stringValueA < stringValueB) return -1;
+            if (stringValueA > stringValueB) return 1;
             return 0;
         });
     }
 
     const headTitle = [
-        { dataIndex:1, title: strings.name },
-        { dataIndex:2, title: strings.schedule },
-        { dataIndex:3, title: strings.address },
+        { propertyIndex: 1, title: strings.name },
+        { propertyIndex: 2, title: strings.schedule },
+        { propertyIndex: 3, title: strings.address },
         { title: '', sorting: false },
     ]
 
@@ -58,7 +58,7 @@ const DeliveryPointsTable = ({ data }: DeliveryPointsTableProps) => {
                 title={head.title}
                 reversed={reversed}
                 sortedName={sortedName}
-                onSort={() => handleSort(head.title, head.dataIndex ? head.dataIndex : 0)}
+                onSort={() => handleSort(head.title, head.propertyIndex ? head.propertyIndex : 0)}
                 sorting={head.sorting} />
         )
     })

@@ -9,9 +9,10 @@ import FullImageModal from './shared/components/FullImageModal';
 import AppBody from './AppBody';
 import FullProductModal from './shared/components/FullProductModal';
 import Forbidden from './pages/403';
+import { QueryClient } from '@tanstack/react-query';
+
 
 function App() {
-  // const auth = useAuth();
   const systemColorScheme = useColorScheme()
   const [colorScheme, setColorScheme] = useState<ColorScheme>(getCookie('mantine-color-scheme') as ColorScheme || systemColorScheme);
   const toggleColorScheme = (value?: ColorScheme) => {
@@ -20,20 +21,22 @@ function App() {
     setCookie('mantine-color-scheme', nextColorScheme, { maxAge: 60 * 60 * 24 * 30 });
   }
 
+  const auth = useAuth();
   // automatically sign-in
-  // useEffect(() => {
-  //   if (!hasAuthParams() &&
-  //     !auth.isAuthenticated && !auth.activeNavigator && !auth.isLoading) {
-  //     auth.signinRedirect();
-  //   }
-  // }, [auth, auth.isAuthenticated, auth.activeNavigator, auth.isLoading, auth.signinRedirect]);
+  useEffect(() => {
+    if (!hasAuthParams() &&
+      !auth.isAuthenticated && !auth.activeNavigator && !auth.isLoading) {
+      auth.signinRedirect();
+    }
+  }, [auth, auth.isAuthenticated, auth.activeNavigator, auth.isLoading, auth.signinRedirect]);
 
-  // if (auth.activeNavigator || auth.isLoading) {
-  //   return <CenterLoader />
-  // }
-  // if ((!auth.isAuthenticated && !auth.isLoading) || auth.error) {
-  //   return <Forbidden />
-  // }
+  if (auth.activeNavigator || auth.isLoading) {
+    return <CenterLoader />
+  }
+  if ((!auth.isAuthenticated && !auth.isLoading) || auth.error) {
+    console.error(`auth.error:`, auth.error)
+    return <Forbidden />
+  }
 
   return (
     <div className="App">

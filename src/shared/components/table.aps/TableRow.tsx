@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import RowCounter from './RowCounter';
 import { Badge, Center, Flex, Group, Text, createStyles } from '@mantine/core';
-import { TableAdapter } from './ProductTable';
+import { TableAdapter } from '../../../widgets/ProductTable';
 import ImageWithPlaceHolder from '../ImageWithPlaceHolder';
 import Currency from '../Currency';
 import { Context } from '../../..';

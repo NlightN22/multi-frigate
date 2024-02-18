@@ -1,4 +1,9 @@
 export const strings = {
+    host: {
+        name: 'Имя хоста',
+        url: 'Адрес',
+        enabled: 'Включен',
+    },
     // user section
     aboutMe: "Обо мне",
     settings: "Настройки",
@@ -20,6 +25,7 @@ export const strings = {
     schedule: "Расписание",
     address: "Адрес",
     edit: "Изменить",
+    delete: "Удалить",
     error: "Ошибка",
     discounts: "Скидки",
     delivery: "Доставка",
@@ -54,6 +60,7 @@ export const strings = {
     weight: "Вес:",
     total: "Итого:",
     confirm: "Подтвердить",
+    discard: "Отменить",
     next: "Далее",
     back: "Назад",
     paymentMethod: "Метод оплаты",

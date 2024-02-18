@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Product } from "./product.store";
 import { sleep } from "../utils/async.sleep";
-import { TableAdapter } from "../components/table.aps/ProductTable";
+import { TableAdapter } from "../../widgets/ProductTable";
 import { DeliveryMethod, DeliveryMethods, PaymentMethod, PaymentMethods } from "./orders.store";
 import { addItem, removeItemById } from "../utils/array.helper";
 import { strings } from "../strings/strings";

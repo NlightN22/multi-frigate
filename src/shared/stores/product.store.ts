@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { TableAdapter } from "../components/table.aps/ProductTable";
+import { TableAdapter } from "../../widgets/ProductTable";
 import { GridAdapter } from "../components/grid.aps/ProductGrid";
 import { sleep } from "../utils/async.sleep";
 import { CartProduct } from "./cart.store";

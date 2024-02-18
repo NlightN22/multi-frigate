@@ -2150,6 +2150,18 @@
   dependencies:
     remove-accents "0.4.2"
 
+"@tanstack/query-core@5.21.2":
+  version "5.21.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.21.2.tgz#543bc44f09274d965b54640567de4cd8ccbe2831"
+  integrity sha512-jg7OcDG44oLT3uuGQQ9BM65ZBIdAq9xNZXPEk7Gr6w1oM1wo2/95H3dPDjLVs0yZKwrmE/ORUOC2Pyi1sp2fDA==
+
+"@tanstack/react-query@^5.21.2":
+  version "5.21.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.21.2.tgz#6bdf30f8afa7623989ce6b7bfda1a9fefe6b1811"
+  integrity sha512-/Vv1qTumNDDVA5EYk40kivHZ2kICs1w38GBLRvV6A/lrixUJR5bfqZMKqHA1S6ND3gR9hvSyAAYejBbjLrQnSA==
+  dependencies:
+    "@tanstack/query-core" "5.21.2"
+
 "@tanstack/react-table@8.9.3":
   version "8.9.3"
   resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.9.3.tgz#03a52e9e15f65c82a8c697a445c42bfca0c5cfc4"

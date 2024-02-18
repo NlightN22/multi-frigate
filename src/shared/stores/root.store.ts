@@ -4,6 +4,7 @@ import { FiltersStore } from "./filters/filters.store";
 import { ModalStore } from "./modal.store";
 import { OrdersStore } from "./orders.store";
 import { ProductStore } from "./product.store";
+import { SettingsStore } from "./settings.store";
 import { SideBarsStore } from "./sidebars.store";
 import PostStore from "./test.store";
 import { UserStore } from "./user.store";
@@ -18,6 +19,7 @@ class RootStore {
     filtersStore: FiltersStore
     sideBarsStore: SideBarsStore
     ordersStore: OrdersStore
+    settingsStore: SettingsStore
     constructor() {
         this.userStore = new UserStore()
         this.productStore = new ProductStore(this)
@@ -28,6 +30,7 @@ class RootStore {
         this.filtersStore = new FiltersStore()
         this.sideBarsStore = new SideBarsStore()
         this.ordersStore = new OrdersStore()
+        this.settingsStore = new SettingsStore()
     }
 }
 

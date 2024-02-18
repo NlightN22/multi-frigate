@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Avatar, createStyles, Group, Menu, UnstyledButton, Text, Button, Flex } from "@mantine/core";
 import { useAuth } from 'react-oidc-context';
-import { keycloakConfig } from '../services/keycloack';
 import { strings } from '../strings/strings';
 import { useMediaQuery } from '@mantine/hooks';
 import { dimensions } from '../dimensions/dimensions';
 import ColorSchemeToggle from './ColorSchemeToggle';
 import { useNavigate } from 'react-router-dom';
+import { keycloakConfig } from '../..';
 
 interface UserMenuProps {
     user: { name: string; image: string }

@@ -1,6 +1,12 @@
 export const pathRoutes = {
     MAIN_PATH: '/',
-    ADMIN_PATH: '/admin',
+    BIRDSEYE_PATH: '/birdseye',
+    EVENTS_PATH: '/events',
+    RECORDINGS_PATH: '/recordings',
+    SETTINGS_PATH: '/settings',
+    HOST_CONFIG_PATH: '/host-config',
+    ROLES_PATH: '/roles',
+    LIVE_PATH: '/live',
     THANKS_PATH: '/thanks',
     USER_DETAILED_PATH: '/user',
     RETRY_ERROR_PATH: '/retry_error',

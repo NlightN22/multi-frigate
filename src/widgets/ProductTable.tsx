@@ -1,11 +1,11 @@
 import { Table, } from '@mantine/core';
 import { useContext, useEffect, useState } from 'react';
 import { useDisclosure, useHotkeys, } from '@mantine/hooks';
-import TableRow from './TableRow';
-import InputModal from '../InputModal';
-import { Context } from '../../..';
+import TableRow from '../shared/components/table.aps/TableRow';
+import InputModal from '../shared/components/InputModal';
+import { Context } from '..';
 import { v4 as uuidv4 } from 'uuid'
-import ProductsTableHead from './ProductsTableHead';
+import ProductsTableHead from '../shared/components/table.aps/ProductsTableHead';
 import { observer } from 'mobx-react-lite';
 
 export type TableAdapter = {
