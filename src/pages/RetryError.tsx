@@ -1,29 +1,33 @@
 import { Flex, Button, Text } from '@mantine/core';
 import React, { useContext, useEffect } from 'react';
-import { pathRoutes } from '../router/routes.path';
-import { CogWheelHeartSVG } from '../shared/components/svg/CogWheelHeartSVG';
+import { routesPath } from '../router/routes.path';
 import { strings } from '../shared/strings/strings';
 import { useNavigate } from 'react-router-dom';
 import { ExclamationCogWheel } from '../shared/components/svg/ExclamationCogWheel';
 import { Context } from '..';
 
-const RetryError = () => {
+interface RetryErrorProps {
+    onRetry?: () => void
+}
+
+const RetryError = ( {onRetry} : RetryErrorProps) => {
     const navigate = useNavigate()
 
     const { sideBarsStore } = useContext(Context)
 
 
     useEffect(() => {
-        sideBarsStore.setLeftSidebar(null)
-        sideBarsStore.setRightSidebar(null)
+        sideBarsStore.setLeftChildren(null)
+        sideBarsStore.setRightChildren(null)
     }, [])
 
     const handleGoToMain = () => {
-        navigate(pathRoutes.MAIN_PATH)
+        navigate(routesPath.MAIN_PATH)
     }
 
     function handleRetry(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
-        throw new Error('Function not implemented.');
+        if (onRetry) onRetry()
+        else window.location.reload()
     }
 
     return (

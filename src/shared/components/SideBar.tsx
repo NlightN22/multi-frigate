@@ -43,32 +43,38 @@ export const SideBar = observer(({ isHidden, side, children }: SideBarProps) => 
 
     const { sideBarsStore } = useContext(Context)
 
+    useEffect( () => {
+        if (sideBarsStore.rightVisible && side === 'right' && !visible) {
+            open()
+        } else if (!sideBarsStore.rightVisible && side === 'right' && visible) {
+            close()
+        }
+    }, [sideBarsStore.rightVisible])
+
     const [leftChildren, setLeftChildren] = useState<React.ReactNode>(() => {
         if (children && side === 'left') return children
-        else if (sideBarsStore.leftSideBar) return sideBarsStore.leftSideBar
+        else if (sideBarsStore.leftChildren) return sideBarsStore.leftChildren
         return null
     })
     const [rightChildren, setRightChildren] = useState<React.ReactNode>(() => {
         if (children && side === 'right') return children
-        else if (sideBarsStore.rightSideBar) return sideBarsStore.rightSideBar
+        else if (sideBarsStore.rightChildren) return sideBarsStore.rightChildren
         return null
     })
 
-    useEffect( () => {
-        setLeftChildren(sideBarsStore.leftSideBar)
-    }, [sideBarsStore.leftSideBar])
+    useEffect(() => {
+        setLeftChildren(sideBarsStore.leftChildren)
+    }, [sideBarsStore.leftChildren])
 
-    useEffect( () => {
-        setRightChildren(sideBarsStore.rightSideBar)
-    }, [sideBarsStore.rightSideBar])
+    useEffect(() => {
+        setRightChildren(sideBarsStore.rightChildren)
+    }, [sideBarsStore.rightChildren])
 
     useEffect(() => {
         isHidden(!visible)
     }, [visible])
 
-    useEffect(() => {
-    }, [manualVisible.current])
-
+    // resize controller
     useEffect(() => {
         const checkWindowSize = () => {
             if (window.innerWidth <= hideSizePx && visible) {

@@ -4,7 +4,7 @@ import {
     useMutation,
     useQueryClient,
 } from '@tanstack/react-query'
-import { Config, frigateApi } from '../services/frigate.proxy/frigate.api';
+import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import CenterLoader from '../shared/components/CenterLoader';
 import RetryError from './RetryError';
 import { Button, Flex, Space } from '@mantine/core';
@@ -12,16 +12,17 @@ import { FloatingLabelInput } from '../shared/components/FloatingLabelInput';
 import { strings } from '../shared/strings/strings';
 import { dimensions } from '../shared/dimensions/dimensions';
 import { useMediaQuery } from '@mantine/hooks';
+import { GetConfig } from '../services/frigate.proxy/frigate.schema';
 
 const SettingsPage = () => {
     const queryClient = useQueryClient()
     const { isPending: configPending, error: configError, data, refetch } = useQuery({
-        queryKey: ['config'],
+        queryKey: [frigateQueryKeys.getConfig],
         queryFn: frigateApi.getConfig,
     })
 
     const ecryptedValue = '**********'
-    const mapEncryptedToView = (data: Config[] | undefined): Config[] | undefined => {
+    const mapEncryptedToView = (data: GetConfig[] | undefined): GetConfig[] | undefined => {
         return data?.map(item => {
             const { value, encrypted, ...rest } = item
             if (encrypted) return { value: ecryptedValue, encrypted, ...rest }
@@ -35,7 +36,7 @@ const SettingsPage = () => {
     const mutation = useMutation({
         mutationFn: frigateApi.putConfig,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['config'] })
+            queryClient.invalidateQueries({ queryKey: [frigateQueryKeys.getConfig] })
         },
     })
 
@@ -82,7 +83,7 @@ const SettingsPage = () => {
 
     if (configPending) return <CenterLoader />
 
-    if (configError) return <RetryError />
+    if (configError) return <RetryError onRetry={refetch} />
 
     return (
         <Flex h='100%'>

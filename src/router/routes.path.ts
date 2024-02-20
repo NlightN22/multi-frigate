@@ -1,10 +1,13 @@
-export const pathRoutes = {
+export const routesPath = {
     MAIN_PATH: '/',
     BIRDSEYE_PATH: '/birdseye',
     EVENTS_PATH: '/events',
     RECORDINGS_PATH: '/recordings',
     SETTINGS_PATH: '/settings',
-    HOST_CONFIG_PATH: '/host-config',
+    HOSTS_PATH: '/hosts',
+    HOST_CONFIG_PATH: '/hosts/:id/config',
+    HOST_SYSTEM_PATH: '/hosts/:id/system',
+    HOST_STORAGE_PATH: '/hosts/:id/storage',
     ROLES_PATH: '/roles',
     LIVE_PATH: '/live',
     THANKS_PATH: '/thanks',

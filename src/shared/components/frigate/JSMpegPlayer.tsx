@@ -1,11 +1,11 @@
 // @ts-ignore we know this doesn't have types
 import JSMpeg from "@cycjimmy/jsmpeg-player";
 import { useEffect, useMemo, useRef } from "react";
-import { useResizeObserver } from "../utils/resize-observer";
+import { useResizeObserver } from "../../utils/resize-observer";
 
 type JSMpegPlayerProps = {
   className?: string;
-  url: string;
+  wsUrl: string;
   camera: string;
   width: number;
   height: number;
@@ -13,7 +13,7 @@ type JSMpegPlayerProps = {
 
 export default function JSMpegPlayer({
   camera,
-  url,
+  wsUrl,
   width,
   height,
   className,
@@ -60,7 +60,7 @@ export default function JSMpegPlayer({
 
     const video = new JSMpeg.VideoElement(
       playerRef.current,
-      url,
+      wsUrl,
       {},
       { protocols: [], audio: false, videoBufferSize: 1024 * 1024 * 4 }
     );
@@ -83,7 +83,7 @@ export default function JSMpegPlayer({
         playerRef.current = null;
       }
     };
-  }, [url]);
+  }, [wsUrl]);
 
   return (
     <div className={className} ref={containerRef}>

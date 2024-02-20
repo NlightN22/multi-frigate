@@ -60,6 +60,7 @@ export const strings = {
     weight: "Вес:",
     total: "Итого:",
     confirm: "Подтвердить",
+    save: "Сохранить",
     discard: "Отменить",
     next: "Далее",
     back: "Назад",

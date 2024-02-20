@@ -5,7 +5,7 @@ import { useAuth } from 'react-oidc-context';
 import { useNavigate } from 'react-router-dom';
 import ColorSchemeToggle from "../../shared/components/ColorSchemeToggle";
 import Logo from "../../shared/components/Logo";
-import { pathRoutes } from "../../router/routes.path";
+import { routesPath } from "../../router/routes.path";
 
 const HEADER_HEIGHT = rem(60)
 
@@ -93,7 +93,7 @@ export const HeaderAction = ({ links }: HeaderActionProps) => {
         <Header height={HEADER_HEIGHT} sx={{ borderBottom: 0 }}>
             <Container className={classes.inner} fluid>
                 <Flex wrap='nowrap' >
-                    <Logo onClick={() => handleNavigate(pathRoutes.MAIN_PATH)} />
+                    <Logo onClick={() => handleNavigate(routesPath.MAIN_PATH)} />
                     <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
                     <Flex className={classes.leftLinksMenu}>
                         { items }

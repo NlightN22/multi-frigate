@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import CogWheelWithText from '../shared/components/CogWheelWithText';
 import { strings } from '../shared/strings/strings';
 import { redirect, useNavigate } from 'react-router-dom';
-import { pathRoutes } from '../router/routes.path';
+import { routesPath } from '../router/routes.path';
 import { Context } from '..';
 
 const Forbidden = () => {
@@ -11,12 +11,12 @@ const Forbidden = () => {
     const { sideBarsStore } = useContext(Context)
 
     useEffect(() => {
-        sideBarsStore.setLeftSidebar(null)
-        sideBarsStore.setRightSidebar(null)
+        sideBarsStore.setLeftChildren(null)
+        sideBarsStore.setRightChildren(null)
     }, [])
 
     const handleGoToMain = () => {
-        window.location.replace(pathRoutes.MAIN_PATH)
+        window.location.replace(routesPath.MAIN_PATH)
     }
 
     return (

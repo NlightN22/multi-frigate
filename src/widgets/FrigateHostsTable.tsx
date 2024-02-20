@@ -1,24 +1,41 @@
 import { Button, Flex, Switch, Table, Text, TextInput, useMantineTheme } from '@mantine/core';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import SortedTh from '../shared/components/table.aps/SortedTh';
 import { strings } from '../shared/strings/strings';
 import { v4 as uuidv4 } from 'uuid'
-import { FrigateHost } from '../services/frigate.proxy/frigate.api';
 import { IconBulbFilled, IconBulbOff, IconDeviceFloppy, IconPencil, IconPlus, IconSettings, IconTrash } from '@tabler/icons-react';
-import SwitchCell from '../shared/components/table.aps/SwitchCell';
-import TextInputCell from '../shared/components/table.aps/TextInputCell';
+import SwitchCell from '../shared/components/hosts.table/SwitchCell';
+import TextInputCell from '../shared/components/hosts.table/TextInputCell';
+import ObjectId from 'bson-objectid';
+import { debounce } from '../shared/utils/debounce';
+import HostSettingsMenu from '../shared/components/menu/HostSettingsMenu';
+import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
 
-interface FrigateHostsTableProps {
-    data: FrigateHost[],
+interface TableProps<T> {
+    data: T[],
     showAddButton?: boolean,
-    handleInputChange?: () => void,
-    handleSwtitchToggle?: () => void,
+    saveCallback?: (tableData: T[]) => void,
+    changedCallback?: (tableData: T[]) => void,
 }
 
-const FrigateHostsTable = ({ data, showAddButton = false, handleInputChange, handleSwtitchToggle }: FrigateHostsTableProps) => {
-    const [tableData, setData] = useState(data)
+const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedCallback }: TableProps<GetFrigateHost>) => {
+    console.log('FrigateHostsTable rendered')
+    const [tableData, setTableData] = useState(data)
     const [reversed, setReversed] = useState(false)
     const [sortedName, setSortedName] = useState<string | null>(null)
+
+    useEffect(() => {
+        console.log('data changed')
+        setTableData(data)
+    }, [data])
+
+    const debouncedChanged = useCallback(debounce((tableData: GetFrigateHost[]) => {
+        if (changedCallback) changedCallback(tableData)
+    }, 200), [])
+
+    useEffect(() => {
+        debouncedChanged(tableData)
+    }, [tableData, debouncedChanged])
 
     function sortByKey<T, K extends keyof T>(array: T[], key: K): T[] {
         return array.sort((a, b) => {
@@ -37,9 +54,9 @@ const FrigateHostsTable = ({ data, showAddButton = false, handleInputChange, han
     const handleSort = (headName: string, propertyName: string,) => {
         const reverse = headName === sortedName ? !reversed : false;
         setReversed(reverse)
-        const arr = sortByKey(tableData, propertyName as keyof FrigateHost)
+        const arr = sortByKey(tableData, propertyName as keyof GetFrigateHost)
         if (reverse) arr.reverse()
-        setData(arr)
+        setTableData(arr)
         setSortedName(headName)
     }
 
@@ -63,7 +80,7 @@ const FrigateHostsTable = ({ data, showAddButton = false, handleInputChange, han
     })
 
     const handleTextChange = (id: string | number, propertyName: string, value: string,) => {
-        setData(tableData.map(item => {
+        setTableData(tableData.map(item => {
             if (item.id === id) {
                 return {
                     ...item,
@@ -74,7 +91,7 @@ const FrigateHostsTable = ({ data, showAddButton = false, handleInputChange, han
         }));
     }
     const handleSwitchChange = (id: string | number, propertyName: string, value: string,) => {
-        setData(tableData.map(item => {
+        setTableData(tableData.map(item => {
             if (item.id === id) {
                 return {
                     ...item,
@@ -86,19 +103,19 @@ const FrigateHostsTable = ({ data, showAddButton = false, handleInputChange, han
     }
 
     const handleDeleteRow = (id: string | number) => {
-        setData(tableData.filter(item => item.id !== id))
+        setTableData(tableData.filter(item => item.id !== id))
     }
 
-    const handleAddRow = () => {
-        const newHost: FrigateHost = {
-            id: String(Math.random()),
+    const handleAddRow = (event: React.MouseEvent<HTMLButtonElement>) => {
+        const newHost: GetFrigateHost = {
+            id: ObjectId().toHexString(),
             createAt: '',
             updateAt: '',
             host: '',
             name: '',
             enabled: true
         }
-        setData(prevTableData => [...prevTableData, newHost])
+        setTableData(prevTableData => [...prevTableData, newHost])
     }
 
     const rows = tableData.map(item => {
@@ -106,19 +123,17 @@ const FrigateHostsTable = ({ data, showAddButton = false, handleInputChange, han
             <tr key={item.id}>
                 <TextInputCell text={item.name} width='40%' id={item.id} propertyName='name' onChange={handleTextChange} />
                 <TextInputCell text={item.host} width='40%' id={item.id} propertyName='host' onChange={handleTextChange} />
-                {/* {textInputCell(item.host,  '40%', item.id, 'host', handleTextChange)} */}
                 <SwitchCell value={item.enabled} width='10%' id={item.id} propertyName='enabled' toggle={handleSwitchChange} />
                 <td align='right' style={{ width: '10%', padding: '0', }}>
                     <Flex justify='center'>
-                        <Button size='xs' ><IconSettings /></Button>
-                        <Button size='xs' ><IconDeviceFloppy /></Button>
+                        <HostSettingsMenu id={item.id} />
                         <Button size='xs' onClick={() => handleDeleteRow(item.id)}><IconTrash /></Button>
                     </Flex>
                 </td>
             </tr>
         )
     })
-
+    
     return (
         <div>
             <Table >
@@ -133,7 +148,7 @@ const FrigateHostsTable = ({ data, showAddButton = false, handleInputChange, han
             </Table>
             {showAddButton ?
                 <Flex w='100%' justify='end'>
-                    <Button size='xs' onClick={() => handleAddRow()}><IconPlus /></Button>
+                    <Button size='xs' onClick={handleAddRow}><IconPlus /></Button>
                 </Flex>
                 : <></>
             }

@@ -1,26 +1,43 @@
 import { makeAutoObservable } from "mobx"
 
 export class SideBarsStore {
-    private _leftSideBar: React.ReactNode = null
-    public get leftSideBar(): React.ReactNode {
-        return this._leftSideBar
+
+    private _rightVisible: boolean = true
+    public get rightVisible(): boolean {
+        return this._rightVisible
+    }
+    public set rightVisible(visible: boolean) {
+        console.log(`set rightVisible`, visible)
+        this._rightVisible = visible
+    }
+    private _leftVisible: boolean = true
+    public get leftVisible(): boolean {
+        return this._leftVisible
+    }
+    public set leftVisible(visible: boolean) {
+        this._leftVisible = visible
+    }
+
+    private _leftChildren: React.ReactNode = null
+    public get leftChildren(): React.ReactNode {
+        return this._leftChildren
     }
 
 
-    private _rightSideBar: React.ReactNode = null
-    public get rightSideBar(): React.ReactNode {
-        return this._rightSideBar
+    private _rightChildren: React.ReactNode = null
+    public get rightChildren(): React.ReactNode {
+        return this._rightChildren
     }
 
     constructor () {
         makeAutoObservable(this)
     }
 
-    setRightSidebar = (value: React.ReactNode) => {
-        this._rightSideBar = value
+    setRightChildren = (value: React.ReactNode) => {
+        this._rightChildren = value
     }
 
-    setLeftSidebar = (value: React.ReactNode) => {
-        this._leftSideBar = value
+    setLeftChildren = (value: React.ReactNode) => {
+        this._leftChildren = value
     }
 }
