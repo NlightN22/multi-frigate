@@ -5,7 +5,7 @@ import { useDocumentVisibility } from "@mantine/hooks";
 import { AspectRatio, Flex } from "@mantine/core";
 
 interface AutoUpdatingCameraImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
-  cameraConfig: CameraConfig
+  cameraConfig?: CameraConfig
   searchParams?: {};
   showFps?: boolean;
   className?: string;
@@ -85,7 +85,7 @@ export default function AutoUpdatingCameraImage({
       <CameraImage
         cameraConfig={cameraConfig}
         onload={handleLoad}
-        searchParams={`cache=${key}&${searchParams}`}
+        enabled={cameraConfig?.enabled}
         url={url}
         {...rest}
       />

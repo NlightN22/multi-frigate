@@ -4,10 +4,10 @@ import { AspectRatio, Flex, createStyles, Text } from "@mantine/core";
 
 interface CameraImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   className?: string;
-  cameraConfig: CameraConfig;
+  cameraConfig?: CameraConfig;
   onload?: () => void;
-  searchParams?: {};
-  url: string
+  url: string,
+  enabled?: boolean
 };
 
 const useStyles = createStyles((theme) => ({
@@ -19,20 +19,18 @@ export default function CameraImage({
   className,
   cameraConfig,
   onload,
-  searchParams = "",
+  enabled,
   url, ...rest }: CameraImageProps) {
   const imgRef = useRef<HTMLImageElement | null>(null);
   const { classes } = useStyles();
 
-  const name = cameraConfig.name
-  const enabled = cameraConfig.enabled
 
   useEffect(() => {
     if (!cameraConfig || !imgRef.current) {
       return;
     }
     imgRef.current.src = url
-  }, [name, imgRef, searchParams]);
+  }, [imgRef]);
 
   return (
     <Flex direction='column' justify='center' h='100%'>

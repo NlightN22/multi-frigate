@@ -31,9 +31,9 @@ export const Context = createContext<RootStore>(rootStore)
 root.render(
     <Context.Provider value={rootStore}>
       <AuthProvider {...keycloakConfig}>
-        <React.StrictMode>
+        {/* <React.StrictMode> */}
           <App />
-        </React.StrictMode>
+        {/* </React.StrictMode> */}
       </AuthProvider>
     </Context.Provider>
 );

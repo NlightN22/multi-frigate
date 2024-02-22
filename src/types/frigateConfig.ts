@@ -22,7 +22,7 @@ export interface BirdseyeConfig {
 export interface CameraConfig {
   audio: {
     enabled: boolean;
-    enabled_in_config: boolean;
+    enabled_in_config?: boolean | null;
     filters: string[] | null;
     listen: string[];
     max_not_heard: number;

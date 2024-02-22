@@ -58,8 +58,8 @@ export default function useCameraActivity(
   return {
     activeTracking: hasActiveObjects,
     activeMotion: detectingMotion == "ON",
-    activeAudio: camera.audio.enabled_in_config
-      ? audioRms >= camera.audio.min_volume
+    activeAudio: camera.audio?.enabled_in_config ?
+      audioRms >= camera.audio.min_volume
       : false,
   };
 }

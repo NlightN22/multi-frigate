@@ -1,5 +1,5 @@
 import { any, z } from "zod";
-import { FrigateConfig } from "../../types/frigateConfig";
+import { CameraConfig, FrigateConfig } from "../../types/frigateConfig";
 
 export const putConfigSchema = z.object({
     key: z.string(),
@@ -41,6 +41,10 @@ const getCameraSchema = z.object({
     state: z.boolean().nullable(),
 });
 
+const getCameraWithHostSchema = getCameraSchema.merge(z.object({
+    frigateHost: getFrigateHostSchema.optional()
+}))
+
 export const getFrigateHostWithCamerasSchema = getFrigateHostSchema.merge(z.object({
     cameras: z.array(getCameraSchema),
 }))
@@ -59,5 +63,7 @@ export type PutConfig = z.infer<typeof putConfigSchema>
 export type GetFrigateHost = z.infer<typeof getFrigateHostSchema>
 export type GetFrigateHostWithCameras = z.infer<typeof getFrigateHostWithCamerasSchema>
 export type GetFrigateHostWConfig = GetFrigateHost & { config: FrigateConfig}
+export type GetCameraWHost = z.infer<typeof getCameraWithHostSchema>
+export type GetCameraWHostWConfig = GetCameraWHost & { config?: CameraConfig }
 export type PutFrigateHost = z.infer<typeof putFrigateHostSchema>
 export type DeleteFrigateHost = z.infer<typeof deleteFrigateHostSchema>

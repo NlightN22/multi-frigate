@@ -6,27 +6,27 @@ import { LivePlayerMode } from '../../../types/live';
 import useCameraActivity from '../../../hooks/use-camera-activity';
 import useCameraLiveMode from '../../../hooks/use-camera-live-mode';
 import WebRtcPlayer from './WebRTCPlayer';
+import { Flex } from '@mantine/core';
+import { frigateApi } from '../../../services/frigate.proxy/frigate.api';
+import { GetCameraWHostWConfig } from '../../../services/frigate.proxy/frigate.schema';
 
 type LivePlayerProps = {
-  className?: string;
-  cameraConfig: CameraConfig;
+  camera: GetCameraWHostWConfig;
   preferredLiveMode?: LivePlayerMode;
   showStillWithoutActivity?: boolean;
   windowVisible?: boolean;
-  host: string
 };
 
 const Player = ({
-  className,
-  cameraConfig,
+  camera,
   preferredLiveMode,
-  showStillWithoutActivity = true,
   windowVisible = true,
-  host
 }: LivePlayerProps) => {
 
-  const wsUrl = 'ws://localhost:4000/proxy-ws/ws?hostName=localhost:5000'
-
+  const hostNameWPort = camera.frigateHost ? new URL(camera.frigateHost.host).host : ''
+  const wsUrl = frigateApi.cameraWsURL(hostNameWPort, camera.name)
+  const cameraConfig = camera.config!
+  
   const { activeMotion, activeAudio, activeTracking } =
     useCameraActivity(cameraConfig);
 
@@ -53,6 +53,7 @@ const Player = ({
     }
   }, [cameraActive, liveReady]);
 
+  console.log(`liveMode: `, liveMode)
   let player;
   if (liveMode == "webrtc") {
     player = (
@@ -86,20 +87,16 @@ const Player = ({
   } else if (liveMode == "jsmpeg") {
     player = (
       <JSMpegPlayer
-        className="w-full flex justify-center rounded-2xl overflow-hidden"
-        camera='Not yet implemented'
-        width={600}
-        height={800}
-        wsUrl='Not yet implemented'
+        wsUrl={wsUrl}
       />
     );
-
-    return (
-      <div>
-
-      </div>
-    );
   }
+
+  return (
+    <Flex w='100%' h='100%' justify='center'>
+      {player}
+      </Flex>
+  );
 }
 
 export default Player;

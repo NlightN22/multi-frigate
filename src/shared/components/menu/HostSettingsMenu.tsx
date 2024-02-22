@@ -25,6 +25,7 @@ const HostSettingsMenu = ({ id }: HostSettingsMenuProps) => {
     }
 
     const handleRestart = () => {
+        throw Error('Not yet implemented')
     }
     return (
         <Menu shadow="md" width={200}>

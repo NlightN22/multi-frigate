@@ -2,13 +2,10 @@ import React from 'react';
 import { CameraConfig } from '../../types/frigateConfig';
 import { AspectRatio, Button, Card, Flex, Grid, Group, Space, Text, createStyles, useMantineTheme } from '@mantine/core';
 import AutoUpdatingCameraImage from './frigate/AutoUpdatingCameraImage';
-
-interface CameraCardProps {
-    cameraName: string,
-    hostName: string,
-    cameraConfig: CameraConfig,
-    imageUrl: string
-}
+import { useNavigate } from 'react-router-dom';
+import { routesPath } from '../../router/routes.path';
+import { GetCameraWHostWConfig, GetFrigateHost } from '../../services/frigate.proxy/frigate.schema';
+import { frigateApi, mapHostToHostname } from '../../services/frigate.proxy/frigate.api';
 
 
 const useStyles = createStyles((theme) => ({
@@ -30,17 +27,21 @@ const useStyles = createStyles((theme) => ({
     }
 }))
 
+interface CameraCardProps {
+    camera: GetCameraWHostWConfig
+}
 
 const CameraCard = ({
-    cameraName,
-    hostName,
-    cameraConfig,
-    imageUrl,
+    camera
 }: CameraCardProps) => {
     const { classes } = useStyles();
+    const navigate = useNavigate()
+    const imageUrl = camera.frigateHost ? frigateApi.cameraImageURL(mapHostToHostname(camera.frigateHost), camera.name) : '' //todo implement get URL from live cameras
+
 
     const handleOpenLiveView = () => {
-        throw Error('Not yet implemented')
+        const url = routesPath.LIVE_PATH.replace(':id', camera.id)
+        navigate(url)
     }
     const handleOpenRecordings = () => {
         throw Error('Not yet implemented')
@@ -52,10 +53,10 @@ const CameraCard = ({
         <Grid.Col md={6} lg={3} p='0.2rem'>
             <Card h='100%' radius="lg" padding='0.5rem' className={classes.mainCard}>
                 {/* <Card maw='25rem' mah='25rem' mih='15rem' miw='15rem'> */}
-                <Text align='center' size='md' className={classes.headText} >{cameraName} / {hostName}</Text>
+                <Text align='center' size='md' className={classes.headText} >{camera.name} / {camera.frigateHost?.name}</Text>
                 <AutoUpdatingCameraImage
                     onClick={handleOpenLiveView}
-                    cameraConfig={cameraConfig}
+                    cameraConfig={camera.config}
                     url={imageUrl}
                     showFps={false}
                 />

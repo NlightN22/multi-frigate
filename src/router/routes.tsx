@@ -10,6 +10,7 @@ import FrigateHostsPage from "../pages/FrigateHostsPage";
 import HostConfigPage from "../pages/HostConfigPage";
 import HostSystemPage from "../pages/HostSystemPage";
 import HostStoragePage from "../pages/HostStoragePage";
+import LiveCameraPage from "../pages/LiveCameraPage";
 
 interface IRoute {
     path: string,
@@ -40,6 +41,10 @@ export const routes: IRoute[] = [
     {
         path: routesPath.HOST_STORAGE_PATH,
         component: <HostStoragePage />,
+    },
+    {
+        path: routesPath.LIVE_PATH,
+        component: <LiveCameraPage />,
     },
     {
         path: routesPath.MAIN_PATH,
