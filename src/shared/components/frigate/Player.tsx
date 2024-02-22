@@ -7,7 +7,7 @@ import useCameraActivity from '../../../hooks/use-camera-activity';
 import useCameraLiveMode from '../../../hooks/use-camera-live-mode';
 import WebRtcPlayer from './WebRTCPlayer';
 import { Flex } from '@mantine/core';
-import { frigateApi } from '../../../services/frigate.proxy/frigate.api';
+import { frigateApi, proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { GetCameraWHostWConfig } from '../../../services/frigate.proxy/frigate.schema';
 
 type LivePlayerProps = {
@@ -24,7 +24,7 @@ const Player = ({
 }: LivePlayerProps) => {
 
   const hostNameWPort = camera.frigateHost ? new URL(camera.frigateHost.host).host : ''
-  const wsUrl = frigateApi.cameraWsURL(hostNameWPort, camera.name)
+  const wsUrl = proxyApi.cameraWsURL(hostNameWPort, camera.name)
   const cameraConfig = camera.config!
   
   const { activeMotion, activeAudio, activeTracking } =

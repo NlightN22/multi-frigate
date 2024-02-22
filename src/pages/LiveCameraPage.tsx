@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Context } from '..';
 import { observer } from 'mobx-react-lite';
 import { useParams } from 'react-router-dom';
@@ -8,7 +8,6 @@ import CenterLoader from '../shared/components/CenterLoader';
 import RetryError from './RetryError';
 import Player from '../shared/components/frigate/Player';
 import { Flex } from '@mantine/core';
-import JSMpegPlayer from '../shared/components/frigate/JSMpegPlayer';
 
 const LiveCameraPage = observer(() => {
     let { id: cameraId } = useParams<'id'>()
@@ -31,15 +30,9 @@ const LiveCameraPage = observer(() => {
 
     if (isError) return <RetryError onRetry={refetch} />
 
-    // const hostNameWPort = camera.frigateHost ? new URL(camera.frigateHost.host).host : ''
-    // const wsUrl = frigateApi.cameraWsURL(hostNameWPort, camera.name)
-
     return (
         <Flex w='100%' h='100%' justify='center'>
             <Player camera={camera} />
-            {/* <JSMpegPlayer key={wsUrl} wsUrl={wsUrl}/> */}
-            {/* {JSON.stringify(camera)} */}
-            {/* {cameraWsURL} */}
         </Flex>
     );
 })

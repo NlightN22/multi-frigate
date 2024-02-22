@@ -7,10 +7,8 @@ import { Context } from '..';
 import { observer } from 'mobx-react-lite'
 import CenterLoader from '../shared/components/CenterLoader';
 import { useQuery } from '@tanstack/react-query';
-import { frigateApi, frigateQueryKeys, mapHostToHostname } from '../services/frigate.proxy/frigate.api';
+import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import RetryError from './RetryError';
-import { FrigateConfig } from '../types/frigateConfig';
-import { GetFrigateHostWConfig } from '../services/frigate.proxy/frigate.schema';
 import CameraCard from '../shared/components/CameraCard';
 
 const MainBody = observer(() => {
@@ -41,7 +39,8 @@ const MainBody = observer(() => {
             <CameraCard
                 key={camera.id}
                 camera={camera}
-            />))
+            />)
+        )
     }
 
     return (
@@ -67,7 +66,6 @@ const MainBody = observer(() => {
                 <Grid mt='sm' justify="center" mb='sm' align='stretch'>
                     {cards()}
                 </Grid>
-                ))
             </Flex>
         </Flex>
     );

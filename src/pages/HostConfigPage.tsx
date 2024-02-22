@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Context } from '..';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { frigateApi, frigateQueryKeys, mapHostToHostname } from '../services/frigate.proxy/frigate.api';
+import { frigateApi, frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
 import { Button, Flex, Text, useMantineTheme } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 import { configureMonacoYaml } from "monaco-yaml";
@@ -21,7 +21,7 @@ const HostConfigPage = () => {
     queryFn: async () => {
       const host = await frigateApi.getHost(id || '')
       const hostName = mapHostToHostname(host)
-      return frigateApi.getHostConfigRaw(hostName)
+      return proxyApi.getHostConfigRaw(hostName)
     },
   })
 

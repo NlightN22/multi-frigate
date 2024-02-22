@@ -7,7 +7,7 @@ import { Modal, createStyles, getStylesRef, rem, Text, Box, Flex, Grid, Divider,
 import { useMediaQuery } from '@mantine/hooks';
 import { dimensions } from '../dimensions/dimensions';
 import { observer } from 'mobx-react-lite';
-import KomponentLoader from './СogwheelLoader';
+import KomponentLoader from './CogwheelLoader';
 import ProductParameter from './ProductParameter';
 import { productString } from '../strings/product.strings';
 import { IconArrowBadgeLeft, IconArrowBadgeRight } from '@tabler/icons-react';

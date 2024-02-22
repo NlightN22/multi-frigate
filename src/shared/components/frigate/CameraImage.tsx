@@ -1,51 +1,63 @@
 import { useEffect, useRef } from "react";
 import { CameraConfig } from "../../../types/frigateConfig";
 import { AspectRatio, Flex, createStyles, Text } from "@mantine/core";
+import { useQuery } from "@tanstack/react-query";
+import CenterLoader from "../CenterLoader";
+import axios from "axios";
+import { frigateApi, proxyApi } from "../../../services/frigate.proxy/frigate.api";
 
 interface CameraImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   className?: string;
   cameraConfig?: CameraConfig;
   onload?: () => void;
-  url: string,
-  enabled?: boolean
-};
+  imageUrl: string;
+  enabled?: boolean;
+}
 
-const useStyles = createStyles((theme) => ({
-  
- }))
-
-
-export default function CameraImage({
-  className,
-  cameraConfig,
-  onload,
+const AutoUpdatedImage = ({
+  imageUrl,
   enabled,
-  url, ...rest }: CameraImageProps) {
-  const imgRef = useRef<HTMLImageElement | null>(null);
-  const { classes } = useStyles();
-
+  ...rest
+}: CameraImageProps) => {
+  const { data: imageBlob, refetch, isPending, isError } = useQuery({
+    queryKey: ['image', imageUrl],
+    queryFn: () => proxyApi.getImageFrigate(imageUrl),
+    staleTime: 60 * 1000,
+    gcTime: Infinity,
+    refetchInterval: 60 * 1000,
+  });
 
   useEffect(() => {
-    if (!cameraConfig || !imgRef.current) {
-      return;
-    }
-    imgRef.current.src = url
-  }, [imgRef]);
+    const intervalId = setInterval(() => {
+      refetch();
+    }, 60 * 1000);
+
+    return () => clearInterval(intervalId);
+  }, [refetch]);
+
+
+
+  if (isPending) return <CenterLoader />
+
+  if (isError) return (
+    <Flex direction="column" justify="center" h="100%">
+      <Text align="center">Error loading!</Text>
+    </Flex>
+  )
+
+  if (!imageBlob || !(imageBlob instanceof Blob)) console.error('imageBlob not Blob object:', imageBlob)
+
+  const image = URL.createObjectURL(imageBlob!)
 
   return (
-    <Flex direction='column' justify='center' h='100%'>
-      {enabled ? (
-        <AspectRatio ratio={1.5}>
-          <img
-            ref={imgRef}
-            {...rest}
-          />
-        </AspectRatio>
-      ) : (
-        <Text align='center'>
-          Camera is disabled in config, no stream or snapshot available!
-        </Text>
-      )}
-    </Flex>
-  );
-}
+    <>
+      {enabled ? <img src={image} alt="Dynamic Content" {...rest}/>
+        :
+        <Flex direction="column" justify="center" h="100%">
+          <Text align="center">Camera is disabled in config, no stream or snapshot available!</Text>
+        </Flex>
+      }
+    </>)
+};
+
+export default AutoUpdatedImage

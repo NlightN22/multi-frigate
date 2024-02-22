@@ -12,6 +12,7 @@ interface AutoUpdatingCameraImageProps extends React.ImgHTMLAttributes<HTMLImage
   url: string
 };
 
+// TODO Delete
 export default function AutoUpdatingCameraImage({
   cameraConfig,
   searchParams = "",
@@ -82,13 +83,13 @@ export default function AutoUpdatingCameraImage({
   return (
     // <AspectRatio ratio={1}>
     <Flex direction='column' h='100%'>
-      <CameraImage
+      {/* <CameraImage
         cameraConfig={cameraConfig}
         onload={handleLoad}
         enabled={cameraConfig?.enabled}
         url={url}
         {...rest}
-      />
+      /> */}
       {showFps ? <span className="text-xs">Displaying at {fps}fps</span> : null}
     </Flex>
     // </AspectRatio >

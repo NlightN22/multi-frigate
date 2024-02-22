@@ -1,14 +1,14 @@
 import React from 'react';
 import { Center, DEFAULT_THEME } from '@mantine/core';
-import СogwheelSVG from './svg/СogwheelSVG';
+import CogwheelSVG from './svg/CogwheelSVG';
 
 
-const СogwheelLoader = () => {
+const CogwheelLoader = () => {
     return (
         <Center>
-            {СogwheelSVG}
+            {CogwheelSVG}
         </Center>
     );
 };
 
-export default СogwheelLoader;
+export default CogwheelLoader;

@@ -1,7 +1,7 @@
 import { DEFAULT_THEME } from '@mantine/core';
 import React from 'react';
 
-const СogwheelSVG = (
+const CogwheelSVG = (
     <svg
         width="86"
         height="86"
@@ -35,4 +35,4 @@ const СogwheelSVG = (
     </svg>
 );
 
-export default СogwheelSVG;
+export default CogwheelSVG;

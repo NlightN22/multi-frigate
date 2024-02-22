@@ -10,7 +10,7 @@ interface RetryErrorProps {
     onRetry?: () => void
 }
 
-const RetryError = ( {onRetry} : RetryErrorProps) => {
+const RetryError = ({ onRetry }: RetryErrorProps) => {
     const navigate = useNavigate()
 
     const { sideBarsStore } = useContext(Context)
@@ -25,7 +25,11 @@ const RetryError = ( {onRetry} : RetryErrorProps) => {
         navigate(routesPath.MAIN_PATH)
     }
 
-    function handleRetry(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+    const handleGoBack = () => {
+        navigate(-1)
+    }
+
+    const handleRetry = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
         if (onRetry) onRetry()
         else window.location.reload()
     }
@@ -35,8 +39,11 @@ const RetryError = ( {onRetry} : RetryErrorProps) => {
             <Text fz='lg' fw={700}>{strings.errors.somthengGoesWrong}</Text>
             {ExclamationCogWheel}
             <Text fz='lg' fw={700}>{strings.youCanRetryOrGoToMain}</Text>
-            <Button onClick={handleRetry}>{strings.retry}</Button>
-            <Button onClick={handleGoToMain}>{strings.goToMainPage}</Button>
+            <Flex>
+                <Button ml='1rem' onClick={handleRetry}>{strings.retry}</Button>
+                <Button ml='1rem' onClick={handleGoBack}>{strings.back}</Button>
+                <Button ml='1rem' onClick={handleGoToMain}>{strings.goToMainPage}</Button>
+            </Flex>
         </Flex>
     );
 };

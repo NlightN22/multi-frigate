@@ -1,6 +1,6 @@
 import { Box, LoadingOverlay } from '@mantine/core';
 import React from 'react';
-import СogwheelSVG from './svg/СogwheelSVG';
+import СogwheelSVG from './svg/CogwheelSVG';
 
 const SideBarLoader = () => {
     return (
