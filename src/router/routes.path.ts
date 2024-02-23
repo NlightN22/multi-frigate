@@ -1,7 +1,6 @@
 export const routesPath = {
     MAIN_PATH: '/',
     BIRDSEYE_PATH: '/birdseye',
-    EVENTS_PATH: '/events',
     RECORDINGS_PATH: '/recordings',
     SETTINGS_PATH: '/settings',
     HOSTS_PATH: '/hosts',

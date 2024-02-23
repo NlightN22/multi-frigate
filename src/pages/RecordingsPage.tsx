@@ -1,32 +1,175 @@
-// // import { route } from 'preact-router';
-// import { Fragment, useState, useRef, useCallback, useMemo } from 'react';
-// import VideoPlayer from '../shared/components/frigate/VideoPlayer';
-// import CogwheelLoader from '../shared/components/CogwheelLoader';
-// import { Grid, Text } from '@mantine/core';
-// import MultiSelect from '../shared/components/frigate/MultiSelect';
-// import Button from '../shared/components/frigate/Button';
-// import StarRecording from '../shared/components/frigate/icons/StarRecording';
-// import Submitted from '../shared/components/frigate/icons/Submitted';
-// import CalendarIcon from '../shared/components/frigate/icons/CalendarIcon';
-// import Menu, { MenuItem } from '../shared/components/frigate/Menu';
-// import Dialog from '../shared/components/frigate/Dialog';
-// import TimelineSummary from '../shared/components/frigate/TimelineSummary';
-// import TimelineEventOverlay from '../shared/components/frigate/TimelineEventOverlay';
-// import { Tabs, TextTab } from '../shared/components/frigate/Tabs';
-// import Clock from '../shared/components/frigate/icons/Clock';
-// import TimeAgo from '../shared/components/frigate/TimeAgo';
-// import Camera from '../shared/components/frigate/icons/Camera';
-// import Zone from '../shared/components/frigate/icons/Zone';
-// import Score from '../shared/components/frigate/icons/Score';
-// import Link from '../shared/components/frigate/Link';
-// import Delete from '../shared/components/frigate/icons/Delete';
-// import Download from '../shared/components/frigate/icons/Download';
+import MultiSelect from '../shared/components/frigate/MultiSelect';
+import StarRecording from '../shared/components/frigate/icons/StarRecording';
+import Submitted from '../shared/components/frigate/icons/Submitted';
+import CalendarIcon from '../shared/components/frigate/icons/CalendarIcon';
+import Menu, { MenuItem } from '../shared/components/frigate/Menu';
+import Dialog from '../shared/components/frigate/Dialog';
+import TimelineSummary from '../shared/components/frigate/TimelineSummary';
+import TimelineEventOverlay from '../shared/components/frigate/TimelineEventOverlay';
+import { Tabs, TextTab } from '../shared/components/frigate/Tabs';
+import Clock from '../shared/components/frigate/icons/Clock';
+import TimeAgo from '../shared/components/frigate/TimeAgo';
+import Camera from '../shared/components/frigate/icons/Camera';
+import Zone from '../shared/components/frigate/icons/Zone';
+import Score from '../shared/components/frigate/icons/Score';
+import Link from '../shared/components/frigate/Link';
+import Delete from '../shared/components/frigate/icons/Delete';
+import Download from '../shared/components/frigate/icons/Download';
+import { IconDownload, IconStar, IconStarFilled } from '@tabler/icons-react';
+// ↑↑↑ from frigate ↑↑↑
 
-export default function EventsPage() {
+import { Fragment, useState, useRef, useCallback, useMemo, useContext, useEffect, lazy, Suspense } from 'react';
+import VideoPlayer from '../shared/components/frigate/VideoPlayer';
+import CogwheelLoader from '../shared/components/CogwheelLoader';
+import { Accordion, Button, Center, Flex, Grid, SelectItem, Text } from '@mantine/core';
+import { frigateApi, frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
+import { useLocation, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { observer } from 'mobx-react-lite';
+import { Context } from '..';
+import OneSelectFilter, { OneSelectItem } from '../shared/components/filters.aps/OneSelectFilter';
+import CenterLoader from '../shared/components/CenterLoader';
+import RetryError from './RetryError';
+const CameraAccordion = lazy(() => import('../shared/components/accordion/CameraAccordion'));
+
+
+const RecordingsPage = observer(() => {
+  const { sideBarsStore } = useContext(Context)
+  const filterData: OneSelectItem[] = [
+    { value: 'dsfgdfg', label: 'fasdfsdf' },
+    { value: 'dsfgsfgnjcv', label: 'frteh' },
+    { value: 'rthsdfgh', label: 'dftghdfgjn' },
+  ]
+  const hostSelector = () => (
+    <OneSelectFilter
+      id='dsfgds54'
+      label='HostSelector'
+      spaceBetween='1rem'
+      data={filterData}
+    />
+  )
+  useEffect(() => {
+    sideBarsStore.rightVisible = true
+    sideBarsStore.setRightChildren(hostSelector())
+  }, [])
+
+
+
+  const location = useLocation()
+  const queryParams = new URLSearchParams(location.search)
+  const cameraId = queryParams.get('cameraId');
+  const hostId = queryParams.get('hostId')
+  const date = queryParams.get('date');
+  const time = queryParams.get('time');
+
+  const { data: camera, isPending: cameraPending, isError: cameraError, refetch: cameraRefetch } = useQuery({
+    queryKey: [frigateQueryKeys.getCameraWHost, cameraId],
+    queryFn: async () => {
+      if (cameraId) {
+        return frigateApi.getCameraWHost(cameraId)
+      }
+      return null
+    }
+  })
+  const { data: host, isPending: hostPending, isError: hostError, refetch: hostRefetch } = useQuery({
+    queryKey: [frigateQueryKeys.getFrigateHost, hostId],
+    queryFn: async () => {
+      if (hostId) {
+        return frigateApi.getHost(hostId)
+      }
+      return null
+    }
+  })
+
+  const [openCameraId, setOpenCameraId] = useState<string | null>(null)
+
+  const handleOnChange = (cameraId: string | null) => {
+    console.log('Camera id', cameraId)
+    setOpenCameraId(openCameraId === cameraId ? null : cameraId)
+  }
+
+  const handleRetry = () => {
+    if (cameraId) cameraRefetch()
+    else if (hostId) hostRefetch()
+  }
+
+  if (hostPending || cameraPending) return <CenterLoader />
+  if (hostError || cameraError) return <RetryError onRetry={handleRetry} />
+
+
+  // Camera selected
+  if (camera && camera.frigateHost) {
+    return (
+      <Flex w='100%' h='100%' direction='column' align='center'>
+        <Text>{camera.frigateHost.name}</Text>
+        <Suspense>
+          <CameraAccordion camera={camera} host={camera.frigateHost} />
+        </Suspense>
+      </Flex>
+    )
+  }
+  // Host selected
+  if (host && host.cameras.length > 0) {
+
+    const cameras = host.cameras.map(camera => {
+      return (
+        <Accordion.Item key={camera.id + 'Item'} value={camera.id}>
+          <Accordion.Control key={camera.id + 'Control'}>{camera.name}</Accordion.Control>
+          <Accordion.Panel key={camera.id + 'Panel'}>
+            {openCameraId === camera.id && (
+              <Suspense>
+                <CameraAccordion camera={camera} host={host} />
+              </Suspense>
+            )}
+          </Accordion.Panel>
+        </Accordion.Item>
+      )
+    })
+
+    return (
+      <Flex w='100%' h='100%' direction='column' align='center'>
+        <Text>{host.name}</Text>
+        <Accordion
+          mt='1rem'
+          variant='separated'
+          radius="md" w='100%'
+          onChange={(value) => handleOnChange(value)}>
+          {cameras}
+        </Accordion>
+      </Flex>
+    )
+  }
+
+  return (
+    <Flex w='100%' h='100%' direction='column' justify='center' align='center'>
+      <Text size='xl'>Please select host</Text>
+    </Flex>
+  )
+
+
+  // const videoUrl = proxyApi.eventURL('localhost:5000', event)
+  // const recordUrl = 'http://127.0.0.1:5000/vod/2024-02/22/18/Buhgalteria/Asia,Krasnoyarsk/master.m3u8'
+  //   const recordUrl = proxyApi.recordingURL('localhost:5000', 'Buhgalteria', 'Asia,Krasnoyarsk', '2024-02/22/18')
+  // console.log(recordUrl)
+
+  // return (
+  //   <Flex w='100%' h='100%' direction='column'>
+  //     {/* <VideoPlayer videoUrl={recordUrl} /> */}
+  //   </Flex>
+  // )
+
+  // seekOptions={{ forward: 10, backward: 5 }}
+  // onReady={handlePlayerReady}
+  // onDispose={onDispose}
+  {/* {eventOverlay ? (
+        <TimelineEventOverlay eventOverlay={eventOverlay} cameraConfig={config.cameras[event.camera]} />
+      ) : null} */}
   return (
     <div />
   )
-}
+})
+
+export default RecordingsPage
 
 // const API_LIMIT = 25;
 
@@ -45,7 +188,7 @@ export default function EventsPage() {
 // export default function Events({ path, ...props }) {
 //   // const apiHost = useApiHost();
 //   // const { data: config } = useSWR('config');
-//   const timezone = useMemo(() => config?.ui?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone, [config]);
+//   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 //   const [searchParams, setSearchParams] = useState({
 //     before: null,
 //     after: null,
@@ -284,12 +427,12 @@ export default function EventsPage() {
 //     [path, searchParams, setSearchParams]
 //   );
 
-//   const onClickFilterSubmitted = useCallback(() => {
-//     if (++searchParams.is_submitted > 1) {
-//       searchParams.is_submitted = -1;
-//     }
-//     onFilter('is_submitted', searchParams.is_submitted);
-//   }, [searchParams, onFilter]);
+//   // const onClickFilterSubmitted = useCallback(() => {
+//   //   if (++searchParams.is_submitted > 1) {
+//   //     searchParams.is_submitted = -1;
+//   //   }
+//   //   onFilter('is_submitted', searchParams.is_submitted);
+//   // }, [searchParams, onFilter]);
 
 //   const isDone = (eventPages?.[eventPages.length - 1]?.length ?? 0) < API_LIMIT;
 
@@ -405,14 +548,14 @@ export default function EventsPage() {
 //         )}
 
 //         <div className="ml-auto flex">
-//           {config.plus.enabled && (
+//           {/* {config.plus.enabled && (
 //             <Submitted
 //               className="h-10 w-10 text-yellow-300 cursor-pointer ml-auto"
 //               onClick={() => onClickFilterSubmitted()}
 //               inner_fill={searchParams.is_submitted == 1 ? 'currentColor' : 'gray'}
 //               outer_stroke={searchParams.is_submitted >= 0 ? 'currentColor' : 'gray'}
 //             />
-//           )}
+//           )} */}
 
 //           <StarRecording
 //             className="h-10 w-10 text-yellow-300 cursor-pointer ml-auto"
@@ -773,14 +916,17 @@ export default function EventsPage() {
 //         <div
 //           className="relative rounded-l flex-initial min-w-[125px] h-[125px] bg-contain bg-no-repeat bg-center"
 //           style={{
-//             'background-image': `url(${apiHost}api/events/${event.id}/thumbnail.jpg)`,
+//             'backgroundImage': `url(${apiHost}api/events/${event.id}/thumbnail.jpg)`,
 //           }}
 //         >
-//           <StarRecording
+//           <IconStar
+//           onClick={(e) => onSave(e, event.id, !event.retain_indefinitely)}
+//           fill={event.retain_indefinitely ? 'yellow' : 'none'} />
+//           {/* <StarRecording
 //             className="h-6 w-6 text-yellow-300 absolute top-1 right-1 cursor-pointer"
 //             onClick={(e) => onSave(e, event.id, !event.retain_indefinitely)}
 //             fill={event.retain_indefinitely ? 'currentColor' : 'none'}
-//           />
+//           /> */}
 //           {event.end_time ? null : (
 //             <div className="bg-slate-300 dark:bg-slate-700 absolute bottom-0 text-center w-full uppercase text-sm rounded-bl">
 //               In progress
@@ -825,7 +971,7 @@ export default function EventsPage() {
 //                 : `, ${event.sub_label}: ${(event?.data?.sub_label_score * 100).toFixed(0)}%`}
 //             </div>
 //           </div>
-//           <div class="hidden sm:flex flex-col justify-end mr-2">
+//           {/* <div class="hidden sm:flex flex-col justify-end mr-2">
 //             {event.end_time && event.has_snapshot && (event?.data?.type || 'object') == 'object' && (
 //               <Fragment>
 //                 {event.plus_id ? (
@@ -849,19 +995,11 @@ export default function EventsPage() {
 //                 )}
 //               </Fragment>
 //             )}
-//           </div>
-//           <div class="flex flex-col">
-//             <Delete
-//               className="h-6 w-6 cursor-pointer"
-//               stroke="#f87171"
-//               onClick={(e) => onDelete(e, event.id, event.retain_indefinitely)}
-//             />
-
-//             <Download
-//               className="h-6 w-6 mt-auto"
-//               stroke={event.has_clip || event.has_snapshot ? '#3b82f6' : '#cbd5e1'}
-//               onClick={(e) => onDownloadClick(e, event)}
-//             />
+//           </div> */}
+//           <div className="flex flex-col">
+//             {event.has_clip || event.has_snapshot ?
+//               <IconDownload onClick={(e) => onDownloadClick(e, event)} />
+//               : <></>}
 //           </div>
 //         </div>
 //       </div>

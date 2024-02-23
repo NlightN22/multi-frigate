@@ -52,9 +52,6 @@ const CameraCard = ({
     const handleOpenRecordings = () => {
         throw Error('Not yet implemented')
     }
-    const handleOpenEvents = () => {
-        throw Error('Not yet implemented')
-    }
     return (
         <Grid.Col md={6} lg={3} p='0.2rem'>
             <Card h='100%' radius="lg" padding='0.5rem' className={classes.mainCard}>
@@ -66,7 +63,6 @@ const CameraCard = ({
                     className={classes.bottomGroup}>
                     <Flex justify='space-evenly' mt='0.5rem' w='100%'>
                         <Button size='sm' onClick={handleOpenRecordings}>Recordings</Button>
-                        <Button size='sm' onClick={handleOpenEvents}>Events</Button>
                     </Flex>
                 </Group>
             </Card>

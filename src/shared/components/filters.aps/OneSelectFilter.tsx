@@ -2,9 +2,18 @@ import { SelectItem, SystemProp, SpacingValue, SelectProps, Box, Flex, CloseButt
 import React, { CSSProperties } from 'react';
 import CloseWithTooltip from '../CloseWithTooltip';
 import { strings } from '../../strings/strings';
+
+
+export interface OneSelectItem {
+    value: string;
+    label: string;
+    selected?: boolean;
+    disabled?: boolean;
+}
+
 interface OneSelectFilterProps {
     id: string
-    data: SelectItem[]
+    data: OneSelectItem[]
     spaceBetween?: SystemProp<SpacingValue>
     label?: string
     defaultValue?: string

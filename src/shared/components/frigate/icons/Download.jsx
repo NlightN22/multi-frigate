@@ -1,7 +1,9 @@
-import { h } from 'preact';
-import { memo } from 'preact/compat';
+import { memo } from 'react';
 
-export function Download({ className = 'h-6 w-6', stroke = 'currentColor', fill = 'none', onClick = () => {} }) {
+
+
+
+export function Download({ className = 'h-6 w-6', stroke = 'currentColor', fill = 'none', onClick = () => void }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

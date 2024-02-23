@@ -4,6 +4,7 @@ import { z } from "zod"
 import { GetConfig, DeleteFrigateHost, GetFrigateHost, PutConfig, PutFrigateHost, GetFrigateHostWithCameras, GetCameraWHost, GetCameraWHostWConfig } from "./frigate.schema";
 import { FrigateConfig } from "../../types/frigateConfig";
 import { url } from "inspector";
+import { RecordSummary } from "../../types/record";
 
 
 const instanceApi = axios.create({
@@ -17,7 +18,7 @@ export const frigateApi = {
     getHosts: () => instanceApi.get<GetFrigateHost[]>('apiv1/frigate-hosts').then(res => {
         return res.data
     }),
-    getHostWithCameras: () => instanceApi.get<GetFrigateHostWithCameras[]>('apiv1/frigate-hosts', { params: { include: 'cameras' } }).then(res => {
+    getHostsWithCameras: () => instanceApi.get<GetFrigateHostWithCameras[]>('apiv1/frigate-hosts', { params: { include: 'cameras' } }).then(res => {
         return res.data
     }),
     getHost: (id: string) => instanceApi.get<GetFrigateHostWithCameras>(`apiv1/frigate-hosts/${id}`).then(res => {
@@ -34,8 +35,8 @@ export const frigateApi = {
 }
 
 export const proxyApi = {
-    getHostConfigRaw: (hostName: string) => instanceApi.get('proxy/api/config/raw', { params: { hostName: hostName } }).then(res => res.data),
-    getHostConfig: (hostName: string) => instanceApi.get('proxy/api/config', { params: { hostName: hostName } }).then(res => res.data),
+    getHostConfigRaw: (hostName: string) => instanceApi.get(`proxy/${hostName}/api/config/raw`).then(res => res.data),
+    getHostConfig: (hostName: string) => instanceApi.get(`proxy/${hostName}/api/config`).then(res => res.data),
     getImageFrigate: async (imageUrl: string) => {
         const response = await fetch(imageUrl);
         if (!response.ok) {
@@ -43,11 +44,59 @@ export const proxyApi = {
         }
         return response.blob();
     },
-    cameraWsURL: (hostName: string, cameraName: string) => {
-        return `ws://${proxyURL.host}/proxy-ws/live/jsmpeg/${cameraName}?hostName=${hostName}`
-    },
-    cameraImageURL: (hostName: string, cameraName: string) => {
-        return `http://${proxyURL.host}/proxy/api/${cameraName}/latest.jpg?hostName=${hostName}`
+    getHostRestart: (hostName: string) => instanceApi.get(`proxy/${hostName}/api/restart`).then(res => res.data),
+
+    getRecordings: (
+        hostName: string,
+        cameraName: string,
+        after: number,
+        before: number
+    ) =>
+        instanceApi.get(`proxy/${hostName}/api/${cameraName}/recordings?after=${after}&before=${before}`).then(res => res.data),
+
+    getRecordingsSummary: (
+        hostName: string,
+        cameraName: string,
+        timezone: string,
+    ) =>
+        instanceApi.get<RecordSummary[]>(`proxy/${hostName}/api/${cameraName}/recordings/summary`, {params: { timezone}}).then(res => res.data),
+
+    getEvents: (
+        hostName: string,
+        camerasName: string[],
+        timezone: string,
+        minScore?: number,
+        maxScore?: number,
+        after?: number,
+        before?: number,
+        labels?: string[],
+    ) =>
+        instanceApi.get(`proxy/${hostName}/api/events`, {
+            params: {
+                cameras: camerasName,
+                after: after,
+                timezone: timezone,
+                before: before, // @before the last event start_time in list
+                labels: labels,
+                min_score: minScore,
+                max_score: maxScore,
+            }
+        }).then(res => res.data),
+
+    getEventsSummary: (hostName: string, cameraName: string) =>
+        instanceApi.get(`proxy/${hostName}/api/${cameraName}/events/summary`).then(res => res.data),
+    getEventsInProgress: (hostName: string) => instanceApi.get(`proxy/${hostName}/api/events?in_progress=1&include_thumbnails=0`),
+    cameraWsURL: (hostName: string, cameraName: string) =>
+        `ws://${proxyURL.host}/proxy-ws/${hostName}/live/jsmpeg/${cameraName}`,
+    cameraImageURL: (hostName: string, cameraName: string) =>
+        `${proxyURL.protocol}//${proxyURL.host}/proxy/${hostName}/api/${cameraName}/latest.jpg`,
+    eventURL: (hostName: string, event: string) =>
+        `${proxyURL.protocol}//${proxyURL.host}/proxy/${hostName}/vod/event/${event}/master.m3u8`,
+    // http://127.0.0.1:5000/vod/2024-02/23/19/CameraName/Asia,Krasnoyarsk/master.m3u8
+    recordingURL: (hostName: string, cameraName: string, timezone: string, day: string, hour: string) => {//  day:2024-02-23 hour:19
+        const parts = day.split('-')
+        const date = `${parts[0]}-${parts[1]}/${parts[2]}/${hour}`
+        return `${proxyURL.protocol}//${proxyURL.host}/proxy/${hostName}/vod/${date}/${cameraName}/${timezone}/master.m3u8` // todo add Date/Time
     },
 }
 
@@ -69,4 +118,6 @@ export const frigateQueryKeys = {
     getCamerasWHost: 'cameras-frigate-host',
     getCameraWHost: 'camera-frigate-host',
     getHostConfig: 'host-config',
+    getRecordingsSummary: 'recordings-frigate-summary',
+    getRecordings: 'recordings-frigate',
 }

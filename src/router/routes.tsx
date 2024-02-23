@@ -11,6 +11,7 @@ import HostConfigPage from "../pages/HostConfigPage";
 import HostSystemPage from "../pages/HostSystemPage";
 import HostStoragePage from "../pages/HostStoragePage";
 import LiveCameraPage from "../pages/LiveCameraPage";
+import RecordingsPage from "../pages/RecordingsPage";
 
 interface IRoute {
     path: string,
@@ -29,6 +30,10 @@ export const routes: IRoute[] = [
     {
         path: routesPath.HOSTS_PATH,
         component: <FrigateHostsPage />,
+    },
+    {
+        path: routesPath.RECORDINGS_PATH,
+        component: <RecordingsPage />,
     },
     {
         path: routesPath.HOST_CONFIG_PATH,

@@ -35,6 +35,7 @@ const MainBody = observer(() => {
     if (isError) return <RetryError onRetry={refetch} />
 
     const cards = () => {
+        // return cameras.filter(cam => cam.frigateHost?.host.includes('5001')).slice(0,1).map(camera => (
         return cameras.map(camera => (
             <CameraCard
                 key={camera.id}
