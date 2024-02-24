@@ -3,10 +3,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import { GetCameraWHostWConfig, GetFrigateHost } from '../../../services/frigate.proxy/frigate.schema';
 import { useQuery } from '@tanstack/react-query';
 import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../../../services/frigate.proxy/frigate.api';
-import CogwheelLoader from '../CogwheelLoader';
 import DayAccordion from './DayAccordion';
 import { observer } from 'mobx-react-lite';
 import { Context } from '../../..';
+import { getResolvedTimeZone } from '../frigate/dateUtil';
 
 interface CameraAccordionProps {
     camera: GetCameraWHostWConfig,
@@ -17,14 +17,14 @@ const CameraAccordion = observer(({
     camera,
     host
 }: CameraAccordionProps) => {
-    const { recordingsStore } = useContext(Context)
+    const { recordingsStore: recStore } = useContext(Context)
 
     const { data, isPending, isError } = useQuery({
         queryKey: [frigateQueryKeys.getRecordingsSummary, camera?.id],
         queryFn: () => {
             if (camera && host) {
                 const hostName = mapHostToHostname(host)
-                return proxyApi.getRecordingsSummary(hostName, camera.name, 'Asia/Krasnoyarsk')
+                return proxyApi.getRecordingsSummary(hostName, camera.name, getResolvedTimeZone())
             }
             return null
         }
@@ -34,26 +34,23 @@ const CameraAccordion = observer(({
 
     useEffect(() => {
         if (openedDay) {
-          recordingsStore.playedRecord.cameraName = camera.name
-          const hostName = mapHostToHostname(host)
-          recordingsStore.playedRecord.hostName = hostName
+            recStore.recordToPlay.cameraName = camera.name
+            const hostName = mapHostToHostname(host)
+            recStore.recordToPlay.hostName = hostName
         }
-      }, [openedDay])
+    }, [openedDay])
 
     const handleClick = (value: string | null) => {
         setOpenedDay(value)
     }
 
-    if (isPending) return (
-        <Center>
-            <Text>Loading...</Text>
-        </Center>
-    )
-    if (isError) return <Text>Loading error</Text>
+    if (isPending) return <Center><Text>Loading...</Text></Center>
+    if (isError) return <Center><Text>Loading error</Text></Center>
 
     if (!data || !camera) return null
 
-    const days = data.map(rec => (
+
+    const days = data.slice(0, 2).map(rec => (
         <Accordion.Item key={rec.day} value={rec.day}>
             <Accordion.Control key={rec.day + 'control'}>{rec.day}</Accordion.Control>
             <Accordion.Panel key={rec.day + 'panel'}>
@@ -62,6 +59,9 @@ const CameraAccordion = observer(({
         </Accordion.Item>
 
     ))
+
+    console.log('CameraAccordion rendered')
+
     return (
         <Accordion variant='separated' radius="md" w='100%' onChange={handleClick}>
             {days}

@@ -3,13 +3,15 @@ import { IconPlayerPlay, IconPlayerStop } from '@tabler/icons-react';
 import React from 'react';
 
 interface PlayControlProps {
-    hour: string,
+    label: string,
+    value: string,
     openVideoPlayer?: string,
     onClick?: (value: string) => void
 }
 
 const PlayControl = ({
-    hour,
+    label,
+    value,
     openVideoPlayer,
     onClick
 }: PlayControlProps) => {
@@ -18,23 +20,23 @@ const PlayControl = ({
     }
     return (
         <Flex justify='space-between'>
-            Hour: {hour}
+            {label}
             <Group>
                 <Text onClick={(event) => {
                     event.stopPropagation()
-                    handleClick(hour)
+                    handleClick(value)
                 }}>
-                    {openVideoPlayer === hour ? 'Stop Video' : 'Play Video'}
+                    {openVideoPlayer === value ? 'Stop Video' : 'Play Video'}
                 </Text>
-                {openVideoPlayer === hour ?
+                {openVideoPlayer === value ?
                     <IconPlayerStop onClick={(event) => {
                         event.stopPropagation()
-                        handleClick(hour)
+                        handleClick(value)
                     }} />
                     :
                     <IconPlayerPlay onClick={(event) => {
                         event.stopPropagation()
-                        handleClick(hour)
+                        handleClick(value)
                     }} />
 
                 }

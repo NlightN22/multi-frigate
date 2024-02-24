@@ -28,7 +28,7 @@ const useStyles = createStyles((theme,
     }))
 
 
-export const SideBar = observer(({ isHidden, side, children }: SideBarProps) => {
+const SideBar = ({ isHidden, side, children }: SideBarProps) => {
     const hideSizePx = useMantineSize(dimensions.hideSidebarsSize)
     const [visible, { open, close }] = useDisclosure(window.innerWidth > hideSizePx);
     const manualVisible: React.MutableRefObject<null | boolean> = useRef(null)
@@ -43,7 +43,7 @@ export const SideBar = observer(({ isHidden, side, children }: SideBarProps) => 
 
     const { sideBarsStore } = useContext(Context)
 
-    useEffect( () => {
+    useEffect(() => {
         if (sideBarsStore.rightVisible && side === 'right' && !visible) {
             open()
         } else if (!sideBarsStore.rightVisible && side === 'right' && visible) {
@@ -117,5 +117,6 @@ export const SideBar = observer(({ isHidden, side, children }: SideBarProps) => 
             <SideButton side={side} hide={visible} onClick={() => handleClickVisible(true)} />
         </div>
     )
-})
+}
 
+export default observer(SideBar)

@@ -5,6 +5,7 @@ import { GetConfig, DeleteFrigateHost, GetFrigateHost, PutConfig, PutFrigateHost
 import { FrigateConfig } from "../../types/frigateConfig";
 import { url } from "inspector";
 import { RecordSummary } from "../../types/record";
+import { EventFrigate } from "../../types/event";
 
 
 const instanceApi = axios.create({
@@ -59,25 +60,32 @@ export const proxyApi = {
         cameraName: string,
         timezone: string,
     ) =>
-        instanceApi.get<RecordSummary[]>(`proxy/${hostName}/api/${cameraName}/recordings/summary`, {params: { timezone}}).then(res => res.data),
+        instanceApi.get<RecordSummary[]>(`proxy/${hostName}/api/${cameraName}/recordings/summary`, { params: { timezone } }).then(res => res.data),
 
+    // E.g. http://127.0.0.1:5000/api/events?before=1708534799&after=1708448400&camera=CameraName&has_clip=1&include_thumbnails=0&limit=5000
     getEvents: (
         hostName: string,
         camerasName: string[],
-        timezone: string,
-        minScore?: number,
-        maxScore?: number,
+        timezone?: string,
+        hasClip?: boolean,
         after?: number,
         before?: number,
         labels?: string[],
+        limit: number = 5000,
+        includeThumnails?: boolean,
+        minScore?: number,
+        maxScore?: number,
     ) =>
-        instanceApi.get(`proxy/${hostName}/api/events`, {
+        instanceApi.get<EventFrigate[]>(`proxy/${hostName}/api/events`, {
             params: {
-                cameras: camerasName,
-                after: after,
+                cameras: camerasName.join(','), // frigate format
                 timezone: timezone,
+                after: after,
                 before: before, // @before the last event start_time in list
+                has_clip: hasClip,
+                include_thumbnails: includeThumnails,
                 labels: labels,
+                limit: limit,
                 min_score: minScore,
                 max_score: maxScore,
             }
@@ -120,4 +128,5 @@ export const frigateQueryKeys = {
     getHostConfig: 'host-config',
     getRecordingsSummary: 'recordings-frigate-summary',
     getRecordings: 'recordings-frigate',
+    getEvents: 'events-frigate',
 }

@@ -17,6 +17,40 @@ export const getNowYesterdayInLong = (): number => {
   return dateToLong(getNowYesterday());
 };
 
+export const unixTimeToDate = (unixTime: number) => {
+  const date = new Date(unixTime * 1000);
+
+  const formattedDate = date.getFullYear() +
+    '-' + ('0' + (date.getMonth() + 1)).slice(-2) + 
+    '-' + ('0' + date.getDate()).slice(-2) +
+    ' ' + ('0' + date.getHours()).slice(-2) +
+    ':' + ('0' + date.getMinutes()).slice(-2) +
+    ':' + ('0' + date.getSeconds()).slice(-2);
+
+  return formattedDate;
+}
+
+/**
+ * @param day frigate format, e.g day: 2024-02-23
+ * @param hour frigate format, e.g hour: 22
+ * @returns [start: unixTimeStart, end: unixTimeEnd]
+ */
+export const getUnixTime = (day?: string, hour?: number | string) => {
+  if (!day) return []
+  let startHour: Date
+  let endHour: Date
+  if (!hour || hour === 0) {
+    startHour = new Date(`${day}T00:00:00`);
+    endHour = new Date(`${day}T23:59:59`);
+  } else {
+    startHour = new Date(`${day}T${hour}:00:00`);
+    endHour = new Date(`${day}T${hour}:59:59`);
+  }
+  const unixTimeStart = startHour.getTime() / 1000;
+  const unixTimeEnd = endHour.getTime() / 1000;
+  return [unixTimeStart, unixTimeEnd];
+}
+
 /**
  * This function takes in a Unix timestamp, configuration options for date/time display, and an optional strftime format string,
  * and returns a formatted date/time string.
@@ -80,7 +114,7 @@ const formatMap: {
  * The returned string will either be a named time zone (e.g., "America/Los_Angeles"), or it will follow
  * the format "UTC±HH:MM".
  */
-const getResolvedTimeZone = () => {
+export const getResolvedTimeZone = () => {
   try {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
   } catch (error) {
@@ -88,8 +122,8 @@ const getResolvedTimeZone = () => {
     return `UTC${offsetMinutes < 0 ? '+' : '-'}${Math.abs(offsetMinutes / 60)
       .toString()
       .padStart(2, '0')}:${Math.abs(offsetMinutes % 60)
-      .toString()
-      .padStart(2, '0')}`;
+        .toString()
+        .padStart(2, '0')}`;
   }
 };
 
@@ -176,12 +210,12 @@ interface DurationToken {
  * @param end_time: number|null - Unix timestamp for end time
  * @returns string - duration or 'In Progress' if end time is not provided
  */
-export const getDurationFromTimestamps = (start_time: number, end_time: number | null): string => {
+export const getDurationFromTimestamps = (start_time: number, end_time: number | undefined): string => {
   if (isNaN(start_time)) {
     return 'Invalid start time';
   }
   let duration = 'In Progress';
-  if (end_time !== null) {
+  if (end_time) {
     if (isNaN(end_time)) {
       return 'Invalid end time';
     }

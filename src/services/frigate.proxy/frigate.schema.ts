@@ -58,6 +58,20 @@ export const deleteFrigateHostSchema = putFrigateHostSchema.pick({
     id: true,
 });
 
+export const getEventsQuerySchema = z.object({
+    hostName: z.string(),
+    camerasName: z.string().array(),
+    timezone: z.string().optional(),
+    hasClip: z.boolean().optional(),
+    after: z.number().optional(),
+    before: z.number().optional(),
+    labels: z.string().array().optional(),
+    limit: z.number().optional(),
+    includeThumnails: z.boolean().optional(),
+    minScore: z.number().optional(),
+    maxScore: z.number().optional(),
+})
+
 export type GetConfig = z.infer<typeof getConfigSchema>
 export type PutConfig = z.infer<typeof putConfigSchema>
 export type GetFrigateHost = z.infer<typeof getFrigateHostSchema>

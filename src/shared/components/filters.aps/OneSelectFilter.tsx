@@ -21,7 +21,8 @@ interface OneSelectFilterProps {
     selectProps?: SelectProps,
     display?: SystemProp<CSSProperties['display']>
     showClose?: boolean,
-    changedState?(id: string, value: string): void
+    value?: string,
+    onChange?(id: string, value: string): void
     onClose?(): void
 }
 
@@ -29,12 +30,12 @@ interface OneSelectFilterProps {
 const OneSelectFilter = ({
     id, data, spaceBetween,
     label, defaultValue, textClassName,
-    selectProps, display, showClose, changedState, onClose
+    selectProps, display, showClose, value, onChange, onClose
 }: OneSelectFilterProps) => {
 
     const handleOnChange = (value: string) => {
-        if (changedState) {
-            changedState(id, value)
+        if (onChange) {
+            onChange(id, value)
         }
     }
 
@@ -50,6 +51,7 @@ const OneSelectFilter = ({
                 mt={spaceBetween}
                 data={data}
                 defaultValue={defaultValue}
+                value={value}
                 onChange={handleOnChange}
                 searchable
                 clearable

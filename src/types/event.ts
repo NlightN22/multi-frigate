@@ -1,4 +1,4 @@
-export interface Event {
+export interface EventFrigate {
   id: string;
   label: string;
   sub_label?: string;

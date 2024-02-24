@@ -3,9 +3,9 @@ import { AppShell, useMantineTheme, } from "@mantine/core"
 import { HeaderAction } from './widgets/header/HeaderAction';
 import { testHeaderLinks } from './widgets/header/header.links';
 import AppRouter from './router/AppRouter';
-import { SideBar } from './shared/components/SideBar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Context } from '.';
+import SideBar from './shared/components/SideBar';
 
 const queryClient = new QueryClient()
 
