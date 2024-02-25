@@ -104,11 +104,8 @@ const RecordingsPage = observer(() => {
   }
 
   if (cameraId && paramCameraId) {
-    // console.log('cameraId', cameraId)
-    // console.log('paramCameraId', paramCameraId)
     if ((startDay && endDay) || (!startDay && !endDay)) {
       return <SelectedCameraList />
-      // return <SelectedCameraList cameraId={cameraId} />
     }
   }
 

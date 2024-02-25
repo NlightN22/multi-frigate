@@ -38,7 +38,7 @@ const CameraSelectFilter = ({
 
     const camerasItems: OneSelectItem[] = data.cameras.map(camera => ({ value: camera.id, label: camera.name }))
 
-    const handleSelect = (id: string, value: string) => {
+    const handleSelect = (value: string) => {
         const camera = data.cameras.find(camera => camera.id === value)
         if (!camera) {
             recStore.selectedCamera = undefined

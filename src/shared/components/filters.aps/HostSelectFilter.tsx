@@ -34,7 +34,7 @@ const HostSelectFilter = () => {
         .filter(host => host.enabled)
         .map(host => ({ value: host.id, label: host.name }))
 
-    const handleSelect = (id: string, value: string) => {
+    const handleSelect = (value: string) => {
         const host = hosts?.find(host => host.id === value)
         if (!host) {
             recStore.selectedHost = undefined

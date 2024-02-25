@@ -11,43 +11,42 @@ export interface OneSelectItem {
     disabled?: boolean;
 }
 
-interface OneSelectFilterProps {
-    id: string
+interface OneSelectFilterProps extends SelectProps {
+    id?: string
     data: OneSelectItem[]
     spaceBetween?: SystemProp<SpacingValue>
     label?: string
     defaultValue?: string
     textClassName?: string
-    selectProps?: SelectProps,
-    display?: SystemProp<CSSProperties['display']>
     showClose?: boolean,
     value?: string,
-    onChange?(id: string, value: string): void
-    onClose?(): void
+    onChange?: (value: string, id?: string,) => void
+    onClose?: () => void
 }
 
 
 const OneSelectFilter = ({
     id, data, spaceBetween,
     label, defaultValue, textClassName,
-    selectProps, display, showClose, value, onChange, onClose
+    showClose, value, onChange: onChange, onClose, ...selectProps
 }: OneSelectFilterProps) => {
 
     const handleOnChange = (value: string) => {
-        if (onChange) {
-            onChange(id, value)
-        }
+        if (onChange) onChange(value, id,)
+    }
+
+    const handleOnClose = () => {
+        if (onClose) onClose()
     }
 
     return (
-        <Box display={display} mt={spaceBetween}>
+        <Box mt={spaceBetween}>
             <Flex justify='space-between'>
                 <Text className={textClassName}>{label}</Text>
-                {showClose ? <CloseWithTooltip label={strings.hide} onClose={onClose} /> 
-                : null}
+                {showClose ? <CloseWithTooltip label={strings.hide} onClose={handleOnClose} />
+                    : null}
             </Flex>
             <Select
-                {...selectProps}
                 mt={spaceBetween}
                 data={data}
                 defaultValue={defaultValue}
@@ -55,6 +54,7 @@ const OneSelectFilter = ({
                 onChange={handleOnChange}
                 searchable
                 clearable
+                {...selectProps}
             />
         </Box>
     )

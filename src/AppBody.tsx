@@ -7,7 +7,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Context } from '.';
 import SideBar from './shared/components/SideBar';
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false
+        }
+    }
+})
 
 const AppBody = () => {
     useEffect(() => {

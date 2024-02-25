@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { CameraConfig } from "../../types/frigateConfig";
 import { Flex, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import CenterLoader from "./CenterLoader";
 import { frigateApi, proxyApi } from "../../services/frigate.proxy/frigate.api";
 import { useIntersection } from "@mantine/hooks";
 import CogwheelLoader from "./loaders/CogwheelLoader";
@@ -33,7 +32,6 @@ const AutoUpdatedImage = ({
 
   useEffect(() => {
     if (isVisible) {
-    console.log('imageUrl is visible')
       const intervalId = setInterval(() => {
         refetch();
       }, 60 * 1000);

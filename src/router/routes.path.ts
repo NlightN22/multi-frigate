@@ -7,7 +7,7 @@ export const routesPath = {
     HOST_CONFIG_PATH: '/hosts/:id/config',
     HOST_SYSTEM_PATH: '/hosts/:id/system',
     HOST_STORAGE_PATH: '/hosts/:id/storage',
-    ROLES_PATH: '/roles',
+    ACCESS_PATH: '/access',
     LIVE_PATH: '/cameras/:id/',
     THANKS_PATH: '/thanks',
     USER_DETAILED_PATH: '/user',

@@ -12,6 +12,7 @@ import HostSystemPage from "../pages/HostSystemPage";
 import HostStoragePage from "../pages/HostStoragePage";
 import LiveCameraPage from "../pages/LiveCameraPage";
 import RecordingsPage from "../pages/RecordingsPage";
+import AccessSettings from "../pages/AccessSettings";
 
 interface IRoute {
     path: string,
@@ -46,6 +47,10 @@ export const routes: IRoute[] = [
     {
         path: routesPath.HOST_STORAGE_PATH,
         component: <HostStoragePage />,
+    },
+    {
+        path: routesPath.ACCESS_PATH,
+        component: <AccessSettings />,
     },
     {
         path: routesPath.LIVE_PATH,

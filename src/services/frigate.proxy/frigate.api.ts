@@ -1,7 +1,11 @@
 import axios from "axios"
 import { proxyURL } from "../../shared/env.const"
 import { z } from "zod"
-import { GetConfig, DeleteFrigateHost, GetFrigateHost, PutConfig, PutFrigateHost, GetFrigateHostWithCameras, GetCameraWHost, GetCameraWHostWConfig } from "./frigate.schema";
+import {
+    GetConfig, DeleteFrigateHost, GetFrigateHost, PutConfig, PutFrigateHost,
+    GetFrigateHostWithCameras, GetCameraWHost, GetCameraWHostWConfig, GetRole,
+    GetUserByRole, GetRoleWCameras
+} from "./frigate.schema";
 import { FrigateConfig } from "../../types/frigateConfig";
 import { url } from "inspector";
 import { RecordSummary } from "../../types/record";
@@ -25,7 +29,7 @@ export const frigateApi = {
     getHost: (id: string) => instanceApi.get<GetFrigateHostWithCameras>(`apiv1/frigate-hosts/${id}`).then(res => {
         return res.data
     }),
-    getCamerasWHost: () => instanceApi.get<GetCameraWHostWConfig[]>(`apiv1/cameras`).then(res => { return res.data }),
+    getCamerasWHost: () => instanceApi.get<GetCameraWHostWConfig[]>(`apiv1/cameras`).then(res => res.data),
     getCameraWHost: (id: string) => instanceApi.get<GetCameraWHostWConfig>(`apiv1/cameras/${id}`).then(res => { return res.data }),
     putHosts: (hosts: PutFrigateHost[]) => instanceApi.put<GetFrigateHost[]>('apiv1/frigate-hosts', hosts).then(res => {
         return res.data
@@ -33,6 +37,13 @@ export const frigateApi = {
     deleteHosts: (hosts: DeleteFrigateHost[]) => instanceApi.delete<GetFrigateHost[]>('apiv1/frigate-hosts', { data: hosts }).then(res => {
         return res.data
     }),
+    getRoles: () => instanceApi.get<GetRole[]>('apiv1/roles').then(res => res.data),
+    getUsersByRole: (roleName: string) => instanceApi.get<GetUserByRole[]>(`apiv1/users/${roleName}`).then(res => res.data),
+    getRoleWCameras: (roleId: string) => instanceApi.get<GetRoleWCameras>(`apiv1/roles/${roleId}`).then(res => res.data),
+    putRoleWCameras: (roleId: string, cameraIDs: string[]) => instanceApi.put<GetRoleWCameras>(`apiv1/roles/${roleId}/cameras`,
+        {
+            cameraIDs: cameraIDs
+        }).then(res => res.data)
 }
 
 export const proxyApi = {
@@ -129,4 +140,7 @@ export const frigateQueryKeys = {
     getRecordingsSummary: 'recordings-frigate-summary',
     getRecordings: 'recordings-frigate',
     getEvents: 'events-frigate',
+    getRoles: 'roles',
+    getRoleWCameras: 'roles-cameras',
+    getUsersByRole: 'users-role',
 }
