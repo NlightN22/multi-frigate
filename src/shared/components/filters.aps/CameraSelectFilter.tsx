@@ -3,9 +3,11 @@ import React, { useContext, useEffect } from 'react';
 import { Context } from '../../..';
 import { useQuery } from '@tanstack/react-query';
 import { frigateApi, frigateQueryKeys } from '../../../services/frigate.proxy/frigate.api';
-import CogwheelLoader from '../CogwheelLoader';
-import { Center, Text } from '@mantine/core';
+import CogwheelLoader from '../loaders/CogwheelLoader';
+import { Center, Loader, Text } from '@mantine/core';
 import OneSelectFilter, { OneSelectItem } from './OneSelectFilter';
+import { strings } from '../../strings/strings';
+import RetryError from '../RetryError';
 
 interface CameraSelectFilterProps {
     selectedHostId: string,
@@ -16,7 +18,7 @@ const CameraSelectFilter = ({
 }: CameraSelectFilterProps) => {
     const { recordingsStore: recStore } = useContext(Context)
 
-    const { data, isError, isPending, isSuccess } = useQuery({
+    const { data, isError, isPending, isSuccess, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getFrigateHost, selectedHostId],
         queryFn: () => frigateApi.getHost(selectedHostId)
     })
@@ -30,8 +32,8 @@ const CameraSelectFilter = ({
         }
     }, [isSuccess])
 
-    if (isPending) return <CogwheelLoader />
-    if (isError) return <Center><Text>Loading error!</Text></Center>
+    if (isPending) return <Loader />
+    if (isError) return <RetryError onRetry={refetch}/>
     if (!data) return null
 
     const camerasItems: OneSelectItem[] = data.cameras.map(camera => ({ value: camera.id, label: camera.name }))
@@ -51,7 +53,7 @@ const CameraSelectFilter = ({
     return (
         <OneSelectFilter
             id='frigate-cameras'
-            label='Select camera:'
+            label={strings.selectCamera}
             spaceBetween='1rem'
             value={recStore.selectedCamera?.id || ''}
             defaultValue={recStore.selectedCamera?.id || ''}

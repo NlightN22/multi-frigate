@@ -1,25 +1,23 @@
-import { Accordion, Center, Flex, Group, Text } from '@mantine/core';
+import { Accordion, Center, Group, Text } from '@mantine/core';
 import React, { useContext, useEffect, useState } from 'react';
-import { RecordHour, RecordSummary, Recording } from '../../../types/record';
-import Button from '../frigate/Button';
-import { IconPlayerPause, IconPlayerPlay, IconPlayerStop } from '@tabler/icons-react';
+import { RecordSummary } from '../../../types/record';
 import { observer } from 'mobx-react-lite';
 import PlayControl from './PlayControl';
-import { frigateApi, proxyApi } from '../../../services/frigate.proxy/frigate.api';
+import { proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { Context } from '../../..';
-import VideoPlayer from '../frigate/VideoPlayer';
-import { getResolvedTimeZone } from '../frigate/dateUtil';
-import EventsAccordion from './EventsAccordion';
+import VideoPlayer from '../players/VideoPlayer';
+import { getResolvedTimeZone } from '../../utils/dateUtil';
 import DayEventsAccordion from './DayEventsAccordion';
+import { strings } from '../../strings/strings';
 
 interface RecordingAccordionProps {
   recordSummary?: RecordSummary
 }
 
-const DayAccordion = observer(({
+const DayAccordion = ({
   recordSummary
 }: RecordingAccordionProps) => {
-  const { recordingsStore } = useContext(Context)
+  const { recordingsStore: recStore } = useContext(Context)
   const [openVideoPlayer, setOpenVideoPlayer] = useState<string>()
   const [openedValue, setOpenedValue] = useState<string>()
   const [playerUrl, setPlayerUrl] = useState<string>()
@@ -28,11 +26,11 @@ const DayAccordion = observer(({
     if (openVideoPlayer) {
       console.log('openVideoPlayer', openVideoPlayer)
       if (openVideoPlayer) {
-        recordingsStore.recordToPlay.day = recordSummary?.day
-        recordingsStore.recordToPlay.hour = openVideoPlayer
-        recordingsStore.recordToPlay.timezone = getResolvedTimeZone().replace('/', ',')
-        const parsed = recordingsStore.getFullRecordForPlay(recordingsStore.recordToPlay)
-        console.log('recordingsStore.playedRecord: ', recordingsStore.recordToPlay)
+        recStore.recordToPlay.day = recordSummary?.day
+        recStore.recordToPlay.hour = openVideoPlayer
+        recStore.recordToPlay.timezone = getResolvedTimeZone().replace('/', ',')
+        const parsed = recStore.getFullRecordForPlay(recStore.recordToPlay)
+        console.log('recordingsStore.playedRecord: ', recStore.recordToPlay)
         if (parsed.success) {
           const url = proxyApi.recordingURL(
             parsed.data.hostName,
@@ -50,10 +48,10 @@ const DayAccordion = observer(({
     }
   }, [openVideoPlayer])
 
-  if (!recordSummary || recordSummary.hours.length < 1) return (<Text>Not have record at that day</Text>)
+  if (!recordSummary ) return <Text>Not have record at that day</Text>
+  if (recordSummary.hours.length < 1) return <Text>Not have record at that day</Text>
 
   const handleOpenPlayer = (hour: string) => {
-    // console.log(`openVideoPlayer day:${recordSummary.day} hour:${hour}`)
     if (openVideoPlayer !== hour) {
       setOpenedValue(hour)
       setOpenVideoPlayer(hour)
@@ -73,6 +71,17 @@ const DayAccordion = observer(({
 
   console.log('DayAccordion rendered')
 
+  const hourLabel = (hour: string, eventsQty: number) => (
+    <Group>
+      <Text>{strings.hour}: {hour}:00</Text>
+      {eventsQty > 0 ?
+        <Text>{strings.events}: {eventsQty}</Text>
+        :
+        <Text>{strings.notHaveEvents}</Text>
+      }
+    </Group>
+  )
+
   return (
     <Accordion
       key={recordSummary.day}
@@ -81,23 +90,27 @@ const DayAccordion = observer(({
       value={openedValue}
       onChange={handleClick}
     >
-      {recordSummary.hours.slice(0, 5).map(hour => (
+      {recordSummary.hours.map(hour => (
         <Accordion.Item key={hour.hour + 'Item'} value={hour.hour}>
           <Accordion.Control key={hour.hour + 'Control'}>
-            <PlayControl label={`Hour ${hour.hour}`} value={hour.hour} openVideoPlayer={openVideoPlayer} onClick={handleOpenPlayer} />
+            <PlayControl
+              label={hourLabel(hour.hour, hour.events)}
+              value={hour.hour}
+              openVideoPlayer={openVideoPlayer}
+              onClick={handleOpenPlayer} />
           </Accordion.Control>
           <Accordion.Panel key={hour.hour + 'Panel'}>
             {openVideoPlayer === hour.hour && playerUrl ? <VideoPlayer videoUrl={playerUrl} /> : <></>}
             {hour.events > 0 ?
               <DayEventsAccordion day={recordSummary.day} hour={hour.hour} qty={hour.events} />
               :
-              <Center><Text>Not have events</Text></Center>
+              <Center><Text>{strings.notHaveEvents}</Text></Center>
             }
           </Accordion.Panel>
         </Accordion.Item>
       ))}
     </Accordion>
   )
-})
+}
 
-export default DayAccordion;
+export default observer(DayAccordion);

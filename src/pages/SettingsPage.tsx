@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-query'
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import CenterLoader from '../shared/components/CenterLoader';
-import RetryError from './RetryError';
+import RetryErrorPage from './RetryErrorPage';
 import { Button, Flex, Space } from '@mantine/core';
 import { FloatingLabelInput } from '../shared/components/FloatingLabelInput';
 import { strings } from '../shared/strings/strings';
@@ -83,7 +83,7 @@ const SettingsPage = () => {
 
     if (configPending) return <CenterLoader />
 
-    if (configError) return <RetryError onRetry={refetch} />
+    if (configError) return <RetryErrorPage onRetry={refetch} />
 
     return (
         <Flex h='100%'>

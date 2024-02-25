@@ -5,8 +5,8 @@ import { useParams } from 'react-router-dom';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { useQuery } from '@tanstack/react-query';
 import CenterLoader from '../shared/components/CenterLoader';
-import RetryError from './RetryError';
-import Player from '../shared/components/frigate/Player';
+import RetryErrorPage from './RetryErrorPage';
+import Player from '../widgets/Player';
 import { Flex } from '@mantine/core';
 
 const LiveCameraPage = observer(() => {
@@ -28,7 +28,7 @@ const LiveCameraPage = observer(() => {
 
     if (isPending) return <CenterLoader />
 
-    if (isError) return <RetryError onRetry={refetch} />
+    if (isError) return <RetryErrorPage onRetry={refetch} />
 
     return (
         <Flex w='100%' h='100%' justify='center'>

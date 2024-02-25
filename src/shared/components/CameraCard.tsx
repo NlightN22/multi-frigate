@@ -1,12 +1,12 @@
 import React from 'react';
 import { CameraConfig } from '../../types/frigateConfig';
 import { AspectRatio, Button, Card, Flex, Grid, Group, Space, Text, createStyles, useMantineTheme } from '@mantine/core';
-import AutoUpdatingCameraImage from './frigate/AutoUpdatingCameraImage';
 import { useNavigate } from 'react-router-dom';
 import { routesPath } from '../../router/routes.path';
 import { GetCameraWHostWConfig, GetFrigateHost } from '../../services/frigate.proxy/frigate.schema';
 import { frigateApi, mapHostToHostname, proxyApi } from '../../services/frigate.proxy/frigate.api';
-import AutoUpdatedImage from './frigate/CameraImage';
+import AutoUpdatedImage from './AutoUpdatedImage';
+import { recordingsPageQuery } from '../../pages/RecordingsPage';
 
 
 const useStyles = createStyles((theme) => ({
@@ -50,7 +50,8 @@ const CameraCard = ({
         navigate(url)
     }
     const handleOpenRecordings = () => {
-        throw Error('Not yet implemented')
+        const url = `${routesPath.RECORDINGS_PATH}?${recordingsPageQuery.hostId}=${camera.frigateHost?.id}&${recordingsPageQuery.cameraId}=${camera.id}`
+        navigate(url)
     }
     return (
         <Grid.Col md={6} lg={3} p='0.2rem'>

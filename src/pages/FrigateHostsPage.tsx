@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {  frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { deleteFrigateHostSchema, GetFrigateHost, putFrigateHostSchema} from '../services/frigate.proxy/frigate.schema';
 import CenterLoader from '../shared/components/CenterLoader';
-import RetryError from './RetryError';
+import RetryErrorPage from './RetryErrorPage';
 import { Context } from '..';
 import { strings } from '../shared/strings/strings';
 import { Button, Flex } from '@mantine/core';
@@ -71,7 +71,7 @@ const FrigateHostsPage = observer(() => {
     }
 
     if (hostsPending) return <CenterLoader />
-    if (hostsError) return <RetryError />
+    if (hostsError) return <RetryErrorPage />
     return (
         <div>
             {

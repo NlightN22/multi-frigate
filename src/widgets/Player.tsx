@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import JSMpegPlayer from './JSMpegPlayer';
-import MSEPlayer from './MsePlayer';
-import { CameraConfig } from '../../../types/frigateConfig';
-import { LivePlayerMode } from '../../../types/live';
-import useCameraActivity from '../../../hooks/use-camera-activity';
-import useCameraLiveMode from '../../../hooks/use-camera-live-mode';
-import WebRtcPlayer from './WebRTCPlayer';
+import JSMpegPlayer from '../shared/components/players/JSMpegPlayer';
+import MSEPlayer from '../shared/components/players/MsePlayer';
+import { CameraConfig } from '../types/frigateConfig';
+import { LivePlayerMode } from '../types/live';
+import useCameraActivity from '../hooks/use-camera-activity';
+import useCameraLiveMode from '../hooks/use-camera-live-mode';
+import WebRtcPlayer from '../shared/components/players/WebRTCPlayer';
 import { Flex } from '@mantine/core';
-import { frigateApi, proxyApi } from '../../../services/frigate.proxy/frigate.api';
-import { GetCameraWHostWConfig } from '../../../services/frigate.proxy/frigate.schema';
+import { frigateApi, proxyApi } from '../services/frigate.proxy/frigate.api';
+import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
 
 type LivePlayerProps = {
   camera: GetCameraWHostWConfig;
@@ -70,7 +70,7 @@ const Player = ({
       player = (
         <MSEPlayer
           className={`rounded-2xl h-full ${liveReady ? "" : "hidden"}`}
-          camera='Not yet implemented'
+          camera='Not yet implemented' // TODO implement player
           playbackEnabled={cameraActive}
           onPlaying={() => setLiveReady(true)}
           wsUrl={wsUrl}

@@ -1,41 +1,43 @@
-import { h } from 'preact';
-import { useCallback, useState } from 'preact/hooks';
+// import { h } from 'preact';
+// import { useCallback, useState } from 'preact/hooks';
 
-export function Tabs({ children, selectedIndex: selectedIndexProp, onChange, className }) {
-  const [selectedIndex, setSelectedIndex] = useState(selectedIndexProp);
+export {}
 
-  const handleSelected = useCallback(
-    (index) => () => {
-      setSelectedIndex(index);
-      onChange && onChange(index);
-    },
-    [onChange]
-  );
+// export function Tabs({ children, selectedIndex: selectedIndexProp, onChange, className }) {
+//   const [selectedIndex, setSelectedIndex] = useState(selectedIndexProp);
 
-  const RenderChildren = useCallback(() => {
-    return children.map((child, i) => {
-      child.props.selected = i === selectedIndex;
-      child.props.onClick = handleSelected(i);
-      return child;
-    });
-  }, [selectedIndex, children, handleSelected]);
+//   const handleSelected = useCallback(
+//     (index) => () => {
+//       setSelectedIndex(index);
+//       onChange && onChange(index);
+//     },
+//     [onChange]
+//   );
 
-  return (
-    <div className={`flex ${className}`}>
-      <RenderChildren />
-    </div>
-  );
-}
+//   const RenderChildren = useCallback(() => {
+//     return children.map((child, i) => {
+//       child.props.selected = i === selectedIndex;
+//       child.props.onClick = handleSelected(i);
+//       return child;
+//     });
+//   }, [selectedIndex, children, handleSelected]);
 
-export function TextTab({ selected, text, onClick, disabled }) {
-  const selectedStyle = disabled
-    ? 'text-gray-400 dark:text-gray-600 bg-transparent'
-    : selected
-      ? 'text-white bg-blue-500 dark:text-black dark:bg-white'
-      : 'text-black dark:text-white bg-transparent';
-  return (
-    <button onClick={onClick} disabled={disabled} className={`rounded-full px-4 py-2 ${selectedStyle}`}>
-      <span>{text}</span>
-    </button>
-  );
-}
+//   return (
+//     <div className={`flex ${className}`}>
+//       <RenderChildren />
+//     </div>
+//   );
+// }
+
+// export function TextTab({ selected, text, onClick, disabled }) {
+//   const selectedStyle = disabled
+//     ? 'text-gray-400 dark:text-gray-600 bg-transparent'
+//     : selected
+//       ? 'text-white bg-blue-500 dark:text-black dark:bg-white'
+//       : 'text-black dark:text-white bg-transparent';
+//   return (
+//     <button onClick={onClick} disabled={disabled} className={`rounded-full px-4 py-2 ${selectedStyle}`}>
+//       <span>{text}</span>
+//     </button>
+//   );
+// }

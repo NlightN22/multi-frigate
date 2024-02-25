@@ -9,7 +9,7 @@ import { configureMonacoYaml } from "monaco-yaml";
 import Editor, { DiffEditor, useMonaco, loader, Monaco } from '@monaco-editor/react'
 import * as monaco from "monaco-editor";
 import CenterLoader from '../shared/components/CenterLoader';
-import RetryError from './RetryError';
+import RetryErrorPage from './RetryErrorPage';
 
 
 const HostConfigPage = () => {
@@ -74,7 +74,7 @@ const HostConfigPage = () => {
 
   if (configPending) return <CenterLoader />
 
-  if (configError) return <RetryError onRetry={refetch} />
+  if (configError) return <RetryErrorPage onRetry={refetch} />
 
   return (
     <Flex direction='column' h='100%' w='100%' justify='stretch'>

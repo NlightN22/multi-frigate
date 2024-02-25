@@ -31,6 +31,33 @@ export const unixTimeToDate = (unixTime: number) => {
 }
 
 /**
+ * @param date 
+ * @returns string '2024-02-25'
+ */
+export const dateToQueryString = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const formattedMonth = month < 10 ? `0${month}` : month;
+  const day = date.getDate();
+  const formattedDay = day < 10 ? `0${day}` : day;
+
+  return `${year}-${formattedMonth}-${formattedDay}`;
+}
+
+export const parseQueryDateToDate = (dateQuery: string): Date | null => {
+  const match = dateQuery.match(/(\d{4})-(\d{2})-(\d{2})/);
+
+  if (match) {
+    const year = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10) - 1; 
+    const day = parseInt(match[3], 10);
+    return new Date(year, month, day);
+  }
+
+  return null;
+}
+
+/**
  * @param day frigate format, e.g day: 2024-02-23
  * @param hour frigate format, e.g hour: 22
  * @returns [start: unixTimeStart, end: unixTimeEnd]
@@ -210,14 +237,14 @@ interface DurationToken {
  * @param end_time: number|null - Unix timestamp for end time
  * @returns string - duration or 'In Progress' if end time is not provided
  */
-export const getDurationFromTimestamps = (start_time: number, end_time: number | undefined): string => {
+export const getDurationFromTimestamps = (start_time: number, end_time: number | undefined): string | undefined => {
   if (isNaN(start_time)) {
-    return 'Invalid start time';
+    return 
   }
   let duration = 'In Progress';
   if (end_time) {
     if (isNaN(end_time)) {
-      return 'Invalid end time';
+      return 
     }
     const start = fromUnixTime(start_time);
     const end = fromUnixTime(end_time);

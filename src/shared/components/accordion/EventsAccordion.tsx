@@ -1,13 +1,16 @@
-import { Accordion, Center, Text } from '@mantine/core';
+import { Accordion, Center, Group, Loader, Text } from '@mantine/core';
 import { observer } from 'mobx-react-lite';
 import React, { useContext, useEffect, useState } from 'react';
 import { Context } from '../../..';
 import { useQuery } from '@tanstack/react-query';
-import { frigateQueryKeys, proxyApi } from '../../../services/frigate.proxy/frigate.api';
+import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { getEventsQuerySchema } from '../../../services/frigate.proxy/frigate.schema';
 import PlayControl from './PlayControl';
-import VideoPlayer from '../frigate/VideoPlayer';
-import { formatUnixTimestampToDateTime, getDurationFromTimestamps, getUnixTime, unixTimeToDate } from '../frigate/dateUtil';
+import VideoPlayer from '../players/VideoPlayer';
+import { getDurationFromTimestamps, getUnixTime, unixTimeToDate } from '../../utils/dateUtil';
+import RetryError from '../RetryError';
+import { strings } from '../../strings/strings';
+import { EventFrigate } from '../../../types/event';
 
 /**
  * @param day frigate format, e.g day: 2024-02-23
@@ -31,8 +34,6 @@ interface EventsAccordionProps {
 const EventsAccordion = observer(({
     day,
     hour,
-    cameraName,
-    hostName,
     // TODO labels, score
 }: EventsAccordionProps) => {
     const { recordingsStore: recStore } = useContext(Context)
@@ -40,17 +41,17 @@ const EventsAccordion = observer(({
     const [openedValue, setOpenedValue] = useState<string>()
     const [playerUrl, setPlayerUrl] = useState<string>()
 
-    const inHostName = hostName || recStore.recordToPlay.hostName
-    const inCameraName = cameraName || recStore.recordToPlay.cameraName
-    const isRequiredParams = inCameraName && inHostName
+    const inHost = recStore.selectedHost
+    const inCamera = recStore.selectedCamera
+    const isRequiredParams = inHost && inCamera
     const { data, isPending, isError, refetch } = useQuery({
-        queryKey: [frigateQueryKeys.getEvents, day, hour, inCameraName, inHostName],
+        queryKey: [frigateQueryKeys.getEvents, inHost, inCamera, day, hour],
         queryFn: () => {
             if (!isRequiredParams) return null
             const [startTime, endTime] = getUnixTime(day, hour)
             const parsed = getEventsQuerySchema.safeParse({
-                hostName: inHostName,
-                camerasName: [inCameraName],
+                hostName: mapHostToHostname(inHost),
+                camerasName: [inCamera.name],
                 after: startTime,
                 before: endTime,
                 hasClip: true,
@@ -78,8 +79,8 @@ const EventsAccordion = observer(({
     useEffect(() => {
         if (openVideoPlayer) {
             console.log('openVideoPlayer', openVideoPlayer)
-            if (openVideoPlayer && inHostName) {
-                const url = proxyApi.eventURL(inHostName, openVideoPlayer)
+            if (openVideoPlayer && inHost) {
+                const url = proxyApi.eventURL(mapHostToHostname(inHost), openVideoPlayer)
                 console.log('GET EVENT URL: ', url)
                 setPlayerUrl(url)
             }
@@ -88,8 +89,8 @@ const EventsAccordion = observer(({
         }
     }, [openVideoPlayer])
 
-    if (isPending) return <Center><Text>Loading...</Text></Center>
-    if (isError) return <Center><Text>Loading error</Text></Center>
+    if (isPending) return <Center><Loader /></Center>
+    if (isError) return <RetryError onRetry={refetch} />
     if (!data || data.length < 1) return <Center><Text>Not have events at that period</Text></Center>
 
     const handleOpenPlayer = (eventId: string) => {
@@ -111,6 +112,20 @@ const EventsAccordion = observer(({
         setOpenVideoPlayer(undefined)
     }
 
+    const eventLabel = (event: EventFrigate) => {
+        const time = unixTimeToDate(event.start_time)
+        const duration = getDurationFromTimestamps(event.start_time, event.end_time)
+        return (
+            <Group>
+                <Text>{strings.player.object}: {event.label}</Text>
+                <Text>{time}</Text>
+                {duration ?
+                    <Text>{duration}</Text>
+                    : <></>}
+            </Group>
+        )
+    }
+
     return (
         <Accordion
             variant='separated'
@@ -118,21 +133,25 @@ const EventsAccordion = observer(({
             value={openedValue}
             onChange={handleClick}
         >
-            {data.slice(0, 5).map(event => (
+            {data.map(event => (
                 <Accordion.Item key={event.id + 'Item'} value={event.id}>
                     <Accordion.Control key={event.id + 'Control'}>
                         <PlayControl
-                            label={unixTimeToDate(event.start_time)}
+                            label={eventLabel(event)}
                             value={event.id}
                             openVideoPlayer={openVideoPlayer}
                             onClick={handleOpenPlayer} />
                     </Accordion.Control>
                     <Accordion.Panel key={event.id + 'Panel'}>
                         {openVideoPlayer === event.id && playerUrl ? <VideoPlayer videoUrl={playerUrl} /> : <></>}
-                        <Text>Camera: {event.camera}</Text>
-                        <Text>Label: {event.label}</Text>
-                        <Text>Start: {unixTimeToDate(event.start_time)}</Text>
-                        <Text>Duration: {getDurationFromTimestamps(event.start_time, event.end_time)}</Text>
+                        <Group mt='1rem'>
+                            <Text>{strings.camera}: {event.camera}</Text>
+                            <Text>{strings.player.object}: {event.label}</Text>
+                        </Group>
+                        <Group>
+                            <Text>{strings.player.startTime}: {unixTimeToDate(event.start_time)}</Text>
+                            <Text>{strings.player.duration}: {getDurationFromTimestamps(event.start_time, event.end_time)}</Text>
+                        </Group>
                     </Accordion.Panel>
                 </Accordion.Item>
             ))}

@@ -1,83 +1,85 @@
-import { FunctionComponent, useEffect, useMemo, useState } from 'react';
+// import { FunctionComponent, useEffect, useMemo, useState } from 'react';
 
-interface IProp {
-  /** The time to calculate time-ago from */
-  time: Date;
-  /** OPTIONAL: overwrite current time */
-  currentTime?: Date;
-  /** OPTIONAL: boolean that determines whether to show the time-ago text in dense format */
-  dense?: boolean;
-  /** OPTIONAL: set custom refresh interval in milliseconds, default 1000 (1 sec) */
-  refreshInterval?: number;
-}
+// interface IProp {
+//   /** The time to calculate time-ago from */
+//   time: Date;
+//   /** OPTIONAL: overwrite current time */
+//   currentTime?: Date;
+//   /** OPTIONAL: boolean that determines whether to show the time-ago text in dense format */
+//   dense?: boolean;
+//   /** OPTIONAL: set custom refresh interval in milliseconds, default 1000 (1 sec) */
+//   refreshInterval?: number;
+// }
 
-type TimeUnit = {
-  unit: string;
-  full: string;
-  value: number;
-};
+export {}
 
-const timeAgo = ({ time, currentTime = new Date(), dense = false }: IProp): string => {
-  if (typeof time !== 'number' || time < 0) return 'Invalid Time Provided';
+// type TimeUnit = {
+//   unit: string;
+//   full: string;
+//   value: number;
+// };
 
-  const pastTime: Date = new Date(time);
-  const elapsedTime: number = currentTime.getTime() - pastTime.getTime();
+// const timeAgo = ({ time, currentTime = new Date(), dense = false }: IProp): string => {
+//   if (typeof time !== 'number' || time < 0) return 'Invalid Time Provided';
 
-  const timeUnits: TimeUnit[] = [
-    { unit: 'yr', full: 'year', value: 31536000 },
-    { unit: 'mo', full: 'month', value: 0 },
-    { unit: 'd', full: 'day', value: 86400 },
-    { unit: 'h', full: 'hour', value: 3600 },
-    { unit: 'm', full: 'minute', value: 60 },
-    { unit: 's', full: 'second', value: 1 },
-  ];
+//   const pastTime: Date = new Date(time);
+//   const elapsedTime: number = currentTime.getTime() - pastTime.getTime();
 
-  const elapsed: number = elapsedTime / 1000;
-  if (elapsed < 10) {
-    return 'just now';
-  }
+//   const timeUnits: TimeUnit[] = [
+//     { unit: 'yr', full: 'year', value: 31536000 },
+//     { unit: 'mo', full: 'month', value: 0 },
+//     { unit: 'd', full: 'day', value: 86400 },
+//     { unit: 'h', full: 'hour', value: 3600 },
+//     { unit: 'm', full: 'minute', value: 60 },
+//     { unit: 's', full: 'second', value: 1 },
+//   ];
 
-  for (let i = 0; i < timeUnits.length; i++) {
-    // if months
-    if (i === 1) {
-      // Get the month and year for the time provided
-      const pastMonth = pastTime.getUTCMonth();
-      const pastYear = pastTime.getUTCFullYear();
+//   const elapsed: number = elapsedTime / 1000;
+//   if (elapsed < 10) {
+//     return 'just now';
+//   }
 
-      // get current month and year
-      const currentMonth = currentTime.getUTCMonth();
-      const currentYear = currentTime.getUTCFullYear();
+//   for (let i = 0; i < timeUnits.length; i++) {
+//     // if months
+//     if (i === 1) {
+//       // Get the month and year for the time provided
+//       const pastMonth = pastTime.getUTCMonth();
+//       const pastYear = pastTime.getUTCFullYear();
 
-      let monthDiff = (currentYear - pastYear) * 12 + (currentMonth - pastMonth);
+//       // get current month and year
+//       const currentMonth = currentTime.getUTCMonth();
+//       const currentYear = currentTime.getUTCFullYear();
 
-      // check if the time provided is the previous month but not exceeded 1 month ago.
-      if (currentTime.getUTCDate() < pastTime.getUTCDate()) {
-        monthDiff--;
-      }
+//       let monthDiff = (currentYear - pastYear) * 12 + (currentMonth - pastMonth);
 
-      if (monthDiff > 0) {
-        const unitAmount = monthDiff;
-        return `${unitAmount}${dense ? timeUnits[i].unit : ` ${timeUnits[i].full}`}${dense ? '' : 's'} ago`;
-      }
-    } else if (elapsed >= timeUnits[i].value) {
-      const unitAmount: number = Math.floor(elapsed / timeUnits[i].value);
-      return `${unitAmount}${dense ? timeUnits[i].unit : ` ${timeUnits[i].full}`}${dense ? '' : 's'} ago`;
-    }
-  }
-  return 'Invalid Time';
-};
+//       // check if the time provided is the previous month but not exceeded 1 month ago.
+//       if (currentTime.getUTCDate() < pastTime.getUTCDate()) {
+//         monthDiff--;
+//       }
 
-const TimeAgo: FunctionComponent<IProp> = ({ refreshInterval = 1000, ...rest }): JSX.Element => {
-  const [currentTime, setCurrentTime] = useState<Date>(new Date());
-  useEffect(() => {
-    const intervalId: NodeJS.Timeout = setInterval(() => {
-      setCurrentTime(new Date());
-    }, refreshInterval);
-    return () => clearInterval(intervalId);
-  }, [refreshInterval]);
+//       if (monthDiff > 0) {
+//         const unitAmount = monthDiff;
+//         return `${unitAmount}${dense ? timeUnits[i].unit : ` ${timeUnits[i].full}`}${dense ? '' : 's'} ago`;
+//       }
+//     } else if (elapsed >= timeUnits[i].value) {
+//       const unitAmount: number = Math.floor(elapsed / timeUnits[i].value);
+//       return `${unitAmount}${dense ? timeUnits[i].unit : ` ${timeUnits[i].full}`}${dense ? '' : 's'} ago`;
+//     }
+//   }
+//   return 'Invalid Time';
+// };
 
-  const timeAgoValue = useMemo(() => timeAgo({ currentTime, ...rest }), [currentTime, rest]);
+// const TimeAgo: FunctionComponent<IProp> = ({ refreshInterval = 1000, ...rest }): JSX.Element => {
+//   const [currentTime, setCurrentTime] = useState<Date>(new Date());
+//   useEffect(() => {
+//     const intervalId: NodeJS.Timeout = setInterval(() => {
+//       setCurrentTime(new Date());
+//     }, refreshInterval);
+//     return () => clearInterval(intervalId);
+//   }, [refreshInterval]);
 
-  return <span>{timeAgoValue}</span>;
-};
-export default TimeAgo;
+//   const timeAgoValue = useMemo(() => timeAgo({ currentTime, ...rest }), [currentTime, rest]);
+
+//   return <span>{timeAgoValue}</span>;
+// };
+// export default TimeAgo;

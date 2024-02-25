@@ -5,7 +5,8 @@ import { useQuery } from '@tanstack/react-query';
 import { frigateQueryKeys, frigateApi } from '../services/frigate.proxy/frigate.api';
 import { Context } from '..';
 import CenterLoader from '../shared/components/CenterLoader';
-import RetryError from '../pages/RetryError';
+import RetryErrorPage from '../pages/RetryErrorPage';
+import { strings } from '../shared/strings/strings';
 const CameraAccordion = lazy(() => import('../shared/components/accordion/CameraAccordion'));
 
 
@@ -39,14 +40,14 @@ const SelectedHostList = ({
     }
 
     if (hostPending) return <CenterLoader />
-    if (hostError) return <RetryError onRetry={handleRetry} />
+    if (hostError) return <RetryErrorPage onRetry={handleRetry} />
 
     if (!host || host.cameras.length < 1) return null
 
     const cameras = host.cameras.slice(0, 2).map(camera => {
         return (
             <Accordion.Item key={camera.id + 'Item'} value={camera.id}>
-                <Accordion.Control key={camera.id + 'Control'}>{camera.name}</Accordion.Control>
+                <Accordion.Control key={camera.id + 'Control'}>{strings.camera}: {camera.name}</Accordion.Control>
                 <Accordion.Panel key={camera.id + 'Panel'}>
                     {openCameraId === camera.id && (
                         <Suspense>
@@ -60,7 +61,7 @@ const SelectedHostList = ({
 
     return (
         <Flex w='100%' h='100%' direction='column' align='center'>
-            <Text>{host.name}</Text>
+            <Text>{strings.host}: {host.name}</Text>
             <Accordion
                 mt='1rem'
                 variant='separated'

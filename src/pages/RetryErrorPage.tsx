@@ -6,11 +6,11 @@ import { useNavigate } from 'react-router-dom';
 import { ExclamationCogWheel } from '../shared/components/svg/ExclamationCogWheel';
 import { Context } from '..';
 
-interface RetryErrorProps {
+interface RetryErrorPageProps {
     onRetry?: () => void
 }
 
-const RetryError = ({ onRetry }: RetryErrorProps) => {
+const RetryErrorPage = ({ onRetry }: RetryErrorPageProps) => {
     const navigate = useNavigate()
 
     const { sideBarsStore } = useContext(Context)
@@ -48,4 +48,4 @@ const RetryError = ({ onRetry }: RetryErrorProps) => {
     );
 };
 
-export default RetryError;
+export default RetryErrorPage;

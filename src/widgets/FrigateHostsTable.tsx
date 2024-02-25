@@ -61,9 +61,9 @@ const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedC
     }
 
     const headTitle = [
-        { propertyName: 'name', title: strings.host.name },
-        { propertyName: 'host', title: strings.host.url },
-        { propertyName: 'enabled', title: strings.host.enabled },
+        { propertyName: 'name', title: strings.hostArr.name },
+        { propertyName: 'host', title: strings.hostArr.url },
+        { propertyName: 'enabled', title: strings.hostArr.enabled },
         { title: '', sorting: false },
     ]
 

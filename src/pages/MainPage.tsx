@@ -8,11 +8,12 @@ import { observer } from 'mobx-react-lite'
 import CenterLoader from '../shared/components/CenterLoader';
 import { useQuery } from '@tanstack/react-query';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
-import RetryError from './RetryError';
+import RetryErrorPage from './RetryErrorPage';
 import CameraCard from '../shared/components/CameraCard';
 
-const MainBody = observer(() => {
+const MainPage = () => {
     const { sideBarsStore } = useContext(Context)
+
     useEffect(() => {
         sideBarsStore.rightVisible = false
         sideBarsStore.setLeftChildren(null)
@@ -32,11 +33,11 @@ const MainBody = observer(() => {
 
     if (isPending) return <CenterLoader />
 
-    if (isError) return <RetryError onRetry={refetch} />
+    if (isError) return <RetryErrorPage onRetry={refetch} />
 
     const cards = () => {
-        // return cameras.filter(cam => cam.frigateHost?.host.includes('5001')).slice(0,1).map(camera => (
-        return cameras.map(camera => (
+        return cameras.filter(cam => cam.frigateHost?.host.includes('5000')).slice(0,25).map(camera => (
+        // return cameras.map(camera => (
             <CameraCard
                 key={camera.id}
                 camera={camera}
@@ -45,7 +46,7 @@ const MainBody = observer(() => {
     }
 
     return (
-        <Flex direction='column' h='100%'>
+        <Flex direction='column' h='100%' >
             <Flex justify='space-between' align='center' w='100%'>
                 <Group
                     w='25%'
@@ -63,13 +64,13 @@ const MainBody = observer(() => {
                     <ViewSelector state={viewState} onChange={handleToggleState} />
                 </Group>
             </Flex>
-            <Flex justify='center' h='100%' direction='column'>
+            <Flex  justify='center' h='100%' direction='column' >
                 <Grid mt='sm' justify="center" mb='sm' align='stretch'>
                     {cards()}
                 </Grid>
             </Flex>
         </Flex>
     );
-})
+}
 
-export default MainBody;
+export default observer(MainPage);

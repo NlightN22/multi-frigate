@@ -6,24 +6,25 @@ import { useQuery } from '@tanstack/react-query';
 import { Context } from '..';
 import { frigateQueryKeys, frigateApi } from '../services/frigate.proxy/frigate.api';
 import { host } from '../shared/env.const';
-import CogwheelLoader from '../shared/components/CogwheelLoader';
-import RetryError from '../pages/RetryError';
+import CogwheelLoader from '../shared/components/loaders/CogwheelLoader';
+import RetryErrorPage from '../pages/RetryErrorPage';
+import CenterLoader from '../shared/components/CenterLoader';
 
 interface SelectedCameraListProps {
-    cameraId: string,
+    // cameraId: string,
 }
 
 const SelectedCameraList = ({
-    cameraId,
+    // cameraId,
 }: SelectedCameraListProps) => {
 
     const { recordingsStore: recStore } = useContext(Context)
 
     const { data: camera, isPending: cameraPending, isError: cameraError, refetch: cameraRefetch } = useQuery({
-        queryKey: [frigateQueryKeys.getCameraWHost, cameraId],
+        queryKey: [frigateQueryKeys.getCameraWHost, recStore.selectedCamera?.id],
         queryFn: async () => {
-            if (cameraId) {
-                return frigateApi.getCameraWHost(cameraId)
+            if (recStore.selectedCamera) {
+                return frigateApi.getCameraWHost(recStore.selectedCamera.id)
             }
             return null
         }
@@ -33,14 +34,18 @@ const SelectedCameraList = ({
         cameraRefetch()
     }
 
-    if (cameraPending) return <CogwheelLoader />
-    if (cameraError) return <RetryError onRetry={handleRetry} />
+    if (cameraPending) return <CenterLoader />
+    if (cameraError) return <RetryErrorPage onRetry={handleRetry} />
 
     if (!camera?.frigateHost) return null
 
     return (
         <Flex w='100%' h='100%' direction='column' align='center'>
             <Text>{camera.frigateHost.name} / {camera.name}</Text>
+            {
+                
+
+            }
             <Suspense>
                 <CameraAccordion camera={camera} host={camera.frigateHost} />
             </Suspense>

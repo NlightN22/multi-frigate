@@ -1,6 +1,6 @@
 import { Button, Flex, Text } from '@mantine/core';
 import React, { useContext, useEffect, useState } from 'react';
-import CogWheelWithText from '../shared/components/CogWheelWithText';
+import CogWheelWithText from '../shared/components/loaders/CogWheelWithText';
 import { strings } from '../shared/strings/strings';
 import { redirect, useNavigate } from 'react-router-dom';
 import { routesPath } from '../router/routes.path';

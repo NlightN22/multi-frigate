@@ -15,7 +15,7 @@ export class RecordingsStore {
         makeAutoObservable(this)
     }
 
-    recordingSchema = z.object({
+    private _recordingSchema = z.object({
         hostName: z.string(),
         cameraName: z.string(),
         hour: z.string(),
@@ -31,7 +31,7 @@ export class RecordingsStore {
         this._recordToPlay = value
     }
     getFullRecordForPlay(value: RecordForPlay) {
-        return this.recordingSchema.safeParse(value)
+        return this._recordingSchema.safeParse(value)
     }
 
     private _hostIdParam: string | undefined
@@ -63,6 +63,11 @@ export class RecordingsStore {
     public set selectedCamera(value: GetCameraWHostWConfig | undefined) {
         this._selectedCamera = value
     }
-    selectedStartDay: string = ''
-    selectedEndDay: string = ''
+    private _selectedRange: [Date | null, Date | null] = [null, null]
+    public get selectedRange(): [Date | null, Date | null] {
+        return this._selectedRange
+    }
+    public set selectedRange(value: [Date | null, Date | null]) {
+        this._selectedRange = value
+    }
 }
