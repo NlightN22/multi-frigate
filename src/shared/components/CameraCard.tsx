@@ -57,9 +57,7 @@ const CameraCard = ({
         <Grid.Col md={6} lg={3} p='0.2rem'>
             <Card h='100%' radius="lg" padding='0.5rem' className={classes.mainCard}>
                 <Text align='center' size='md' className={classes.headText} >{camera.name} / {camera.frigateHost?.name}</Text>
-                <Flex direction='column' className={classes.cameraImage}>
-                    <AutoUpdatedImage onClick={handleOpenLiveView} enabled={camera.config?.enabled} imageUrl={imageUrl} />
-                </Flex>
+                <AutoUpdatedImage onClick={handleOpenLiveView} enabled={camera.config?.enabled} imageUrl={imageUrl} />
                 <Group
                     className={classes.bottomGroup}>
                     <Flex justify='space-evenly' mt='0.5rem' w='100%'>

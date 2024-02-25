@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { CameraConfig } from "../../types/frigateConfig";
-import { Flex, Text } from "@mantine/core";
+import { Flex, Text, Image } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { frigateApi, proxyApi } from "../../services/frigate.proxy/frigate.api";
 import { useIntersection } from "@mantine/hooks";
@@ -19,7 +19,7 @@ const AutoUpdatedImage = ({
   enabled,
   ...rest
 }: AutoUpdatedImageProps) => {
-  const { ref, entry } = useIntersection({threshold: 0.1,})
+  const { ref, entry } = useIntersection({ threshold: 0.1, })
   const isVisible = entry?.isIntersecting
 
   const { data: imageBlob, refetch, isPending, isError } = useQuery({
@@ -52,14 +52,12 @@ const AutoUpdatedImage = ({
   const image = URL.createObjectURL(imageBlob!)
 
   return (
-    <>
-      {enabled ? <img ref={ref} src={image} alt="Dynamic Content" {...rest}/>
+    <Flex direction="column" justify="center" h="100%">
+      {enabled ? <Image ref={ref} src={image} alt="Dynamic Content" {...rest} />
         :
-        <Flex direction="column" justify="center" h="100%">
-          <Text align="center">Camera is disabled in config, no stream or snapshot available!</Text>
-        </Flex>
+        <Text align="center">Camera is disabled in config, no stream or snapshot available!</Text>
       }
-    </>)
+    </Flex>)
 };
 
 export default AutoUpdatedImage

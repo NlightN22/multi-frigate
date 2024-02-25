@@ -10,9 +10,13 @@ import { useQuery } from '@tanstack/react-query';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import RetryErrorPage from './RetryErrorPage';
 import CameraCard from '../shared/components/CameraCard';
+import { useMediaQuery } from '@mantine/hooks';
+import { dimensions } from '../shared/dimensions/dimensions';
 
 const MainPage = () => {
     const { sideBarsStore } = useContext(Context)
+    const isMobile = useMediaQuery(dimensions.mobileSize)
+
 
     useEffect(() => {
         sideBarsStore.rightVisible = false
@@ -36,8 +40,8 @@ const MainPage = () => {
     if (isError) return <RetryErrorPage onRetry={refetch} />
 
     const cards = () => {
-        return cameras.filter(cam => cam.frigateHost?.host.includes('5000')).slice(0,25).map(camera => (
-        // return cameras.map(camera => (
+        return cameras.filter(cam => cam.frigateHost?.host.includes('5000')).slice(0, 25).map(camera => (
+            // return cameras.map(camera => (
             <CameraCard
                 key={camera.id}
                 camera={camera}
@@ -46,26 +50,17 @@ const MainPage = () => {
     }
 
     return (
-        <Flex direction='column' h='100%' >
+        <Flex direction='column' h='100%' w='100%' >
             <Flex justify='space-between' align='center' w='100%'>
-                <Group
-                    w='25%'
-                >
-                </Group>
-                <Group
-                    w='50%'
+                <Flex w='100%'
                     style={{
                         justifyContent: 'center',
                     }}
-                ><HeadSearch /></Group>
-                <Group
-                    w='25%'
-                    position="right">
-                    <ViewSelector state={viewState} onChange={handleToggleState} />
-                </Group>
+                ><HeadSearch /></Flex>
+                {/* <ViewSelector state={viewState} onChange={handleToggleState} /> */}
             </Flex>
-            <Flex  justify='center' h='100%' direction='column' >
-                <Grid mt='sm' justify="center" mb='sm' align='stretch'>
+            <Flex justify='center' h='100%' direction='column' w='100%' >
+                <Grid mt='sm' justify="center" mb='sm' align='stretch' mr='0.5rem'>
                     {cards()}
                 </Grid>
             </Flex>

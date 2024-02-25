@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AppShell, useMantineTheme, } from "@mantine/core"
 import { HeaderAction } from './widgets/header/HeaderAction';
-import { testHeaderLinks } from './widgets/header/header.links';
+import { headerLinks } from './widgets/header/header.links';
 import AppRouter from './router/AppRouter';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Context } from '.';
@@ -38,7 +38,7 @@ const AppBody = () => {
             <AppShell
                 styles={{
                     main: {
-                        paddingLeft: !leftSideBar ? "3em" : '',
+                        paddingLeft: !leftSideBar ? "1em" : '',
                         paddingRight: !rightSideBar ? '3em' : '',
                         background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : undefined,
                     },
@@ -47,7 +47,7 @@ const AppBody = () => {
                 asideOffsetBreakpoint="sm"
 
                 header={
-                    <HeaderAction links={testHeaderLinks.links} />
+                    <HeaderAction links={headerLinks} />
                 }
                 aside={
                     <SideBar isHidden={rightSideBarIsHidden} side="right" />
