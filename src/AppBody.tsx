@@ -6,6 +6,7 @@ import AppRouter from './router/AppRouter';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Context } from '.';
 import SideBar from './shared/components/SideBar';
+import { observer } from 'mobx-react-lite';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -16,9 +17,7 @@ const queryClient = new QueryClient({
 })
 
 const AppBody = () => {
-    useEffect(() => {
-        console.log("render Main")
-    })
+    const { sideBarsStore } = useContext(Context)
 
     const [leftSideBar, setLeftSidebar] = useState(false)
     const [rightSideBar, setRightSidebar] = useState(false)
@@ -33,13 +32,14 @@ const AppBody = () => {
 
     const theme = useMantineTheme();
 
+    console.log("render Main")
     return (
         <QueryClientProvider client={queryClient}>
             <AppShell
                 styles={{
                     main: {
-                        paddingLeft: !leftSideBar ? "1em" : '',
-                        paddingRight: !rightSideBar ? '3em' : '',
+                        paddingLeft: !leftSideBar ? "1rem" : '',
+                        paddingRight: !rightSideBar ? '1rem' : '',
                         background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : undefined,
                     },
                 }}
@@ -50,7 +50,8 @@ const AppBody = () => {
                     <HeaderAction links={headerLinks} />
                 }
                 aside={
-                    <SideBar isHidden={rightSideBarIsHidden} side="right" />
+                    !sideBarsStore.rightVisible ? <></> :
+                    <SideBar isHidden = { rightSideBarIsHidden } side = "right" />  
                 }
             >
                 <AppRouter />
@@ -59,4 +60,4 @@ const AppBody = () => {
     )
 };
 
-export default AppBody;
+export default observer(AppBody);

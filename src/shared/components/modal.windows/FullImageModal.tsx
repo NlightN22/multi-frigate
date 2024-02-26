@@ -2,11 +2,11 @@ import { Carousel, Embla, useAnimationOffsetEffect } from '@mantine/carousel';
 import { Modal, createStyles, getStylesRef, rem } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import React, { useContext, useState } from 'react';
-import CardCarousel from './grid.aps/CardCarousel';
-import { Context } from '../..';
+import CardCarousel from '../CardCarousel';
+import { Context } from '../../..';
 import { observer } from 'mobx-react-lite';
 import { v4 as uuidv4 } from 'uuid'
-import { dimensions } from '../dimensions/dimensions';
+import { dimensions } from '../../dimensions/dimensions';
 
 // change to http://react-responsive-carousel.js.org/
 const useStyles = createStyles((theme) => ({

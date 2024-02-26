@@ -13,7 +13,7 @@ import { dateToQueryString, parseQueryDateToDate } from '../shared/utils/dateUti
 import SelecteDayList from '../widgets/SelecteDayList';
 import { useDebouncedValue } from '@mantine/hooks';
 import CogwheelLoader from '../shared/components/loaders/CogwheelLoader';
-import CenterLoader from '../shared/components/CenterLoader';
+import CenterLoader from '../shared/components/loaders/CenterLoader';
 
 
 export const recordingsPageQuery = {
@@ -54,28 +54,31 @@ const RecordingsPage = observer(() => {
       recStore.selectedRange = [parsedStartDay, parsedEndDay]
     }
     setFirstRender(true)
-    return () => sideBarsStore.setRightChildren(null)
+    return () => {
+      sideBarsStore.setRightChildren(null)
+      sideBarsStore.rightVisible = false
+    }
   }, [])
 
   useEffect(() => {
-    setHostId(recStore.selectedHost?.id || '')
-    if (recStore.selectedHost) {
-      queryParams.set(recordingsPageQuery.hostId, recStore.selectedHost.id)
+    setHostId(recStore.filteredHost?.id || '')
+    if (recStore.filteredHost) {
+      queryParams.set(recordingsPageQuery.hostId, recStore.filteredHost.id)
     } else {
       queryParams.delete(recordingsPageQuery.hostId)
     }
     navigate({ pathname: location.pathname, search: queryParams.toString() });
-  }, [recStore.selectedHost])
+  }, [recStore.filteredHost])
 
   useEffect(() => {
-    setCameraId(recStore.selectedCamera?.id || '')
-    if (recStore.selectedCamera) {
-      queryParams.set(recordingsPageQuery.cameraId, recStore.selectedCamera?.id)
+    setCameraId(recStore.filteredCamera?.id || '')
+    if (recStore.filteredCamera) {
+      queryParams.set(recordingsPageQuery.cameraId, recStore.filteredCamera?.id)
     } else {
       queryParams.delete(recordingsPageQuery.cameraId)
     }
     navigate({ pathname: location.pathname, search: queryParams.toString() });
-  }, [recStore.selectedCamera])
+  }, [recStore.filteredCamera])
 
   useEffect(() => {
     setPeriod(recStore.selectedRange)

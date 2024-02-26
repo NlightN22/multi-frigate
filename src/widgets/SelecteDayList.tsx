@@ -5,7 +5,7 @@ import { dateToQueryString, getResolvedTimeZone } from '../shared/utils/dateUtil
 import { Context } from '..';
 import { Flex, Text } from '@mantine/core';
 import RetryErrorPage from '../pages/RetryErrorPage';
-import CenterLoader from '../shared/components/CenterLoader';
+import CenterLoader from '../shared/components/loaders/CenterLoader';
 import { observer } from 'mobx-react-lite';
 import DayAccordion from '../shared/components/accordion/DayAccordion';
 
@@ -18,11 +18,11 @@ const SelecteDayList = ({
     day
 }: SelecteDayListProps) => {
     const { recordingsStore: recStore } = useContext(Context)
-    const camera = recStore.selectedCamera
-    const host = recStore.selectedHost
+    const camera = recStore.filteredCamera
+    const host = recStore.filteredHost
 
     const { data, isPending, isError, refetch } = useQuery({
-        queryKey: [frigateQueryKeys.getRecordingsSummary, recStore.selectedCamera?.id, day],
+        queryKey: [frigateQueryKeys.getRecordingsSummary, recStore.filteredCamera?.id, day],
         queryFn: async () => {
             if (camera && host) {
                 const stringDay = dateToQueryString(day)
@@ -35,7 +35,7 @@ const SelecteDayList = ({
     })
 
     const handleRetry = () => {
-        if (recStore.selectedHost) refetch()
+        if (recStore.filteredHost) refetch()
     }
 
     if (isPending) return <CenterLoader />

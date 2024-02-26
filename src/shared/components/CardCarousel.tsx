@@ -1,7 +1,7 @@
 import { Carousel } from '@mantine/carousel';
 import { AspectRatio, Image, createStyles, Text } from '@mantine/core';
 import React from 'react';
-import ImageWithPlaceHolder from '../ImageWithPlaceHolder';
+import ImageWithPlaceHolder from './images/ImageWithPlaceHolder';
 
 interface CardCarouselProps {
     image: string

@@ -16,12 +16,12 @@ const RecordingsFiltersRightSide = ({
     return (
         <>
             <HostSelectFilter />
-            {recStore.selectedHost ?
+            {recStore.filteredHost ?
                 <CameraSelectFilter 
-                selectedHostId={recStore.selectedHost.id} />
+                selectedHostId={recStore.filteredHost.id} />
                 : <></>
             }
-            {recStore.selectedCamera ?
+            {recStore.filteredCamera ?
                 <DateRangeSelectFilter />
                 : <></>
             }

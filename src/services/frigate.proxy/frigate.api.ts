@@ -115,8 +115,9 @@ export const proxyApi = {
     recordingURL: (hostName: string, cameraName: string, timezone: string, day: string, hour: string) => {//  day:2024-02-23 hour:19
         const parts = day.split('-')
         const date = `${parts[0]}-${parts[1]}/${parts[2]}/${hour}`
-        return `${proxyURL.protocol}//${proxyURL.host}/proxy/${hostName}/vod/${date}/${cameraName}/${timezone}/master.m3u8` // todo add Date/Time
+        return `${proxyURL.protocol}//${proxyURL.host}/proxy/${hostName}/vod/${date}/${cameraName}/${timezone}/master.m3u8`
     },
+    // linkURL: (hostName: string, link: string) => `${proxyURL.protocol}//${proxyURL.host}/proxy/${hostName}${link}`, TODO delete
 }
 
 export const mapCamerasFromConfig = (config: FrigateConfig): string[] => {

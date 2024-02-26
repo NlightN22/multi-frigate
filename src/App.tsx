@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 import { hasAuthParams, useAuth } from 'react-oidc-context';
-import CenterLoader from './shared/components/CenterLoader';
+import CenterLoader from './shared/components/loaders/CenterLoader';
 import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import { useColorScheme } from '@mantine/hooks';
 import { getCookie, setCookie } from 'cookies-next';
 import { BrowserRouter } from 'react-router-dom';
-import FullImageModal from './shared/components/FullImageModal';
 import AppBody from './AppBody';
-import FullProductModal from './shared/components/FullProductModal';
 import Forbidden from './pages/403';
 import { QueryClient } from '@tanstack/react-query';
 
@@ -64,8 +62,6 @@ function App() {
           }}
         >
           <BrowserRouter>
-            <FullImageModal />
-            <FullProductModal />
             <AppBody />
           </BrowserRouter>
         </MantineProvider >

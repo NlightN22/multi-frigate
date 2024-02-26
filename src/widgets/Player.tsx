@@ -6,7 +6,7 @@ import { LivePlayerMode } from '../types/live';
 import useCameraActivity from '../hooks/use-camera-activity';
 import useCameraLiveMode from '../hooks/use-camera-live-mode';
 import WebRtcPlayer from '../shared/components/players/WebRTCPlayer';
-import { Flex } from '@mantine/core';
+import { AspectRatio, Flex } from '@mantine/core';
 import { frigateApi, proxyApi } from '../services/frigate.proxy/frigate.api';
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
 
@@ -26,7 +26,7 @@ const Player = ({
   const hostNameWPort = camera.frigateHost ? new URL(camera.frigateHost.host).host : ''
   const wsUrl = proxyApi.cameraWsURL(hostNameWPort, camera.name)
   const cameraConfig = camera.config!
-  
+
   const { activeMotion, activeAudio, activeTracking } =
     useCameraActivity(cameraConfig);
 
@@ -88,15 +88,13 @@ const Player = ({
     player = (
       <JSMpegPlayer
         wsUrl={wsUrl}
+        cameraWidth={camera.config?.detect.width}
+        cameraHeight={camera.config?.detect.height}
       />
     );
   }
 
-  return (
-    <Flex w='100%' h='100%' justify='center'>
-      {player}
-      </Flex>
-  );
+  return player ? player : null
 }
 
 export default Player;

@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx"
 import { sleep } from "../../utils/async.sleep"
-import { ServerFilter } from "./filters.interface"
+import { ServerFilter } from "./toDel.filters.interface"
 import { addItem, removeFilter, removeItem } from "../../utils/array.helper"
 import { valueIsNotEmpty } from "../../utils/any.helper"
 

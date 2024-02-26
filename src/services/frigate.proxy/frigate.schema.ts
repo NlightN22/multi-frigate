@@ -20,6 +20,7 @@ export const getFrigateHostSchema = z.object({
     name: z.string(),
     host: z.string(),
     enabled: z.boolean(),
+    state: z.boolean().nullable().optional()
 });
 
 export const getFrigateHostWConfigSchema = z.object({

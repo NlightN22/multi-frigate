@@ -1,9 +1,9 @@
 import { ActionIcon, CloseButton, Flex, Modal, NumberInput, TextInput, Tooltip, createStyles, } from '@mantine/core';
 import { getHotkeyHandler, useMediaQuery } from '@mantine/hooks';
 import React, { ReactEventHandler, useState, FocusEvent, useRef, Ref } from 'react';
-import { strings } from '../strings/strings';
+import { strings } from '../../strings/strings';
 import { IconAlertCircle, IconX } from '@tabler/icons-react';
-import { dimensions } from '../dimensions/dimensions';
+import { dimensions } from '../../dimensions/dimensions';
 
 const useStyles = createStyles((theme) => ({
     rightSection: {

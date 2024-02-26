@@ -8,23 +8,21 @@ import { frigateQueryKeys, frigateApi } from '../services/frigate.proxy/frigate.
 import { host } from '../shared/env.const';
 import CogwheelLoader from '../shared/components/loaders/CogwheelLoader';
 import RetryErrorPage from '../pages/RetryErrorPage';
-import CenterLoader from '../shared/components/CenterLoader';
+import CenterLoader from '../shared/components/loaders/CenterLoader';
 
 interface SelectedCameraListProps {
-    // cameraId: string,
 }
 
 const SelectedCameraList = ({
-    // cameraId,
 }: SelectedCameraListProps) => {
 
     const { recordingsStore: recStore } = useContext(Context)
 
     const { data: camera, isPending: cameraPending, isError: cameraError, refetch: cameraRefetch } = useQuery({
-        queryKey: [frigateQueryKeys.getCameraWHost, recStore.selectedCamera?.id],
+        queryKey: [frigateQueryKeys.getCameraWHost, recStore.filteredCamera?.id],
         queryFn: async () => {
-            if (recStore.selectedCamera) {
-                return frigateApi.getCameraWHost(recStore.selectedCamera.id)
+            if (recStore.filteredCamera) {
+                return frigateApi.getCameraWHost(recStore.filteredCamera.id)
             }
             return null
         }
@@ -42,12 +40,8 @@ const SelectedCameraList = ({
     return (
         <Flex w='100%' h='100%' direction='column' align='center'>
             <Text>{camera.frigateHost.name} / {camera.name}</Text>
-            {
-                
-
-            }
             <Suspense>
-                <CameraAccordion camera={camera} host={camera.frigateHost} />
+                <CameraAccordion />
             </Suspense>
         </Flex>
     )

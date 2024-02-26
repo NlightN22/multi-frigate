@@ -27,7 +27,7 @@ const CameraSelectFilter = ({
         if (!data) return
         if (recStore.cameraIdParam) {
             console.log('change camera by param')
-            recStore.selectedCamera = data.cameras.find( camera => camera.id === recStore.cameraIdParam)
+            recStore.filteredCamera = data.cameras.find( camera => camera.id === recStore.cameraIdParam)
             recStore.cameraIdParam = undefined
         }
     }, [isSuccess])
@@ -41,10 +41,10 @@ const CameraSelectFilter = ({
     const handleSelect = (value: string) => {
         const camera = data.cameras.find(camera => camera.id === value)
         if (!camera) {
-            recStore.selectedCamera = undefined
+            recStore.filteredCamera = undefined
             return
         }
-        recStore.selectedCamera = camera
+        recStore.filteredCamera = camera
     }
 
     console.log('CameraSelectFilter rendered')
@@ -55,8 +55,8 @@ const CameraSelectFilter = ({
             id='frigate-cameras'
             label={strings.selectCamera}
             spaceBetween='1rem'
-            value={recStore.selectedCamera?.id || ''}
-            defaultValue={recStore.selectedCamera?.id || ''}
+            value={recStore.filteredCamera?.id || ''}
+            defaultValue={recStore.filteredCamera?.id || ''}
             data={camerasItems}
             onChange={handleSelect}
         />

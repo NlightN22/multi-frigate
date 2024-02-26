@@ -12,15 +12,18 @@ import { strings } from '../../strings/strings';
 import { RecordSummary } from '../../../types/record';
 
 interface CameraAccordionProps {
-    camera: GetCameraWHostWConfig,
-    host: GetFrigateHost
+    // camera: GetCameraWHostWConfig,
+    // host: GetFrigateHost
 }
 
 const CameraAccordion = ({
-    camera,
-    host
+    // camera,
+    // host
 }: CameraAccordionProps) => {
     const { recordingsStore: recStore } = useContext(Context)
+
+    const camera = recStore.openedCamera || recStore.filteredCamera
+    const host = recStore.filteredHost
 
     const { data, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getRecordingsSummary, camera?.id],
@@ -32,20 +35,6 @@ const CameraAccordion = ({
             return null
         }
     })
-
-    const [openedDay, setOpenedDay] = useState<string | null>()
-
-    useEffect(() => {
-        if (openedDay) {
-            recStore.recordToPlay.cameraName = camera.name
-            const hostName = mapHostToHostname(host)
-            recStore.recordToPlay.hostName = hostName
-        }
-    }, [openedDay])
-
-    const handleClick = (value: string | null) => {
-        setOpenedDay(value)
-    }
 
     if (isPending) return <Center><Loader /></Center>
     if (isError) return <RetryError onRetry={refetch} />
@@ -83,7 +72,7 @@ const CameraAccordion = ({
     console.log('CameraAccordion rendered')
 
     return (
-        <Accordion variant='separated' radius="md" w='100%' onChange={handleClick}>
+        <Accordion variant='separated' radius="md" w='100%'>
             {days()}
         </Accordion>
     )

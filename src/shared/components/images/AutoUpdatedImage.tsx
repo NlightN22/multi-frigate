@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
-import { CameraConfig } from "../../types/frigateConfig";
+import { CameraConfig } from "../../../types/frigateConfig";
 import { Flex, Text, Image } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import { frigateApi, proxyApi } from "../../services/frigate.proxy/frigate.api";
+import { frigateApi, proxyApi } from "../../../services/frigate.proxy/frigate.api";
 import { useIntersection } from "@mantine/hooks";
-import CogwheelLoader from "./loaders/CogwheelLoader";
+import CogwheelLoader from "../loaders/CogwheelLoader";
 
 interface AutoUpdatedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   className?: string;

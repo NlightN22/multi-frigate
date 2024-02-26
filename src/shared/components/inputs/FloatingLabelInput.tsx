@@ -1,6 +1,6 @@
 import { TextInput, TextInputProps, createStyles } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import classes from './css/FloatingLabelInput.module.css';
+import classes from './FloatingLabelInput.module.css';
 
 interface FloatingLabelInputProps extends TextInputProps {
     value?: string,

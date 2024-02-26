@@ -13,6 +13,7 @@ import HostStoragePage from "../pages/HostStoragePage";
 import LiveCameraPage from "../pages/LiveCameraPage";
 import RecordingsPage from "../pages/RecordingsPage";
 import AccessSettings from "../pages/AccessSettings";
+import PlayRecordPage from "../pages/PlayRecordPage";
 
 interface IRoute {
     path: string,
@@ -55,6 +56,10 @@ export const routes: IRoute[] = [
     {
         path: routesPath.LIVE_PATH,
         component: <LiveCameraPage />,
+    },
+    {
+        path: routesPath.PLAYER_PATH,
+        component: <PlayRecordPage />,
     },
     {
         path: routesPath.MAIN_PATH,

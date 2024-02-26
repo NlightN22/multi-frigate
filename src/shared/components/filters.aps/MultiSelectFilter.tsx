@@ -1,7 +1,7 @@
 import { SystemProp, SpacingValue, Box, Flex, CloseButton, MultiSelect, SelectItem, MultiSelectProps, Text, Tooltip } from '@mantine/core';
 import React, { CSSProperties, useState } from 'react';
 import { strings } from '../../strings/strings';
-import CloseWithTooltip from '../CloseWithTooltip';
+import CloseWithTooltip from '../buttons/CloseWithTooltip';
 
 interface MultiSelectFilterProps {
     id: string

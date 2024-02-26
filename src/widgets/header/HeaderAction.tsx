@@ -3,10 +3,10 @@ import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import UserMenu from '../../shared/components/UserMenu';
 import { useAuth } from 'react-oidc-context';
 import { useNavigate } from 'react-router-dom';
-import ColorSchemeToggle from "../../shared/components/ColorSchemeToggle";
-import Logo from "../../shared/components/Logo";
+import ColorSchemeToggle from "../../shared/components/buttons/ColorSchemeToggle";
+import Logo from "../../shared/components/images/LogoImage";
 import { routesPath } from "../../router/routes.path";
-import DrawerMenu from "../../shared/components/DrawerMenu";
+import DrawerMenu from "../../shared/components/menu/DrawerMenu";
 
 const HEADER_HEIGHT = rem(60)
 

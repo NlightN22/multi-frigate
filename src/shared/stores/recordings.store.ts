@@ -23,13 +23,13 @@ export class RecordingsStore {
         timezone: z.string(),
     })
 
-    private _recordToPlay: RecordForPlay = {}
-    public get recordToPlay(): RecordForPlay {
-        return this._recordToPlay
-    }
-    public set recordToPlay(value: RecordForPlay) {
-        this._recordToPlay = value
-    }
+    // private _recordToPlay: RecordForPlay = {}
+    // public get recordToPlay(): RecordForPlay {
+    //     return this._recordToPlay
+    // }
+    // public set recordToPlay(value: RecordForPlay) {
+    //     this._recordToPlay = value
+    // }
     getFullRecordForPlay(value: RecordForPlay) {
         return this._recordingSchema.safeParse(value)
     }
@@ -49,19 +49,19 @@ export class RecordingsStore {
         this._cameraIdParam = value
     }
 
-    private _selectedHost: GetFrigateHost | undefined
-    public get selectedHost(): GetFrigateHost | undefined {
-        return this._selectedHost
+    private _filteredHost: GetFrigateHost | undefined
+    public get filteredHost(): GetFrigateHost | undefined {
+        return this._filteredHost
     }
-    public set selectedHost(value: GetFrigateHost | undefined) {
-        this._selectedHost = value
+    public set filteredHost(value: GetFrigateHost | undefined) {
+        this._filteredHost = value
     }
-    private _selectedCamera: GetCameraWHostWConfig | undefined
-    public get selectedCamera(): GetCameraWHostWConfig | undefined {
-        return this._selectedCamera
+    private _filteredCamera: GetCameraWHostWConfig | undefined
+    public get filteredCamera(): GetCameraWHostWConfig | undefined {
+        return this._filteredCamera
     }
-    public set selectedCamera(value: GetCameraWHostWConfig | undefined) {
-        this._selectedCamera = value
+    public set filteredCamera(value: GetCameraWHostWConfig | undefined) {
+        this._filteredCamera = value
     }
     private _selectedRange: [Date | null, Date | null] = [null, null]
     public get selectedRange(): [Date | null, Date | null] {
@@ -69,5 +69,13 @@ export class RecordingsStore {
     }
     public set selectedRange(value: [Date | null, Date | null]) {
         this._selectedRange = value
+    }
+
+    private _openedCamera: GetCameraWHostWConfig | undefined
+    public get openedCamera(): GetCameraWHostWConfig | undefined {
+        return this._openedCamera
+    }
+    public set openedCamera(value: GetCameraWHostWConfig | undefined) {
+        this._openedCamera = value
     }
 }

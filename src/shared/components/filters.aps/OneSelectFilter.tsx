@@ -1,6 +1,6 @@
 import { SelectItem, SystemProp, SpacingValue, SelectProps, Box, Flex, CloseButton, Text, Select } from '@mantine/core';
 import React, { CSSProperties } from 'react';
-import CloseWithTooltip from '../CloseWithTooltip';
+import CloseWithTooltip from '../buttons/CloseWithTooltip';
 import { strings } from '../../strings/strings';
 
 

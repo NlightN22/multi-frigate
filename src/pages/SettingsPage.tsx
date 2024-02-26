@@ -5,10 +5,10 @@ import {
     useQueryClient,
 } from '@tanstack/react-query'
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
-import CenterLoader from '../shared/components/CenterLoader';
+import CenterLoader from '../shared/components/loaders/CenterLoader';
 import RetryErrorPage from './RetryErrorPage';
 import { Button, Flex, Space } from '@mantine/core';
-import { FloatingLabelInput } from '../shared/components/FloatingLabelInput';
+import { FloatingLabelInput } from '../shared/components/inputs/FloatingLabelInput';
 import { strings } from '../shared/strings/strings';
 import { dimensions } from '../shared/dimensions/dimensions';
 import { useMediaQuery } from '@mantine/hooks';

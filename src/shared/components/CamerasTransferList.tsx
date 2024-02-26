@@ -5,6 +5,7 @@ import CogwheelLoader from './loaders/CogwheelLoader';
 import RetryError from './RetryError';
 import { TransferList, Text, TransferListData, TransferListProps, TransferListItem, Button, Flex } from '@mantine/core';
 import { OneSelectItem } from './filters.aps/OneSelectFilter';
+import { strings } from '../strings/strings';
 
 interface CamerasTransferListProps {
     roleId: string
@@ -48,7 +49,7 @@ const CamerasTransferList = ({
 
     if (isPending) return <CogwheelLoader />
     if (isError || !cameras) return <RetryError onRetry={refetch} />
-    if (cameras.length < 1) return <Text>Empty cameras </Text>
+    if (cameras.length < 1) return <Text> {strings.camersDoesNotExist}</Text>
 
 
     const handleSave = () => {
@@ -63,8 +64,8 @@ const CamerasTransferList = ({
     return (
         <>
             <Flex w='100%' justify='center'>
-                <Button mt='1rem' w='10%' miw='6rem' mr='1rem' onClick={handleDiscard}>Discard</Button>
-                <Button mt='1rem' w='10%' miw='5rem' onClick={handleSave}>Save</Button>
+                <Button mt='1rem' w='10%' miw='6rem' mr='1rem' onClick={handleDiscard}>{strings.discard}</Button>
+                <Button mt='1rem' w='10%' miw='5rem' onClick={handleSave}>{strings.save}</Button>
                 </Flex>
             <TransferList
                 transferAllMatchingFilter
@@ -72,9 +73,9 @@ const CamerasTransferList = ({
                 mt='1rem'
                 value={lists}
                 onChange={handleChange}
-                searchPlaceholder="Search..."
-                nothingFound="Nothing here"
-                titles={['Not allowed', 'Allowed']}
+                searchPlaceholder={strings.search}
+                nothingFound={strings.nothingHere}
+                titles={[strings.notAllowed, strings.allowed]}
                 breakpoint="sm"
             />
         </>

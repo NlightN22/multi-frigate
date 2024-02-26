@@ -1,6 +1,6 @@
 import { Box, CloseButton, Flex, Slider, SliderProps, SpacingValue, SystemProp, Text } from '@mantine/core';
 import React, { CSSProperties, useState, } from 'react';
-import CloseWithTooltip from '../CloseWithTooltip';
+import CloseWithTooltip from '../buttons/CloseWithTooltip';
 import { strings } from '../../strings/strings';
 
 interface SliderFilterProps {

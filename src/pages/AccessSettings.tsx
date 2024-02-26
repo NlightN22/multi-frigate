@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useContext, useEffect, useState } from 'react';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
-import CenterLoader from '../shared/components/CenterLoader';
+import CenterLoader from '../shared/components/loaders/CenterLoader';
 import RetryErrorPage from './RetryErrorPage';
 import { Flex, Group, Select, Text } from '@mantine/core';
 import OneSelectFilter, { OneSelectItem } from '../shared/components/filters.aps/OneSelectFilter';
@@ -9,6 +9,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { dimensions } from '../shared/dimensions/dimensions';
 import CamerasTransferList from '../shared/components/CamerasTransferList';
 import { Context } from '..';
+import { strings } from '../shared/strings/strings';
 
 const AccessSettings = () => {
     const { data, isPending, isError, refetch } = useQuery({
@@ -39,7 +40,7 @@ const AccessSettings = () => {
     console.log('AccessSettings rendered')
     return (
         <Flex w='100%' h='100%' direction='column'>
-            <Text align='center' size='xl'>Please select role</Text>
+            <Text align='center' size='xl'>{strings.pleaseSelectRole}</Text>
             <Flex justify='space-between' align='center' w='100%'>
                 {!isMobile ? <Group w='40%' /> : <></>}
                 <Select

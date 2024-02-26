@@ -4,7 +4,7 @@ import { host } from '../shared/env.const';
 import { useQuery } from '@tanstack/react-query';
 import { frigateQueryKeys, frigateApi } from '../services/frigate.proxy/frigate.api';
 import { Context } from '..';
-import CenterLoader from '../shared/components/CenterLoader';
+import CenterLoader from '../shared/components/loaders/CenterLoader';
 import RetryErrorPage from '../pages/RetryErrorPage';
 import { strings } from '../shared/strings/strings';
 const CameraAccordion = lazy(() => import('../shared/components/accordion/CameraAccordion'));
@@ -33,10 +33,11 @@ const SelectedHostList = ({
 
     const handleOnChange = (cameraId: string | null) => {
         setOpenCameraId(openCameraId === cameraId ? null : cameraId)
+        recStore.openedCamera = host?.cameras.find( camera => camera.id === cameraId)
     }
 
     const handleRetry = () => {
-        if (recStore.selectedHost) hostRefetch()
+        if (recStore.filteredHost) hostRefetch()
     }
 
     if (hostPending) return <CenterLoader />
@@ -44,14 +45,14 @@ const SelectedHostList = ({
 
     if (!host || host.cameras.length < 1) return null
 
-    const cameras = host.cameras.slice(0, 2).map(camera => {
+    const cameras = host.cameras.map(camera => {
         return (
             <Accordion.Item key={camera.id + 'Item'} value={camera.id}>
                 <Accordion.Control key={camera.id + 'Control'}>{strings.camera}: {camera.name}</Accordion.Control>
                 <Accordion.Panel key={camera.id + 'Panel'}>
                     {openCameraId === camera.id && (
                         <Suspense>
-                            <CameraAccordion camera={camera} host={host} />
+                            <CameraAccordion />
                         </Suspense>
                     )}
                 </Accordion.Panel>

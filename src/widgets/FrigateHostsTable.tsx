@@ -4,12 +4,13 @@ import SortedTh from '../shared/components/table.aps/SortedTh';
 import { strings } from '../shared/strings/strings';
 import { v4 as uuidv4 } from 'uuid'
 import { IconBulbFilled, IconBulbOff, IconDeviceFloppy, IconPencil, IconPlus, IconSettings, IconTrash } from '@tabler/icons-react';
-import SwitchCell from '../shared/components/hosts.table/SwitchCell';
-import TextInputCell from '../shared/components/hosts.table/TextInputCell';
+import SwitchCell from './hosts.table/SwitchCell';
+import TextInputCell from './hosts.table/TextInputCell';
 import ObjectId from 'bson-objectid';
 import { debounce } from '../shared/utils/debounce';
 import HostSettingsMenu from '../shared/components/menu/HostSettingsMenu';
 import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
+import StateCell from './hosts.table/StateCell';
 
 interface TableProps<T> {
     data: T[],
@@ -123,10 +124,11 @@ const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedC
             <tr key={item.id}>
                 <TextInputCell text={item.name} width='40%' id={item.id} propertyName='name' onChange={handleTextChange} />
                 <TextInputCell text={item.host} width='40%' id={item.id} propertyName='host' onChange={handleTextChange} />
-                <SwitchCell value={item.enabled} width='10%' id={item.id} propertyName='enabled' toggle={handleSwitchChange} />
+                <SwitchCell value={item.enabled} width='5%' id={item.id} propertyName='enabled' toggle={handleSwitchChange} />
+                <StateCell id={item.id} width='5%' />
                 <td align='right' style={{ width: '10%', padding: '0', }}>
                     <Flex justify='center'>
-                        <HostSettingsMenu id={item.id} />
+                        <HostSettingsMenu host={item} />
                         <Button size='xs' onClick={() => handleDeleteRow(item.id)}><IconTrash /></Button>
                     </Flex>
                 </td>

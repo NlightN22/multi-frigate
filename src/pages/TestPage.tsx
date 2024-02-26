@@ -3,13 +3,23 @@ import { observer } from 'mobx-react-lite';
 import { Button, Flex, Grid, Group, Indicator, Paper, Skeleton } from '@mantine/core';
 import RetryError from '../shared/components/RetryError';
 import { DatePickerInput } from '@mantine/dates';
-import HeadSearch from '../shared/components/HeadSearch';
-import ViewSelector from '../shared/components/ViewSelector';
+import HeadSearch from '../shared/components/inputs/HeadSearch';
+import ViewSelector from '../shared/components/TableGridViewSelector';
 import { useIntersection } from '@mantine/hooks';
 import TestItem from './TestItem';
+import { Context } from '..';
 
-const Test = observer(() => {
+const Test = () => {
   const [value, setValue] = useState<[Date | null, Date | null]>([null, null])
+  const { sideBarsStore } = useContext(Context)
+  sideBarsStore.rightVisible = true
+
+  useEffect(() => {
+    sideBarsStore.rightVisible = true
+    return () => {
+      sideBarsStore.rightVisible = false
+    }
+  }, [])
 
   useEffect(() => {
     console.log('value', value)
@@ -54,6 +64,6 @@ const Test = observer(() => {
       </Flex>
     </Flex>
   );
-})
+}
 
-export default Test;
+export default observer(Test);

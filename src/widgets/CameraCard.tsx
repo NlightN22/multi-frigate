@@ -1,12 +1,13 @@
 import React from 'react';
-import { CameraConfig } from '../../types/frigateConfig';
+import { CameraConfig } from '../types/frigateConfig';
 import { AspectRatio, Button, Card, Flex, Grid, Group, Space, Text, createStyles, useMantineTheme } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
-import { routesPath } from '../../router/routes.path';
-import { GetCameraWHostWConfig, GetFrigateHost } from '../../services/frigate.proxy/frigate.schema';
-import { frigateApi, mapHostToHostname, proxyApi } from '../../services/frigate.proxy/frigate.api';
-import AutoUpdatedImage from './AutoUpdatedImage';
-import { recordingsPageQuery } from '../../pages/RecordingsPage';
+import { routesPath } from '../router/routes.path';
+import { GetCameraWHostWConfig, GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
+import { frigateApi, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
+import AutoUpdatedImage from '../shared/components/images/AutoUpdatedImage';
+import { recordingsPageQuery } from '../pages/RecordingsPage';
+import { strings } from '../shared/strings/strings';
 
 
 const useStyles = createStyles((theme) => ({
@@ -61,7 +62,7 @@ const CameraCard = ({
                 <Group
                     className={classes.bottomGroup}>
                     <Flex justify='space-evenly' mt='0.5rem' w='100%'>
-                        <Button size='sm' onClick={handleOpenRecordings}>Recordings</Button>
+                        <Button size='sm' onClick={handleOpenRecordings}>{strings.recordings}</Button>
                     </Flex>
                 </Group>
             </Card>

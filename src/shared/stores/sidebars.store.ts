@@ -7,7 +7,6 @@ export class SideBarsStore {
         return this._rightVisible
     }
     public set rightVisible(visible: boolean) {
-        console.log(`set rightVisible`, visible)
         this._rightVisible = visible
     }
     private _leftVisible: boolean = true

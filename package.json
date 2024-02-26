@@ -35,6 +35,7 @@
     "monaco-yaml": "^5.1.1",
     "oidc-client-ts": "^2.2.4",
     "react": "^18.2.0",
+    "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
     "react-oidc-context": "^2.2.2",
     "react-router-dom": "^6.14.1",

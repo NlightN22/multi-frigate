@@ -1,7 +1,7 @@
 import { ActionIcon, Badge, Box, Flex, Text, useMantineTheme } from '@mantine/core';
 import { useCounter, useDisclosure } from '@mantine/hooks';
 import { IconMinus, IconPlus, IconX } from '@tabler/icons-react';
-import InputModal from '../InputModal';
+import InputModal from '../modal.windows/InputModal';
 import { v4 as uuidv4 } from 'uuid'
 import { useEffect } from 'react';
 

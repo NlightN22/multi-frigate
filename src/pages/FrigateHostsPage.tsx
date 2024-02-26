@@ -3,7 +3,7 @@ import FrigateHostsTable from '../widgets/FrigateHostsTable';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {  frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { deleteFrigateHostSchema, GetFrigateHost, putFrigateHostSchema} from '../services/frigate.proxy/frigate.schema';
-import CenterLoader from '../shared/components/CenterLoader';
+import CenterLoader from '../shared/components/loaders/CenterLoader';
 import RetryErrorPage from './RetryErrorPage';
 import { Context } from '..';
 import { strings } from '../shared/strings/strings';

@@ -1,7 +1,7 @@
 import { Flex, TextInput } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';
 import React from 'react';
-import ViewSelector from './ViewSelector';
+import ViewSelector from '../TableGridViewSelector';
 
 interface HeadSearchProps {
     search?: string

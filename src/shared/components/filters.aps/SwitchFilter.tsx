@@ -1,7 +1,7 @@
 import { SystemProp, SpacingValue, Flex, Switch, Text, CloseButton, Group, Box } from '@mantine/core';
 import React, { CSSProperties, ChangeEvent } from 'react';
 import { boolean } from 'zod';
-import CloseWithTooltip from '../CloseWithTooltip';
+import CloseWithTooltip from '../buttons/CloseWithTooltip';
 import { strings } from '../../strings/strings';
 
 interface SwitchFilterProps {

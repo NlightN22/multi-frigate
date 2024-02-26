@@ -20,7 +20,7 @@ const HostSelectFilter = () => {
     useEffect(() => {
         if (!hosts) return
         if (recStore.hostIdParam) {
-            recStore.selectedHost = hosts.find(host => host.id === recStore.hostIdParam)
+            recStore.filteredHost = hosts.find(host => host.id === recStore.hostIdParam)
             recStore.hostIdParam = undefined
         }
     }, [isSuccess])
@@ -37,14 +37,14 @@ const HostSelectFilter = () => {
     const handleSelect = (value: string) => {
         const host = hosts?.find(host => host.id === value)
         if (!host) {
-            recStore.selectedHost = undefined
-            recStore.selectedCamera = undefined
+            recStore.filteredHost = undefined
+            recStore.filteredCamera = undefined
             return
         }
-        if (recStore.selectedHost?.id !== host.id) {
-            recStore.selectedCamera = undefined
+        if (recStore.filteredHost?.id !== host.id) {
+            recStore.filteredCamera = undefined
         }
-        recStore.selectedHost = host
+        recStore.filteredHost = host
     }
 
     return (
@@ -52,8 +52,8 @@ const HostSelectFilter = () => {
             id='frigate-hosts'
             label={strings.selectHost}
             spaceBetween='1rem'
-            value={recStore.selectedHost?.id || ''}
-            defaultValue={recStore.selectedHost?.id || ''}
+            value={recStore.filteredHost?.id || ''}
+            defaultValue={recStore.filteredHost?.id || ''}
             data={hostItems}
             onChange={handleSelect}
         />

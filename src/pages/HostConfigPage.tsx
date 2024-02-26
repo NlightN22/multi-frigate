@@ -8,7 +8,7 @@ import { useClipboard } from '@mantine/hooks';
 import { configureMonacoYaml } from "monaco-yaml";
 import Editor, { DiffEditor, useMonaco, loader, Monaco } from '@monaco-editor/react'
 import * as monaco from "monaco-editor";
-import CenterLoader from '../shared/components/CenterLoader';
+import CenterLoader from '../shared/components/loaders/CenterLoader';
 import RetryErrorPage from './RetryErrorPage';
 
 
@@ -79,25 +79,13 @@ const HostConfigPage = () => {
   return (
     <Flex direction='column' h='100%' w='100%' justify='stretch'>
       <Flex w='100%' justify='center' wrap='nowrap'>
-        <Button
-          size="sm"
-          className="mx-1"
-          onClick={handleCopyConfig}
-        >
+        <Button size="sm" onClick={handleCopyConfig}>
           Copy Config
         </Button>
-        <Button
-          size="sm"
-          className="mx-1"
-          onClick={(_) => onHandleSaveConfig("restart")}
-        >
+        <Button ml='1rem' size="sm" onClick={(_) => onHandleSaveConfig("restart")}>
           Save & Restart
         </Button>
-        <Button
-          size="sm"
-          className="mx-1"
-          onClick={(_) => onHandleSaveConfig("saveonly")}
-        >
+        <Button ml='1rem' size="sm" onClick={(_) => onHandleSaveConfig("saveonly")}>
           Save Only
         </Button>
       </Flex>

@@ -2,7 +2,7 @@ import { Box, Burger, Button, Center, Collapse, Divider, Drawer, Flex, Group, Me
 import { useDisclosure } from '@mantine/hooks';
 import { IconChevronDown } from '@tabler/icons-react';
 import React from 'react';
-import { LinkItem } from '../../widgets/header/HeaderAction';
+import { LinkItem } from '../../../widgets/header/HeaderAction';
 import { useNavigate } from 'react-router-dom';
 
 const useStyles = createStyles((theme) => ({

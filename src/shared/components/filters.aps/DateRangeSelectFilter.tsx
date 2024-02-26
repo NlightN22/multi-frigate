@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import React, { useContext } from 'react';
 import { strings } from '../../strings/strings';
 import { Box, Flex, Indicator, Text } from '@mantine/core';
-import CloseWithTooltip from '../CloseWithTooltip';
+import CloseWithTooltip from '../buttons/CloseWithTooltip';
 import { Context } from '../../..';
 
 interface DateRangeSelectFilterProps {

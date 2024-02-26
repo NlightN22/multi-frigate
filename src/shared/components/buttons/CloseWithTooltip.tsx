@@ -1,6 +1,6 @@
 import { Tooltip, CloseButton, CloseButtonProps } from '@mantine/core';
 import React from 'react';
-import { strings } from '../strings/strings';
+import { strings } from '../../strings/strings';
 
 
 interface CloseWithTooltipProps {

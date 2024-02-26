@@ -1,17 +1,17 @@
 import { Flex, Grid, Group } from '@mantine/core';
-import HeadSearch from '../shared/components/HeadSearch';
-import ViewSelector, { SelectorViewState } from '../shared/components/ViewSelector';
+import HeadSearch from '../shared/components/inputs/HeadSearch';
+import ViewSelector, { SelectorViewState } from '../shared/components/TableGridViewSelector';
 import { useContext, useState, useEffect } from 'react';
 import { getCookie, setCookie } from 'cookies-next';
 import { Context } from '..';
 import { observer } from 'mobx-react-lite'
-import CenterLoader from '../shared/components/CenterLoader';
+import CenterLoader from '../shared/components/loaders/CenterLoader';
 import { useQuery } from '@tanstack/react-query';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import RetryErrorPage from './RetryErrorPage';
-import CameraCard from '../shared/components/CameraCard';
 import { useMediaQuery } from '@mantine/hooks';
 import { dimensions } from '../shared/dimensions/dimensions';
+import CameraCard from '../widgets/CameraCard';
 
 const MainPage = () => {
     const { sideBarsStore } = useContext(Context)
@@ -40,8 +40,8 @@ const MainPage = () => {
     if (isError) return <RetryErrorPage onRetry={refetch} />
 
     const cards = () => {
-        return cameras.filter(cam => cam.frigateHost?.host.includes('5000')).slice(0, 25).map(camera => (
-            // return cameras.map(camera => (
+        // return cameras.filter(cam => cam.frigateHost?.host.includes('5000')).slice(0, 25).map(camera => (
+        return cameras.map(camera => (
             <CameraCard
                 key={camera.id}
                 camera={camera}
@@ -60,7 +60,7 @@ const MainPage = () => {
                 {/* <ViewSelector state={viewState} onChange={handleToggleState} /> */}
             </Flex>
             <Flex justify='center' h='100%' direction='column' w='100%' >
-                <Grid mt='sm' justify="center" mb='sm' align='stretch' mr='0.5rem'>
+                <Grid mt='sm' justify="center" mb='sm' align='stretch'>
                     {cards()}
                 </Grid>
             </Flex>

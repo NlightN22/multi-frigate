@@ -1,16 +1,21 @@
-import { Accordion, Center, Group, Loader, Text } from '@mantine/core';
+import { Accordion, Center, Flex, Group, Loader, Text } from '@mantine/core';
 import { observer } from 'mobx-react-lite';
 import React, { useContext, useEffect, useState } from 'react';
 import { Context } from '../../..';
 import { useQuery } from '@tanstack/react-query';
 import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { getEventsQuerySchema } from '../../../services/frigate.proxy/frigate.schema';
-import PlayControl from './PlayControl';
+import PlayControl from '../buttons/PlayControl';
 import VideoPlayer from '../players/VideoPlayer';
 import { getDurationFromTimestamps, getUnixTime, unixTimeToDate } from '../../utils/dateUtil';
 import RetryError from '../RetryError';
 import { strings } from '../../strings/strings';
 import { EventFrigate } from '../../../types/event';
+import { IconExternalLink } from '@tabler/icons-react';
+import { routesPath } from '../../../router/routes.path';
+import AccordionControlButton from '../buttons/AccordionControlButton';
+import AccordionShareButton from '../buttons/AccordionShareButton';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * @param day frigate format, e.g day: 2024-02-23
@@ -37,13 +42,15 @@ const EventsAccordion = observer(({
     // TODO labels, score
 }: EventsAccordionProps) => {
     const { recordingsStore: recStore } = useContext(Context)
-    const [openVideoPlayer, setOpenVideoPlayer] = useState<string>()
-    const [openedValue, setOpenedValue] = useState<string>()
+    const [playedValue, setPlayedValue] = useState<string>()
+    const [openedItem, setOpenedItem] = useState<string>()
     const [playerUrl, setPlayerUrl] = useState<string>()
+    const navigate = useNavigate()
 
-    const inHost = recStore.selectedHost
-    const inCamera = recStore.selectedCamera
+    const inHost = recStore.filteredHost
+    const inCamera = recStore.openedCamera || recStore.filteredCamera
     const isRequiredParams = inHost && inCamera
+
     const { data, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getEvents, inHost, inCamera, day, hour],
         queryFn: () => {
@@ -76,40 +83,47 @@ const EventsAccordion = observer(({
         }
     })
 
+    const createEventUrl = (eventId: string) => {
+        if (inHost)
+            return proxyApi.eventURL(mapHostToHostname(inHost), eventId)
+        return undefined
+    }
+
     useEffect(() => {
-        if (openVideoPlayer) {
-            console.log('openVideoPlayer', openVideoPlayer)
-            if (openVideoPlayer && inHost) {
-                const url = proxyApi.eventURL(mapHostToHostname(inHost), openVideoPlayer)
+        if (playedValue) {
+            // console.log('openVideoPlayer', playedValue)
+            if (playedValue && inHost) {
+                const url = createEventUrl(playedValue)
                 console.log('GET EVENT URL: ', url)
                 setPlayerUrl(url)
             }
         } else {
             setPlayerUrl(undefined)
         }
-    }, [openVideoPlayer])
+    }, [playedValue])
 
     if (isPending) return <Center><Loader /></Center>
     if (isError) return <RetryError onRetry={refetch} />
     if (!data || data.length < 1) return <Center><Text>Not have events at that period</Text></Center>
 
-    const handleOpenPlayer = (eventId: string) => {
-        // console.log(`openVideoPlayer day:${recordSummary.day} hour:${hour}`)
-        if (openVideoPlayer !== eventId) {
-            setOpenedValue(eventId)
-            setOpenVideoPlayer(eventId)
-        } else if (openedValue === eventId && openVideoPlayer === eventId) {
-            setOpenVideoPlayer(undefined)
+    const handleOpenPlayer = (openedValue: string) => {
+        // console.log(`openVideoPlayer day:${day} hour:${hour}, opened value: ${openedValue}`)
+        // console.log(`opened value: ${openedValue}, eventId: ${playedValue}`)
+        if (openedValue !== playedValue) {
+            setOpenedItem(openedValue)
+            setPlayedValue(openedValue)
+        } else if (openedValue === playedValue && playedValue === playedValue) {
+            setPlayedValue(undefined)
         }
     }
 
-    const handleClick = (value: string) => {
-        if (openedValue === value) {
-            setOpenedValue(undefined)
+    const handleOpenItem = (value: string) => {
+        if (playedValue === value) {
+            setOpenedItem(undefined)
         } else {
-            setOpenedValue(value)
+            setOpenedItem(value)
         }
-        setOpenVideoPlayer(undefined)
+        setPlayedValue(undefined)
     }
 
     const eventLabel = (event: EventFrigate) => {
@@ -126,24 +140,40 @@ const EventsAccordion = observer(({
         )
     }
 
+    const hanleOpenNewLink = (recordId: string) => {
+        const link = createEventUrl(recordId)
+        if (link) {
+            const url = `${routesPath.PLAYER_PATH}?link=${encodeURIComponent(link)}`
+            navigate(url)
+        }
+    }
+
     return (
         <Accordion
             variant='separated'
             radius="md" w='100%'
-            value={openedValue}
-            onChange={handleClick}
+            value={openedItem}
+            onChange={handleOpenItem}
         >
             {data.map(event => (
                 <Accordion.Item key={event.id + 'Item'} value={event.id}>
                     <Accordion.Control key={event.id + 'Control'}>
-                        <PlayControl
-                            label={eventLabel(event)}
-                            value={event.id}
-                            openVideoPlayer={openVideoPlayer}
-                            onClick={handleOpenPlayer} />
+                        <Flex justify='space-between'>
+                            {eventLabel(event)}
+                            <Group>
+                                <AccordionShareButton recordUrl={createEventUrl(event.id)} />
+                                <AccordionControlButton onClick={() => hanleOpenNewLink(event.id)}>
+                                    <IconExternalLink />
+                                </AccordionControlButton>
+                                <PlayControl
+                                    value={event.id}
+                                    playedValue={playedValue}
+                                    onClick={handleOpenPlayer} />
+                            </Group>
+                        </Flex>
                     </Accordion.Control>
                     <Accordion.Panel key={event.id + 'Panel'}>
-                        {openVideoPlayer === event.id && playerUrl ? <VideoPlayer videoUrl={playerUrl} /> : <></>}
+                        {playedValue === event.id && playerUrl ? <VideoPlayer videoUrl={playerUrl} /> : <></>}
                         <Group mt='1rem'>
                             <Text>{strings.camera}: {event.camera}</Text>
                             <Text>{strings.player.object}: {event.label}</Text>

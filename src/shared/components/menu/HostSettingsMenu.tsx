@@ -3,29 +3,35 @@ import { IconEdit, IconGraph, IconMessageCircle, IconRotateClockwise, IconServer
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { routesPath } from '../../../router/routes.path';
+import { useMutation } from '@tanstack/react-query';
+import { mapHostToHostname, proxyApi } from '../../../services/frigate.proxy/frigate.api';
+import { GetFrigateHost } from '../../../services/frigate.proxy/frigate.schema';
 
 interface HostSettingsMenuProps {
-    id: string
+    host: GetFrigateHost
 }
 
-const HostSettingsMenu = ({ id }: HostSettingsMenuProps) => {
+const HostSettingsMenu = ({ host }: HostSettingsMenuProps) => {
     const navigate = useNavigate()
+    const mutation = useMutation({
+        mutationFn: (hostName: string) => proxyApi.getHostRestart(hostName)
+    })
 
     const handleConfig = () => {
-        const url = routesPath.HOST_CONFIG_PATH.replace(':id', id)
+        const url = routesPath.HOST_CONFIG_PATH.replace(':id', host.id)
         navigate(url)
     }
     const handleStorage = () => {
-        const url = routesPath.HOST_STORAGE_PATH.replace(':id', id)
+        const url = routesPath.HOST_STORAGE_PATH.replace(':id', host.id)
         navigate(url)
     }
     const handleSystem = () => {
-        const url = routesPath.HOST_SYSTEM_PATH.replace(':id', id)
+        const url = routesPath.HOST_SYSTEM_PATH.replace(':id', host.id)
         navigate(url)
     }
 
     const handleRestart = () => {
-        throw Error('Not yet implemented')
+        mutation.mutate(mapHostToHostname(host))
     }
     return (
         <Menu shadow="md" width={200}>
