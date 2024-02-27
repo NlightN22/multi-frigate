@@ -10,12 +10,31 @@ import { FrigateConfig } from "../../types/frigateConfig";
 import { url } from "inspector";
 import { RecordSummary } from "../../types/record";
 import { EventFrigate } from "../../types/event";
+import { keycloakConfig } from "../..";
 
+
+const getToken = (): string | undefined => {
+    const key = `oidc.user:${keycloakConfig.authority}:${keycloakConfig.client_id}`;
+    const stored = sessionStorage.getItem(key);
+    const storedObject = stored ? JSON.parse(stored) : null;
+    return storedObject?.access_token;
+}
 
 const instanceApi = axios.create({
     baseURL: proxyURL.toString(),
     timeout: 30000,
-});
+})
+
+instanceApi.interceptors.request.use(
+    config => {
+      const token = getToken();
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    error => Promise.reject(error)
+  );
 
 export const frigateApi = {
     getConfig: () => instanceApi.get<GetConfig[]>('apiv1/config').then(res => res.data),

@@ -16,13 +16,6 @@ export const keycloakConfig: AuthProviderProps = {
   authority: oidpSettings.server,
   client_id: oidpSettings.clientId,
   redirect_uri: hostURL.toString(),
-  onSigninCallback: () => {
-       window.history.replaceState(
-           {},
-           document.title,
-           window.location.pathname
-       )
-   }
 }
 
 const rootStore = new RootStore()
@@ -42,5 +35,3 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
-
-
