@@ -13,7 +13,7 @@ import { EventFrigate } from "../../types/event";
 import { keycloakConfig } from "../..";
 
 
-const getToken = (): string | undefined => {
+export const getToken = (): string | undefined => {
     const key = `oidc.user:${keycloakConfig.authority}:${keycloakConfig.client_id}`;
     const stored = sessionStorage.getItem(key);
     const storedObject = stored ? JSON.parse(stored) : null;
@@ -27,14 +27,14 @@ const instanceApi = axios.create({
 
 instanceApi.interceptors.request.use(
     config => {
-      const token = getToken();
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
+        const token = getToken();
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
     },
     error => Promise.reject(error)
-  );
+);
 
 export const frigateApi = {
     getConfig: () => instanceApi.get<GetConfig[]>('apiv1/config').then(res => res.data),
@@ -42,9 +42,9 @@ export const frigateApi = {
     getHosts: () => instanceApi.get<GetFrigateHost[]>('apiv1/frigate-hosts').then(res => {
         return res.data
     }),
-    getHostsWithCameras: () => instanceApi.get<GetFrigateHostWithCameras[]>('apiv1/frigate-hosts', { params: { include: 'cameras' } }).then(res => {
-        return res.data
-    }),
+    // getHostsWithCameras: () => instanceApi.get<GetFrigateHostWithCameras[]>('apiv1/frigate-hosts', { params: { include: 'cameras' } }).then(res => {
+    //     return res.data
+    // }),
     getHost: (id: string) => instanceApi.get<GetFrigateHostWithCameras>(`apiv1/frigate-hosts/${id}`).then(res => {
         return res.data
     }),
@@ -57,12 +57,11 @@ export const frigateApi = {
         return res.data
     }),
     getRoles: () => instanceApi.get<GetRole[]>('apiv1/roles').then(res => res.data),
-    getUsersByRole: (roleName: string) => instanceApi.get<GetUserByRole[]>(`apiv1/users/${roleName}`).then(res => res.data),
-    getRoleWCameras: (roleId: string) => instanceApi.get<GetRoleWCameras>(`apiv1/roles/${roleId}`).then(res => res.data),
     putRoleWCameras: (roleId: string, cameraIDs: string[]) => instanceApi.put<GetRoleWCameras>(`apiv1/roles/${roleId}/cameras`,
         {
             cameraIDs: cameraIDs
-        }).then(res => res.data)
+        }).then(res => res.data),
+    getAdminRole: () => instanceApi.get<GetConfig>('apiv1/config/admin').then(res => res.data),
 }
 
 export const proxyPrefix = `${proxyURL.protocol}//${proxyURL.host}/proxy/`
@@ -71,14 +70,15 @@ export const proxyApi = {
     getHostConfigRaw: (hostName: string) => instanceApi.get(`proxy/${hostName}/api/config/raw`).then(res => res.data),
     getHostConfig: (hostName: string) => instanceApi.get(`proxy/${hostName}/api/config`).then(res => res.data),
     getImageFrigate: async (imageUrl: string) => {
-        const response = await axios.get<Blob>(imageUrl, {
+        const response = await instanceApi.get<Blob>(imageUrl, {
             responseType: 'blob'
         })
         return response.data
     },
     getVideoFrigate: async (videoUrl: string, onProgress: (percentage: number | undefined) => void) => {
-        const response = await axios.get<Blob>(videoUrl, {
+        const response = await instanceApi.get<Blob>(videoUrl, {
             responseType: 'blob',
+            timeout: 10 * 60 * 1000,
             onDownloadProgress: (progressEvent) => {
                 const total = progressEvent.total
                 const current = progressEvent.loaded;
@@ -188,4 +188,5 @@ export const frigateQueryKeys = {
     getRoles: 'roles',
     getRoleWCameras: 'roles-cameras',
     getUsersByRole: 'users-role',
+    getAdminRole: 'admin-role',
 }

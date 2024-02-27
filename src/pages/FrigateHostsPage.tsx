@@ -1,14 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import FrigateHostsTable from '../widgets/FrigateHostsTable';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {  frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
-import { deleteFrigateHostSchema, GetFrigateHost, putFrigateHostSchema} from '../services/frigate.proxy/frigate.schema';
+import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
+import { deleteFrigateHostSchema, GetFrigateHost, putFrigateHostSchema } from '../services/frigate.proxy/frigate.schema';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import RetryErrorPage from './RetryErrorPage';
 import { Context } from '..';
 import { strings } from '../shared/strings/strings';
 import { Button, Flex } from '@mantine/core';
 import { observer } from 'mobx-react-lite'
+import { useAdminRole } from '../hooks/useAdminRole';
+import Forbidden from './403';
 
 const FrigateHostsPage = observer(() => {
     const queryClient = useQueryClient()
@@ -24,6 +26,7 @@ const FrigateHostsPage = observer(() => {
         sideBarsStore.setRightChildren(null)
     }, [])
 
+    const { isAdmin, isLoading: adminLoading } = useAdminRole()
     const [pageData, setPageData] = useState(data)
 
     useEffect(() => {
@@ -70,8 +73,10 @@ const FrigateHostsPage = observer(() => {
         if (data) setPageData([...data])
     }
 
-    if (hostsPending) return <CenterLoader />
+    if (hostsPending || adminLoading) return <CenterLoader />
+    if (!isAdmin) return <Forbidden />
     if (hostsError) return <RetryErrorPage />
+
     return (
         <div>
             {

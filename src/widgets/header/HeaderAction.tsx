@@ -7,6 +7,7 @@ import ColorSchemeToggle from "../../shared/components/buttons/ColorSchemeToggle
 import Logo from "../../shared/components/images/LogoImage";
 import { routesPath } from "../../router/routes.path";
 import DrawerMenu from "../../shared/components/menu/DrawerMenu";
+import { useAdminRole } from "../../hooks/useAdminRole";
 
 const HEADER_HEIGHT = rem(60)
 
@@ -55,7 +56,8 @@ const useStyles = createStyles((theme) => ({
 
 export interface LinkItem {
     label: string
-    link: string
+    link: string,
+    admin?: boolean
 }
 
 export interface HeaderActionProps {
@@ -67,16 +69,17 @@ export const HeaderAction = ({ links }: HeaderActionProps) => {
     const { classes } = useStyles();
     const navigate = useNavigate()
     const auth = useAuth()
+    const { isAdmin } = useAdminRole()
 
     const handleNavigate = (link: string) => {
         navigate(link)
     }
 
-    const items = links.map(item =>
-        <Menu key={item.label} trigger="hover" transitionProps={{ exitDuration: 0 }} withinPortal>
+    const items = links.filter(link => !(link.admin && !isAdmin)).map(link =>
+        <Menu key={link.label} trigger="hover" transitionProps={{ exitDuration: 0 }} withinPortal>
             <Menu.Target>
-                <Button variant="subtle" uppercase onClick={() => handleNavigate(item.link)}>
-                    {item.label}
+                <Button variant="subtle" uppercase onClick={() => handleNavigate(link.link)}>
+                    {link.label}
                 </Button>
             </Menu.Target>
         </Menu>

@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import videojs from 'video.js';
 import Player from 'video.js/dist/types/player';
 import 'video.js/dist/video-js.css'
+import { getToken } from '../../../services/frigate.proxy/frigate.api';
 
 interface VideoPlayerProps {
   videoUrl: string
@@ -12,6 +13,16 @@ const VideoPlayer = ({ videoUrl }: VideoPlayerProps) => {
   const playerRef = useRef<Player | null>(null);
 
   useEffect(() => {
+
+    //@ts-ignore
+    videojs.Vhs.xhr.beforeRequest = function(options: any) {
+      options.headers = {
+        ...options.headers,
+        Authorization: `Bearer ${getToken()}`,
+      };
+      return options;
+    };
+
     const defaultOptions = {
       preload: 'auto',
       autoplay: true,
@@ -19,6 +30,7 @@ const VideoPlayer = ({ videoUrl }: VideoPlayerProps) => {
         {
           src: videoUrl,
           type: 'application/vnd.apple.mpegurl',
+          withCredentials: true,
         },
       ],
       controls: true,
@@ -70,3 +82,4 @@ const VideoPlayer = ({ videoUrl }: VideoPlayerProps) => {
 };
 
 export default VideoPlayer;
+

@@ -10,6 +10,8 @@ import { dimensions } from '../shared/dimensions/dimensions';
 import CamerasTransferList from '../shared/components/CamerasTransferList';
 import { Context } from '..';
 import { strings } from '../shared/strings/strings';
+import { useAdminRole } from '../hooks/useAdminRole';
+import Forbidden from './403';
 
 const AccessSettings = () => {
     const { data, isPending, isError, refetch } = useQuery({
@@ -17,7 +19,7 @@ const AccessSettings = () => {
         queryFn: frigateApi.getRoles
     })
     const { sideBarsStore } = useContext(Context)
-
+    const { isAdmin, isLoading: adminLoading } = useAdminRole()
 
     useEffect(() => {
         sideBarsStore.rightVisible = false
@@ -29,8 +31,9 @@ const AccessSettings = () => {
     const [roleId, setRoleId] = useState<string>()
 
 
-    if (isPending) return <CenterLoader />
+    if (isPending || adminLoading) return <CenterLoader />
     if (isError || !data) return <RetryErrorPage />
+    if (!isAdmin) return <Forbidden />
     const rolesSelect: OneSelectItem[] = data.map(role => ({ value: role.id, label: role.name }))
 
     const handleSelectRole = (value: string) => {

@@ -10,11 +10,15 @@ import Editor, { DiffEditor, useMonaco, loader, Monaco } from '@monaco-editor/re
 import * as monaco from "monaco-editor";
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import RetryErrorPage from './RetryErrorPage';
+import { useAdminRole } from '../hooks/useAdminRole';
+import Forbidden from './403';
 
 
 const HostConfigPage = () => {
+  const { sideBarsStore } = useContext(Context)
+
   let { id } = useParams<'id'>()
-  const queryClient = useQueryClient()
+  const { isAdmin, isLoading: adminLoading } = useAdminRole()
   const theme = useMantineTheme();
   const { isPending: configPending, error: configError, data: config, refetch } = useQuery({
     queryKey: [frigateQueryKeys.getFrigateHost, id],
@@ -27,6 +31,11 @@ const HostConfigPage = () => {
     },
   })
 
+  useEffect(() => {
+    sideBarsStore.rightVisible = false
+    sideBarsStore.setLeftChildren(null)
+    sideBarsStore.setRightChildren(null)
+}, [])
 
   const clipboard = useClipboard({ timeout: 500 })
 
@@ -74,9 +83,10 @@ const HostConfigPage = () => {
       console.log('save config', save_option)
     }, [editorRef])
 
-  if (configPending) return <CenterLoader />
+  if (configPending || adminLoading) return <CenterLoader />
 
   if (configError) return <RetryErrorPage onRetry={refetch} />
+  if (!isAdmin) return <Forbidden />
 
   return (
     <Flex direction='column' h='100%' w='100%' justify='stretch'>

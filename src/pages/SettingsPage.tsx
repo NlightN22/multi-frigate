@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     useQuery,
     useMutation,
@@ -13,6 +13,9 @@ import { strings } from '../shared/strings/strings';
 import { dimensions } from '../shared/dimensions/dimensions';
 import { useMediaQuery } from '@mantine/hooks';
 import { GetConfig } from '../services/frigate.proxy/frigate.schema';
+import { Context } from '..';
+import { useAdminRole } from '../hooks/useAdminRole';
+import Forbidden from './403';
 
 const SettingsPage = () => {
     const queryClient = useQueryClient()
@@ -20,6 +23,16 @@ const SettingsPage = () => {
         queryKey: [frigateQueryKeys.getConfig],
         queryFn: frigateApi.getConfig,
     })
+    
+    const { sideBarsStore } = useContext(Context)
+    useEffect(() => {
+        sideBarsStore.rightVisible = false
+        sideBarsStore.setLeftChildren(null)
+        sideBarsStore.setRightChildren(null)
+    }, [])
+
+    const { isAdmin, isLoading: adminLoading } = useAdminRole()
+
 
     const ecryptedValue = '**********'
     const mapEncryptedToView = (data: GetConfig[] | undefined): GetConfig[] | undefined => {
@@ -81,9 +94,9 @@ const SettingsPage = () => {
         mutation.mutate(configsToUpdate);
     }
 
-    if (configPending) return <CenterLoader />
-
+    if (configPending || adminLoading) return <CenterLoader />
     if (configError) return <RetryErrorPage onRetry={refetch} />
+    if (!isAdmin) return <Forbidden />
 
     return (
         <Flex h='100%'>
