@@ -1,13 +1,11 @@
 import axios from "axios"
 import { proxyURL } from "../../shared/env.const"
-import { z } from "zod"
 import {
     GetConfig, DeleteFrigateHost, GetFrigateHost, PutConfig, PutFrigateHost,
-    GetFrigateHostWithCameras, GetCameraWHost, GetCameraWHostWConfig, GetRole,
-    GetUserByRole, GetRoleWCameras, GetExportedFile
+    GetCameraWHostWConfig, GetRole,
+    GetRoleWCameras, GetExportedFile
 } from "./frigate.schema";
 import { FrigateConfig } from "../../types/frigateConfig";
-import { url } from "inspector";
 import { RecordSummary } from "../../types/record";
 import { EventFrigate } from "../../types/event";
 import { keycloakConfig } from "../..";
@@ -42,12 +40,11 @@ export const frigateApi = {
     getHosts: () => instanceApi.get<GetFrigateHost[]>('apiv1/frigate-hosts').then(res => {
         return res.data
     }),
-    // getHostsWithCameras: () => instanceApi.get<GetFrigateHostWithCameras[]>('apiv1/frigate-hosts', { params: { include: 'cameras' } }).then(res => {
-    //     return res.data
-    // }),
-    getHost: (id: string) => instanceApi.get<GetFrigateHostWithCameras>(`apiv1/frigate-hosts/${id}`).then(res => {
+    // TODO change request to cameras
+    getHost: (id: string) => instanceApi.get<GetFrigateHost>(`apiv1/frigate-hosts/${id}`).then(res => {
         return res.data
     }),
+    getCamerasByHostId: (hostId: string) => instanceApi.get<GetCameraWHostWConfig[]>(`apiv1/cameras/host/${hostId}`).then(res => res.data),
     getCamerasWHost: () => instanceApi.get<GetCameraWHostWConfig[]>(`apiv1/cameras`).then(res => res.data),
     getCameraWHost: (id: string) => instanceApi.get<GetCameraWHostWConfig>(`apiv1/cameras/${id}`).then(res => { return res.data }),
     putHosts: (hosts: PutFrigateHost[]) => instanceApi.put<GetFrigateHost[]>('apiv1/frigate-hosts', hosts).then(res => {
@@ -181,6 +178,7 @@ export const frigateQueryKeys = {
     getFrigateHost: 'frigate-host',
     getCamerasWHost: 'cameras-frigate-host',
     getCameraWHost: 'camera-frigate-host',
+    getCameraByHostId: 'camera-by-hostId',
     getHostConfig: 'host-config',
     getRecordingsSummary: 'recordings-frigate-summary',
     getRecordings: 'recordings-frigate',

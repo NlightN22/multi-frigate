@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx"
 import { z } from "zod"
-import { GetCameraWHostWConfig, GetFrigateHost, GetFrigateHostWithCameras } from "../../services/frigate.proxy/frigate.schema"
+import { GetCameraWHostWConfig, GetFrigateHost } from "../../services/frigate.proxy/frigate.schema"
 
 export type RecordForPlay = {
     hostName?: string // format 'localhost:4000'

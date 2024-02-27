@@ -1,12 +1,11 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Context } from '..';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { frigateApi, frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
-import { Button, Flex, Text, useMantineTheme } from '@mantine/core';
+import { Button, Flex, useMantineTheme } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
-import { configureMonacoYaml } from "monaco-yaml";
-import Editor, { DiffEditor, useMonaco, loader, Monaco } from '@monaco-editor/react'
+import Editor, { Monaco } from '@monaco-editor/react'
 import * as monaco from "monaco-editor";
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import RetryErrorPage from './RetryErrorPage';

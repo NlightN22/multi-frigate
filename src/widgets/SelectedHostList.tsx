@@ -21,19 +21,19 @@ const SelectedHostList = ({
     const { recordingsStore: recStore } = useContext(Context)
     const [openCameraId, setOpenCameraId] = useState<string | null>(null)
 
-    const { data: host, isPending: hostPending, isError: hostError, refetch: hostRefetch } = useQuery({
-        queryKey: [frigateQueryKeys.getFrigateHost, hostId],
+    const { data: camerasQuery, isPending: hostPending, isError: hostError, refetch: hostRefetch } = useQuery({
+        queryKey: [frigateQueryKeys.getCameraByHostId, hostId],
         queryFn: async () => {
             if (hostId) {
-                return frigateApi.getHost(hostId)
+                return frigateApi.getCamerasByHostId(hostId)
             }
-            return null
+            return []
         }
     })
 
     const handleOnChange = (cameraId: string | null) => {
         setOpenCameraId(openCameraId === cameraId ? null : cameraId)
-        recStore.openedCamera = host?.cameras.find( camera => camera.id === cameraId)
+        recStore.openedCamera = camerasQuery?.find( camera => camera.id === cameraId)
     }
 
     const handleRetry = () => {
@@ -43,9 +43,9 @@ const SelectedHostList = ({
     if (hostPending) return <CenterLoader />
     if (hostError) return <RetryErrorPage onRetry={handleRetry} />
 
-    if (!host || host.cameras.length < 1) return null
+    if (!camerasQuery || camerasQuery.length < 1) return null
 
-    const cameras = host.cameras.map(camera => {
+    const camerasItems = camerasQuery.map(camera => {
         return (
             <Accordion.Item key={camera.id + 'Item'} value={camera.id}>
                 <Accordion.Control key={camera.id + 'Control'}>{strings.camera}: {camera.name}</Accordion.Control>
@@ -62,13 +62,13 @@ const SelectedHostList = ({
 
     return (
         <Flex w='100%' h='100%' direction='column' align='center'>
-            <Text>{strings.host}: {host.name}</Text>
+            <Text>{strings.host}: {camerasQuery[0].frigateHost?.name}</Text>
             <Accordion
                 mt='1rem'
                 variant='separated'
                 radius="md" w='100%'
                 onChange={(value) => handleOnChange(value)}>
-                {cameras}
+                {camerasItems}
             </Accordion>
         </Flex>
     )

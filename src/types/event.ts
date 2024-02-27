@@ -13,9 +13,9 @@ export interface EventFrigate {
   retain_indefinitely: boolean;
   plus_id?: string;
   model_hash?: string;
-  data: {
-    top_score: number;
-    score: number;
+  data?: {
+    top_score?: number;
+    score?: number;
     sub_label_score?: number;
     region: number[];
     box: number[];

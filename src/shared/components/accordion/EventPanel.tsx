@@ -6,6 +6,7 @@ import { strings } from '../../strings/strings';
 import { unixTimeToDate, getDurationFromTimestamps } from '../../utils/dateUtil';
 import VideoPlayer from '../players/VideoPlayer';
 import { EventFrigate } from '../../../types/event';
+import BlobImage from '../images/BlobImage';
 
 interface EventPanelProps {
     event: EventFrigate
@@ -25,7 +26,7 @@ const EventPanel = ({
             {playedValue === event.id && playerUrl ? <VideoPlayer videoUrl={playerUrl} /> : <></>}
             <Flex w='100%' justify='space-between'>
                 {!hostName ? <></> :
-                    <Image
+                    <BlobImage
                         maw={200}
                         fit="contain"
                         withPlaceholder
@@ -48,7 +49,9 @@ const EventPanel = ({
                     <Text>{strings.player.object}: {event.label}</Text>
                     <Text>{strings.player.startTime}: {unixTimeToDate(event.start_time)}</Text>
                     <Text>{strings.player.duration}: {getDurationFromTimestamps(event.start_time, event.end_time)}</Text>
-                    <Text>{strings.player.rating}: {(event.data.score * 100).toFixed(2)}%</Text>
+                    {!event.data?.score? <></> :
+                        <Text>{strings.player.rating}: {(event.data.score * 100).toFixed(2)}%</Text>
+                    }
                 </Flex>
             </Flex>
         </>

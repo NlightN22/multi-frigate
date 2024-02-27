@@ -26,7 +26,6 @@ const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedC
     const [sortedName, setSortedName] = useState<string | null>(null)
 
     useEffect(() => {
-        console.log('data changed')
         setTableData(data)
     }, [data])
 

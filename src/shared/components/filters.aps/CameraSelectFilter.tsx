@@ -19,15 +19,15 @@ const CameraSelectFilter = ({
     const { recordingsStore: recStore } = useContext(Context)
 
     const { data, isError, isPending, isSuccess, refetch } = useQuery({
-        queryKey: [frigateQueryKeys.getFrigateHost, selectedHostId],
-        queryFn: () => frigateApi.getHost(selectedHostId)
+        queryKey: [frigateQueryKeys.getCameraByHostId, selectedHostId],
+        queryFn: () => frigateApi.getCamerasByHostId(selectedHostId)
     })
 
     useEffect(() => { 
         if (!data) return
         if (recStore.cameraIdParam) {
             console.log('change camera by param')
-            recStore.filteredCamera = data.cameras.find( camera => camera.id === recStore.cameraIdParam)
+            recStore.filteredCamera = data.find( camera => camera.id === recStore.cameraIdParam)
             recStore.cameraIdParam = undefined
         }
     }, [isSuccess])
@@ -36,10 +36,10 @@ const CameraSelectFilter = ({
     if (isError) return <RetryError onRetry={refetch}/>
     if (!data) return null
 
-    const camerasItems: OneSelectItem[] = data.cameras.map(camera => ({ value: camera.id, label: camera.name }))
+    const camerasItems: OneSelectItem[] = data.map(camera => ({ value: camera.id, label: camera.name }))
 
     const handleSelect = (value: string) => {
-        const camera = data.cameras.find(camera => camera.id === value)
+        const camera = data.find(camera => camera.id === value)
         if (!camera) {
             recStore.filteredCamera = undefined
             return
