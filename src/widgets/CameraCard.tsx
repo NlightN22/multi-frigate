@@ -44,7 +44,8 @@ const CameraCard = ({
 }: CameraCardProps) => {
     const { classes } = useStyles();
     const navigate = useNavigate()
-    const imageUrl = camera.frigateHost ? proxyApi.cameraImageURL(mapHostToHostname(camera.frigateHost), camera.name) : '' //todo implement get URL from live cameras
+    const hostName = mapHostToHostname(camera.frigateHost)
+    const imageUrl = hostName ? proxyApi.cameraImageURL(hostName, camera.name) : '' //todo implement get URL from live cameras
 
     const handleOpenLiveView = () => {
         const url = routesPath.LIVE_PATH.replace(':id', camera.id)

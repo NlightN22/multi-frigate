@@ -13,6 +13,7 @@ export const strings = {
         startTime: 'Начало',
         endTime: 'Конец',
         doubleClickToFullHint: 'Двойное нажатие мышью для полноэкранного просмотра',
+        rating: 'Рейтинг',
     },
 
     empty: 'Пусто',

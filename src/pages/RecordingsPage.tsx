@@ -1,18 +1,14 @@
 
-import { useState, useContext, useEffect, lazy, Suspense } from 'react';
-import { Accordion, Flex, Text } from '@mantine/core';
+import { useState, useContext, useEffect } from 'react';
+import {  Flex, Text } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Context } from '..';
 import RecordingsFiltersRightSide from '../widgets/RecordingsFiltersRightSide';
 import SelectedCameraList from '../widgets/SelectedCameraList';
 import SelectedHostList from '../widgets/SelectedHostList';
-import { useQuery } from '@tanstack/react-query';
-import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { dateToQueryString, parseQueryDateToDate } from '../shared/utils/dateUtil';
-import SelecteDayList from '../widgets/SelecteDayList';
-import { useDebouncedValue } from '@mantine/hooks';
-import CogwheelLoader from '../shared/components/loaders/CogwheelLoader';
+import SelectedDayList from '../widgets/SelectedDayList';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 
 
@@ -102,7 +98,7 @@ const RecordingsPage = observer(() => {
   const [startDay, endDay] = period
   if (startDay && endDay) {
     if (startDay.getDate() === endDay.getDate()) { // if select only one day
-      return <SelecteDayList day={startDay} />
+      return <SelectedDayList day={startDay} />
     }
   }
 

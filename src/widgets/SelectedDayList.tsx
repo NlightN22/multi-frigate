@@ -9,14 +9,14 @@ import CenterLoader from '../shared/components/loaders/CenterLoader';
 import { observer } from 'mobx-react-lite';
 import DayAccordion from '../shared/components/accordion/DayAccordion';
 
-interface SelecteDayListProps {
+interface SelectedDayListProps {
     day: Date
 
 }
 
-const SelecteDayList = ({
+const SelectedDayList = ({
     day
-}: SelecteDayListProps) => {
+}: SelectedDayListProps) => {
     const { recordingsStore: recStore } = useContext(Context)
     const camera = recStore.filteredCamera
     const host = recStore.filteredHost
@@ -27,8 +27,10 @@ const SelecteDayList = ({
             if (camera && host) {
                 const stringDay = dateToQueryString(day)
                 const hostName = mapHostToHostname(host)
-                const res = await proxyApi.getRecordingsSummary(hostName, camera.name, getResolvedTimeZone())
-                return res.find(record => record.day === stringDay)
+                if (hostName){
+                    const res = await proxyApi.getRecordingsSummary(hostName, camera.name, getResolvedTimeZone())
+                    return res.find(record => record.day === stringDay)
+                }
             }
             return null
         }
@@ -50,4 +52,4 @@ const SelecteDayList = ({
     );
 };
 
-export default observer(SelecteDayList);
+export default observer(SelectedDayList);

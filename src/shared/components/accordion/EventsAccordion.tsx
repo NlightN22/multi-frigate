@@ -6,7 +6,6 @@ import { useQuery } from '@tanstack/react-query';
 import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { getEventsQuerySchema } from '../../../services/frigate.proxy/frigate.schema';
 import PlayControl from '../buttons/PlayControl';
-import VideoPlayer from '../players/VideoPlayer';
 import { getDurationFromTimestamps, getUnixTime, unixTimeToDate } from '../../utils/dateUtil';
 import RetryError from '../RetryError';
 import { strings } from '../../strings/strings';
@@ -16,6 +15,7 @@ import { routesPath } from '../../../router/routes.path';
 import AccordionControlButton from '../buttons/AccordionControlButton';
 import AccordionShareButton from '../buttons/AccordionShareButton';
 import { useNavigate } from 'react-router-dom';
+import EventPanel from './EventPanel';
 
 /**
  * @param day frigate format, e.g day: 2024-02-23
@@ -47,18 +47,19 @@ const EventsAccordion = observer(({
     const [playerUrl, setPlayerUrl] = useState<string>()
     const navigate = useNavigate()
 
-    const inHost = recStore.filteredHost
-    const inCamera = recStore.openedCamera || recStore.filteredCamera
-    const isRequiredParams = inHost && inCamera
+    const host = recStore.filteredHost
+    const hostName = mapHostToHostname(host)
+    const camera = recStore.openedCamera || recStore.filteredCamera
+    const isRequiredParams = host && camera
 
     const { data, isPending, isError, refetch } = useQuery({
-        queryKey: [frigateQueryKeys.getEvents, inHost, inCamera, day, hour],
+        queryKey: [frigateQueryKeys.getEvents, host, camera, day, hour],
         queryFn: () => {
             if (!isRequiredParams) return null
             const [startTime, endTime] = getUnixTime(day, hour)
             const parsed = getEventsQuerySchema.safeParse({
-                hostName: mapHostToHostname(inHost),
-                camerasName: [inCamera.name],
+                hostName: mapHostToHostname(host),
+                camerasName: [camera.name],
                 after: startTime,
                 before: endTime,
                 hasClip: true,
@@ -84,15 +85,15 @@ const EventsAccordion = observer(({
     })
 
     const createEventUrl = (eventId: string) => {
-        if (inHost)
-            return proxyApi.eventURL(mapHostToHostname(inHost), eventId)
+        if (hostName)
+            return proxyApi.eventURL(hostName, eventId)
         return undefined
     }
 
     useEffect(() => {
         if (playedValue) {
             // console.log('openVideoPlayer', playedValue)
-            if (playedValue && inHost) {
+            if (playedValue && host) {
                 const url = createEventUrl(playedValue)
                 console.log('GET EVENT URL: ', url)
                 setPlayerUrl(url)
@@ -173,15 +174,11 @@ const EventsAccordion = observer(({
                         </Flex>
                     </Accordion.Control>
                     <Accordion.Panel key={event.id + 'Panel'}>
-                        {playedValue === event.id && playerUrl ? <VideoPlayer videoUrl={playerUrl} /> : <></>}
-                        <Group mt='1rem'>
-                            <Text>{strings.camera}: {event.camera}</Text>
-                            <Text>{strings.player.object}: {event.label}</Text>
-                        </Group>
-                        <Group>
-                            <Text>{strings.player.startTime}: {unixTimeToDate(event.start_time)}</Text>
-                            <Text>{strings.player.duration}: {getDurationFromTimestamps(event.start_time, event.end_time)}</Text>
-                        </Group>
+                        <EventPanel 
+                        event={event} 
+                        playedValue={playedValue} 
+                        playerUrl={playerUrl} 
+                        hostName={hostName} />
                     </Accordion.Panel>
                 </Accordion.Item>
             ))}

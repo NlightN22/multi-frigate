@@ -8,6 +8,7 @@ import { BrowserRouter } from 'react-router-dom';
 import AppBody from './AppBody';
 import Forbidden from './pages/403';
 import { QueryClient } from '@tanstack/react-query';
+import { Notifications } from '@mantine/notifications';
 
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
           }}
         >
           <BrowserRouter>
+            <Notifications />
             <AppBody />
           </BrowserRouter>
         </MantineProvider >

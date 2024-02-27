@@ -31,7 +31,8 @@ const HostSettingsMenu = ({ host }: HostSettingsMenuProps) => {
     }
 
     const handleRestart = () => {
-        mutation.mutate(mapHostToHostname(host))
+        const hostName = mapHostToHostname(host)
+        if (hostName) mutation.mutate(hostName)
     }
     return (
         <Menu shadow="md" width={200}>

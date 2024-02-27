@@ -24,12 +24,12 @@ const CameraAccordion = ({
 
     const camera = recStore.openedCamera || recStore.filteredCamera
     const host = recStore.filteredHost
+    const hostName = mapHostToHostname(host)
 
     const { data, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getRecordingsSummary, camera?.id],
         queryFn: () => {
-            if (camera && host) {
-                const hostName = mapHostToHostname(host)
+            if (camera && hostName) {
                 return proxyApi.getRecordingsSummary(hostName, camera.name, getResolvedTimeZone())
             }
             return null

@@ -4,6 +4,41 @@ export const longToDate = (long: number): Date => new Date(long * 1000);
 export const epochToLong = (date: number): number => date / 1000;
 export const dateToLong = (date: Date): number => epochToLong(date.getTime());
 
+
+export const formatFileTimestamps = (startUnixTime: number, endUnixTime: number, cameraName: string) => {
+  const formatTime = (time: number) => {
+    const date = new Date(time * 1000);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${year}_${month}_${day}_${hours}_${minutes}`;
+  };
+
+  const startTimeFormatted = formatTime(startUnixTime);
+  const endTimeFormatted = formatTime(endUnixTime);
+  const fileName = `${cameraName}_${startTimeFormatted}__${endTimeFormatted}.mp4`;
+
+  return fileName;
+}
+
+/**
+ * 
+ * @param date e.g. "2024-02-27"
+ * @param hour e.g. "20"
+ * @returns [startUnixTime, endUnixTime]
+ */
+export const mapDateHourToUnixTime = (date: string, hour: string) => {
+  const startDateTime = new Date(`${date}T${hour}:00:00`)
+  const startUnixTime = startDateTime.getTime() / 1000
+  const endDateTime = new Date(startDateTime);
+  endDateTime.setMinutes(59)
+  endDateTime.setSeconds(59)
+  const endUnixTime = endDateTime.getTime() / 1000
+  return [startUnixTime, endUnixTime]
+}
+
 const getDateTimeYesterday = (dateTime: Date): Date => {
   const twentyFourHoursInMilliseconds = 24 * 60 * 60 * 1000;
   return new Date(dateTime.getTime() - twentyFourHoursInMilliseconds);
@@ -21,7 +56,7 @@ export const unixTimeToDate = (unixTime: number) => {
   const date = new Date(unixTime * 1000);
 
   const formattedDate = date.getFullYear() +
-    '-' + ('0' + (date.getMonth() + 1)).slice(-2) + 
+    '-' + ('0' + (date.getMonth() + 1)).slice(-2) +
     '-' + ('0' + date.getDate()).slice(-2) +
     ' ' + ('0' + date.getHours()).slice(-2) +
     ':' + ('0' + date.getMinutes()).slice(-2) +
@@ -49,7 +84,7 @@ export const parseQueryDateToDate = (dateQuery: string): Date | null => {
 
   if (match) {
     const year = parseInt(match[1], 10);
-    const month = parseInt(match[2], 10) - 1; 
+    const month = parseInt(match[2], 10) - 1;
     const day = parseInt(match[3], 10);
     return new Date(year, month, day);
   }
@@ -239,12 +274,12 @@ interface DurationToken {
  */
 export const getDurationFromTimestamps = (start_time: number, end_time: number | undefined): string | undefined => {
   if (isNaN(start_time)) {
-    return 
+    return
   }
   let duration = 'In Progress';
   if (end_time) {
     if (isNaN(end_time)) {
-      return 
+      return
     }
     const start = fromUnixTime(start_time);
     const end = fromUnixTime(end_time);

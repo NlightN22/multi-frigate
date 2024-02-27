@@ -1,10 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CameraConfig } from "../../../types/frigateConfig";
 import { Flex, Text, Image } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { frigateApi, proxyApi } from "../../../services/frigate.proxy/frigate.api";
 import { useIntersection } from "@mantine/hooks";
 import CogwheelLoader from "../loaders/CogwheelLoader";
+import RetryError from "../RetryError";
 
 interface AutoUpdatedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   className?: string;
@@ -21,9 +22,10 @@ const AutoUpdatedImage = ({
 }: AutoUpdatedImageProps) => {
   const { ref, entry } = useIntersection({ threshold: 0.1, })
   const isVisible = entry?.isIntersecting
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
 
   const { data: imageBlob, refetch, isPending, isError } = useQuery({
-    queryKey: ['image', imageUrl],
+    queryKey: [imageUrl],
     queryFn: () => proxyApi.getImageFrigate(imageUrl),
     staleTime: 60 * 1000,
     gcTime: Infinity,
@@ -33,27 +35,38 @@ const AutoUpdatedImage = ({
   useEffect(() => {
     if (isVisible) {
       const intervalId = setInterval(() => {
-        refetch();
-      }, 60 * 1000);
+        refetch()
+      }, 60 * 1000)
       return () => clearInterval(intervalId);
     }
-  }, [refetch, isVisible]);
+  }, [refetch, isVisible])
+
+  useEffect(() => {
+    if (imageBlob && imageBlob instanceof Blob) {
+      const objectURL = URL.createObjectURL(imageBlob);
+      setImageSrc(objectURL);
+
+      return () => {
+        if (objectURL) {
+          URL.revokeObjectURL(objectURL);
+        }
+      }
+    }
+  }, [imageBlob])
 
   if (isPending) return <CogwheelLoader />
 
   if (isError) return (
     <Flex direction="column" justify="center" h="100%">
-      <Text align="center">Error loading!</Text>
+      <RetryError onRetry={refetch}/>
     </Flex>
   )
 
-  if (!imageBlob || !(imageBlob instanceof Blob)) console.error('imageBlob not Blob object:', imageBlob)
-
-  const image = URL.createObjectURL(imageBlob!)
+  if (!imageSrc) return null
 
   return (
     <Flex direction="column" justify="center" h="100%">
-      {enabled ? <Image ref={ref} src={image} alt="Dynamic Content" {...rest} />
+      {enabled ? <Image ref={ref} src={imageSrc} alt="Dynamic Content" {...rest} />
         :
         <Text align="center">Camera is disabled in config, no stream or snapshot available!</Text>
       }

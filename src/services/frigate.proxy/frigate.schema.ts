@@ -98,6 +98,13 @@ export const getUserByRoleSchema = z.object({
     email: z.string(),
 })
 
+export const getExpotedFile = z.object({
+    name: z.string(),
+    type: z.string(),
+    mtime: z.string(),
+    size: z.number(),
+})
+
 export type GetConfig = z.infer<typeof getConfigSchema>
 export type PutConfig = z.infer<typeof putConfigSchema>
 export type GetFrigateHost = z.infer<typeof getFrigateHostSchema>
@@ -110,3 +117,4 @@ export type DeleteFrigateHost = z.infer<typeof deleteFrigateHostSchema>
 export type GetRole = z.infer<typeof getRoleSchema>
 export type GetRoleWCameras = z.infer<typeof getRoleWCamerasSchema>
 export type GetUserByRole = z.infer<typeof getUserByRoleSchema>
+export type GetExportedFile = z.infer<typeof getExpotedFile>

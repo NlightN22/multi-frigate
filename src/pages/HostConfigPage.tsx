@@ -21,7 +21,9 @@ const HostConfigPage = () => {
     queryFn: async () => {
       const host = await frigateApi.getHost(id || '')
       const hostName = mapHostToHostname(host)
-      return proxyApi.getHostConfigRaw(hostName)
+      if (hostName)
+        return proxyApi.getHostConfigRaw(hostName)
+      return null
     },
   })
 

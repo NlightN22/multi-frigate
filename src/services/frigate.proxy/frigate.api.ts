@@ -4,7 +4,7 @@ import { z } from "zod"
 import {
     GetConfig, DeleteFrigateHost, GetFrigateHost, PutConfig, PutFrigateHost,
     GetFrigateHostWithCameras, GetCameraWHost, GetCameraWHostWConfig, GetRole,
-    GetUserByRole, GetRoleWCameras
+    GetUserByRole, GetRoleWCameras, GetExportedFile
 } from "./frigate.schema";
 import { FrigateConfig } from "../../types/frigateConfig";
 import { url } from "inspector";
@@ -46,15 +46,28 @@ export const frigateApi = {
         }).then(res => res.data)
 }
 
+export const proxyPrefix = `${proxyURL.protocol}//${proxyURL.host}/proxy/`
+
 export const proxyApi = {
     getHostConfigRaw: (hostName: string) => instanceApi.get(`proxy/${hostName}/api/config/raw`).then(res => res.data),
     getHostConfig: (hostName: string) => instanceApi.get(`proxy/${hostName}/api/config`).then(res => res.data),
     getImageFrigate: async (imageUrl: string) => {
-        const response = await fetch(imageUrl);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.blob();
+        const response = await axios.get<Blob>(imageUrl, {
+            responseType: 'blob'
+        })
+        return response.data
+    },
+    getVideoFrigate: async (videoUrl: string, onProgress: (percentage: number | undefined) => void) => {
+        const response = await axios.get<Blob>(videoUrl, {
+            responseType: 'blob',
+            onDownloadProgress: (progressEvent) => {
+                const total = progressEvent.total
+                const current = progressEvent.loaded;
+                const percentage = total ? (current / total) * 100 : undefined
+                onProgress(percentage);
+            },
+        })
+        return response.data
     },
     getHostRestart: (hostName: string) => instanceApi.get(`proxy/${hostName}/api/restart`).then(res => res.data),
 
@@ -108,23 +121,35 @@ export const proxyApi = {
     cameraWsURL: (hostName: string, cameraName: string) =>
         `ws://${proxyURL.host}/proxy-ws/${hostName}/live/jsmpeg/${cameraName}`,
     cameraImageURL: (hostName: string, cameraName: string) =>
-        `${proxyURL.protocol}//${proxyURL.host}/proxy/${hostName}/api/${cameraName}/latest.jpg`,
+        `${proxyPrefix}${hostName}/api/${cameraName}/latest.jpg`,
     eventURL: (hostName: string, event: string) =>
-        `${proxyURL.protocol}//${proxyURL.host}/proxy/${hostName}/vod/event/${event}/master.m3u8`,
+        `${proxyPrefix}${hostName}/vod/event/${event}/master.m3u8`,
+    eventThumbnailUrl: (hostName: string, eventId: string) => `${proxyPrefix}${hostName}/api/events/${eventId}/thumbnail.jpg`,
+    eventDownloadURL: (hostName: string, eventId: string) => `${proxyPrefix}${hostName}/api/events/${eventId}/clip.mp4?download=true`,
     // http://127.0.0.1:5000/vod/2024-02/23/19/CameraName/Asia,Krasnoyarsk/master.m3u8
     recordingURL: (hostName: string, cameraName: string, timezone: string, day: string, hour: string) => {//  day:2024-02-23 hour:19
         const parts = day.split('-')
         const date = `${parts[0]}-${parts[1]}/${parts[2]}/${hour}`
-        return `${proxyURL.protocol}//${proxyURL.host}/proxy/${hostName}/vod/${date}/${cameraName}/${timezone}/master.m3u8`
+        return `${proxyPrefix}${hostName}/vod/${date}/${cameraName}/${timezone}/master.m3u8`
     },
-    // linkURL: (hostName: string, link: string) => `${proxyURL.protocol}//${proxyURL.host}/proxy/${hostName}${link}`, TODO delete
+    postExportVideoTask: (hostName: string, cameraName: string, startUnixTime: number, endUnixTime: number) => {
+        const url = `proxy/${hostName}/api/export/${cameraName}/start/${startUnixTime}/end/${endUnixTime}`
+        return instanceApi.post(url, { playback: 'realtime' }).then(res => res.data) // Payload: {"playback":"realtime"}
+    },
+    getExportedVideoList: (hostName: string) => instanceApi.get<GetExportedFile[]>(`proxy/${hostName}/exports/`).then(res => res.data),
+    getVideoUrl: (hostName: string, fileName: string) => `${proxyPrefix}${hostName}/exports/${fileName}`,
+    deleteExportedVideo: (hostName: string, videoName: string) => instanceApi.delete(`proxy/${hostName}/api/export/${videoName}`).then(res => res.data)
+
+    // filename example Home_1_Backyard_2024_02_26_16_25__2024_02_26_16_26.mp4
+
 }
 
 export const mapCamerasFromConfig = (config: FrigateConfig): string[] => {
     return Object.keys(config.cameras)
 }
 
-export const mapHostToHostname = (host: GetFrigateHost): string => {
+export const mapHostToHostname = (host?: GetFrigateHost): string | undefined => {
+    if (!host) return
     const url = new URL(host.host)
     const hostName = url.host
     return hostName

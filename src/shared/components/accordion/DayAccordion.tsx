@@ -1,4 +1,4 @@
-import { Accordion, Center, Flex, Group, NavLink, Text, UnstyledButton } from '@mantine/core';
+import { Accordion, Center, Flex, Group, NavLink, Progress, Text, UnstyledButton } from '@mantine/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { RecordSummary } from '../../../types/record';
 import { observer } from 'mobx-react-lite';
@@ -6,7 +6,7 @@ import PlayControl from '../buttons/PlayControl';
 import { mapHostToHostname, proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { Context } from '../../..';
 import VideoPlayer from '../players/VideoPlayer';
-import { getResolvedTimeZone } from '../../utils/dateUtil';
+import { getResolvedTimeZone, mapDateHourToUnixTime } from '../../utils/dateUtil';
 import DayEventsAccordion from './DayEventsAccordion';
 import { strings } from '../../strings/strings';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +14,7 @@ import AccordionControlButton from '../buttons/AccordionControlButton';
 import { IconExternalLink, IconShare } from '@tabler/icons-react';
 import { routesPath } from '../../../router/routes.path';
 import AccordionShareButton from '../buttons/AccordionShareButton';
+import VideoDownloader from '../../../widgets/VideoDownloader';
 
 interface RecordingAccordionProps {
   recordSummary?: RecordSummary
@@ -26,14 +27,14 @@ const DayAccordion = ({
   const [playedValue, setVideoPlayerState] = useState<string>()
   const [openedValue, setOpenedValue] = useState<string>()
   const [playerUrl, setPlayerUrl] = useState<string>()
-  const [link, setLink] = useState<string>()
   const navigate = useNavigate()
 
   const camera = recStore.openedCamera || recStore.filteredCamera
+  const hostName = mapHostToHostname(recStore.filteredHost)
 
   const createRecordURL = (recordId: string): string | undefined => {
     const record = {
-      hostName: recStore.filteredHost ? mapHostToHostname(recStore.filteredHost) : '',
+      hostName: hostName ? hostName : '',
       cameraName: camera?.name,
       day: recordSummary?.day,
       hour: recordId,
@@ -119,7 +120,7 @@ const DayAccordion = ({
             <Flex justify='space-between'>
               {hourLabel(hour.hour, hour.events)}
               <Group>
-                <AccordionShareButton recordUrl={createRecordURL(hour.hour)}/>
+                <AccordionShareButton recordUrl={createRecordURL(hour.hour)} />
                 <AccordionControlButton onClick={() => hanleOpenNewLink(hour.hour)}>
                   <IconExternalLink />
                 </AccordionControlButton>
@@ -129,10 +130,20 @@ const DayAccordion = ({
                   onClick={handleOpenPlayer} />
               </Group>
             </Flex>
-
           </Accordion.Control>
           <Accordion.Panel key={hour.hour + 'Panel'}>
             {playedValue === hour.hour && playerUrl ? <VideoPlayer videoUrl={playerUrl} /> : <></>}
+            { }
+            {recStore.filteredHost && camera && hostName ?
+              <Flex w='100%' justify='center' mb='0.5rem'>
+                <VideoDownloader
+                  cameraName={camera.name}
+                  hostName={hostName}
+                  startUnixTime={mapDateHourToUnixTime(recordSummary.day, hour.hour)[0]}
+                  endUnixTime={mapDateHourToUnixTime(recordSummary.day, hour.hour)[1]}
+                />
+              </Flex>
+              : ''}
             {hour.events > 0 ?
               <DayEventsAccordion day={recordSummary.day} hour={hour.hour} qty={hour.events} />
               :
@@ -141,7 +152,9 @@ const DayAccordion = ({
           </Accordion.Panel>
         </Accordion.Item>
       ))}
+
     </Accordion>
+
   )
 }
 
