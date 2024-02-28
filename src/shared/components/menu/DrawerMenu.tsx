@@ -1,6 +1,5 @@
-import { Box, Burger, Button, Center, Collapse, Divider, Drawer, Flex, Group, Menu, ScrollArea, UnstyledButton, createStyles, rem, useMantineTheme } from '@mantine/core';
+import { Burger, Drawer, Flex, UnstyledButton, createStyles } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconChevronDown } from '@tabler/icons-react';
 import React from 'react';
 import { LinkItem } from '../../../widgets/header/HeaderAction';
 import { useNavigate } from 'react-router-dom';
@@ -42,8 +41,6 @@ const DrawerMenu = ({
 
     const { classes } = useStyles();
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false)
-    const theme = useMantineTheme();
-
 
     const handleNavigate = (link: string) => {
         navigate(link)

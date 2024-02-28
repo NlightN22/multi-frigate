@@ -16,6 +16,7 @@ import { GetConfig } from '../services/frigate.proxy/frigate.schema';
 import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
 import Forbidden from './403';
+import { observer } from 'mobx-react-lite';
 
 const SettingsPage = () => {
     const queryClient = useQueryClient()
@@ -133,4 +134,4 @@ const SettingsPage = () => {
     );
 };
 
-export default SettingsPage;
+export default observer(SettingsPage);

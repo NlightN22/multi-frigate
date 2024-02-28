@@ -12,13 +12,9 @@ import { strings } from '../../strings/strings';
 import { RecordSummary } from '../../../types/record';
 
 interface CameraAccordionProps {
-    // camera: GetCameraWHostWConfig,
-    // host: GetFrigateHost
 }
 
 const CameraAccordion = ({
-    // camera,
-    // host
 }: CameraAccordionProps) => {
     const { recordingsStore: recStore } = useContext(Context)
 

@@ -6,6 +6,7 @@ import { proxyURL } from '../shared/env.const';
 import { proxyApi } from '../services/frigate.proxy/frigate.api';
 import NotFound from './404';
 import { Context } from '..';
+import { observer } from 'mobx-react-lite';
 
 export const playRecordPageQuery = {
     link: 'link',
@@ -33,4 +34,4 @@ const PlayRecordPage = () => {
     );
 };
 
-export default PlayRecordPage;
+export default observer(PlayRecordPage);

@@ -1,14 +1,12 @@
-import { Center, Flex, Text } from '@mantine/core';
+import { Flex, Text } from '@mantine/core';
 import React, { Suspense, useContext } from 'react';
 import CameraAccordion from '../shared/components/accordion/CameraAccordion';
-import { GetCameraWHostWConfig, GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
 import { useQuery } from '@tanstack/react-query';
 import { Context } from '..';
 import { frigateQueryKeys, frigateApi } from '../services/frigate.proxy/frigate.api';
-import { host } from '../shared/env.const';
-import CogwheelLoader from '../shared/components/loaders/CogwheelLoader';
 import RetryErrorPage from '../pages/RetryErrorPage';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
+import { observer } from 'mobx-react-lite';
 
 interface SelectedCameraListProps {
 }
@@ -47,4 +45,4 @@ const SelectedCameraList = ({
     )
 };
 
-export default SelectedCameraList;
+export default observer(SelectedCameraList);

@@ -12,7 +12,7 @@ import { observer } from 'mobx-react-lite'
 import { useAdminRole } from '../hooks/useAdminRole';
 import Forbidden from './403';
 
-const FrigateHostsPage = observer(() => {
+const FrigateHostsPage = () => {
     const queryClient = useQueryClient()
     const { isPending: hostsPending, error: hostsError, data } = useQuery({
         queryKey: [frigateQueryKeys.getFrigateHosts],
@@ -89,6 +89,6 @@ const FrigateHostsPage = observer(() => {
             </Flex>
         </div>
     );
-})
+}
 
-export default FrigateHostsPage;
+export default observer(FrigateHostsPage);

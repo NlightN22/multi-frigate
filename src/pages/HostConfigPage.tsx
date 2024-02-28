@@ -11,6 +11,7 @@ import CenterLoader from '../shared/components/loaders/CenterLoader';
 import RetryErrorPage from './RetryErrorPage';
 import { useAdminRole } from '../hooks/useAdminRole';
 import Forbidden from './403';
+import { observer } from 'mobx-react-lite';
 
 
 const HostConfigPage = () => {
@@ -115,4 +116,4 @@ const HostConfigPage = () => {
 
 }
 
-export default HostConfigPage;
+export default observer(HostConfigPage);

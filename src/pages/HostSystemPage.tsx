@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
 import Forbidden from './403';
+import { observer } from 'mobx-react-lite';
 
 const HostSystemPage = () => {
     let { id } = useParams<'id'>()
@@ -24,4 +25,4 @@ const HostSystemPage = () => {
     );
 };
 
-export default HostSystemPage;
+export default observer(HostSystemPage);

@@ -1,4 +1,4 @@
-import { Flex, Group, Button, Text, Image } from '@mantine/core';
+import { Flex,  Button, Text } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons-react';
 import React from 'react';
 import { proxyApi } from '../../../services/frigate.proxy/frigate.api';

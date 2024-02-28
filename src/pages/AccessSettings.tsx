@@ -12,6 +12,7 @@ import { Context } from '..';
 import { strings } from '../shared/strings/strings';
 import { useAdminRole } from '../hooks/useAdminRole';
 import Forbidden from './403';
+import { observer } from 'mobx-react-lite';
 
 const AccessSettings = () => {
     const { data, isPending, isError, refetch } = useQuery({
@@ -64,4 +65,4 @@ const AccessSettings = () => {
     );
 };
 
-export default AccessSettings;
+export default observer(AccessSettings);

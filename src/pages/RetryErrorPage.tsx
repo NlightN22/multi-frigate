@@ -5,6 +5,7 @@ import { strings } from '../shared/strings/strings';
 import { useNavigate } from 'react-router-dom';
 import { ExclamationCogWheel } from '../shared/components/svg/ExclamationCogWheel';
 import { Context } from '..';
+import { observer } from 'mobx-react-lite';
 
 interface RetryErrorPageProps {
     onRetry?: () => void
@@ -14,8 +15,6 @@ const RetryErrorPage = ({ onRetry }: RetryErrorPageProps) => {
     const navigate = useNavigate()
 
     const { sideBarsStore } = useContext(Context)
-
-
     useEffect(() => {
         sideBarsStore.setLeftChildren(null)
         sideBarsStore.setRightChildren(null)
@@ -48,4 +47,4 @@ const RetryErrorPage = ({ onRetry }: RetryErrorPageProps) => {
     );
 };
 
-export default RetryErrorPage;
+export default observer(RetryErrorPage);

@@ -20,7 +20,7 @@ export const recordingsPageQuery = {
   hour: 'hour',
 }
 
-const RecordingsPage = observer(() => {
+const RecordingsPage = () => {
   const { sideBarsStore, recordingsStore: recStore } = useContext(Context)
 
   const location = useLocation()
@@ -123,6 +123,6 @@ const RecordingsPage = observer(() => {
       }
     </Flex>
   )
-})
+}
 
-export default RecordingsPage
+export default observer(RecordingsPage)

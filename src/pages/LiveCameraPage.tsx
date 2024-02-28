@@ -12,7 +12,7 @@ import { strings } from '../shared/strings/strings';
 import { routesPath } from '../router/routes.path';
 import { recordingsPageQuery } from './RecordingsPage';
 
-const LiveCameraPage = observer(() => {
+const LiveCameraPage = () => {
     const navigate = useNavigate()
     let { id: cameraId } = useParams<'id'>()
     if (!cameraId) throw Error('Camera id does not exist')
@@ -52,6 +52,6 @@ const LiveCameraPage = observer(() => {
             <Player camera={camera} />
         </Flex>
     );
-})
+}
 
-export default LiveCameraPage;
+export default observer(LiveCameraPage)

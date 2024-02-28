@@ -42,7 +42,6 @@ const SideBar = ({ isHidden, side, children }: SideBarProps) => {
     }
 
     const { sideBarsStore } = useContext(Context)
-
     useEffect(() => {
         if (sideBarsStore.rightVisible && side === 'right' && !visible) {
             open()

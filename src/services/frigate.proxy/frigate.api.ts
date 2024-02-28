@@ -27,8 +27,9 @@ instanceApi.interceptors.request.use(
     config => {
         const token = getToken();
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorization = `Bearer ${token}`
         }
+        config.timeout = 60 * 1000
         return config;
     },
     error => Promise.reject(error)
@@ -40,7 +41,6 @@ export const frigateApi = {
     getHosts: () => instanceApi.get<GetFrigateHost[]>('apiv1/frigate-hosts').then(res => {
         return res.data
     }),
-    // TODO change request to cameras
     getHost: (id: string) => instanceApi.get<GetFrigateHost>(`apiv1/frigate-hosts/${id}`).then(res => {
         return res.data
     }),
@@ -100,7 +100,10 @@ export const proxyApi = {
         cameraName: string,
         timezone: string,
     ) =>
-        instanceApi.get<RecordSummary[]>(`proxy/${hostName}/api/${cameraName}/recordings/summary`, { params: { timezone } }).then(res => res.data),
+        instanceApi.get<RecordSummary[]>(`proxy/${hostName}/api/${cameraName}/recordings/summary`, {
+            params: { timezone },
+            timeout: 5 * 60 * 1000
+        }).then(res => res.data),
 
     // E.g. http://127.0.0.1:5000/api/events?before=1708534799&after=1708448400&camera=CameraName&has_clip=1&include_thumbnails=0&limit=5000
     getEvents: (
@@ -133,7 +136,6 @@ export const proxyApi = {
 
     getEventsSummary: (hostName: string, cameraName: string) =>
         instanceApi.get(`proxy/${hostName}/api/${cameraName}/events/summary`).then(res => res.data),
-    getEventsInProgress: (hostName: string) => instanceApi.get(`proxy/${hostName}/api/events?in_progress=1&include_thumbnails=0`),
     cameraWsURL: (hostName: string, cameraName: string) =>
         `ws://${proxyURL.host}/proxy-ws/${hostName}/live/jsmpeg/${cameraName}`,
     cameraImageURL: (hostName: string, cameraName: string) =>
@@ -154,10 +156,8 @@ export const proxyApi = {
     },
     getExportedVideoList: (hostName: string) => instanceApi.get<GetExportedFile[]>(`proxy/${hostName}/exports/`).then(res => res.data),
     getVideoUrl: (hostName: string, fileName: string) => `${proxyPrefix}${hostName}/exports/${fileName}`,
-    deleteExportedVideo: (hostName: string, videoName: string) => instanceApi.delete(`proxy/${hostName}/api/export/${videoName}`).then(res => res.data)
-
     // filename example Home_1_Backyard_2024_02_26_16_25__2024_02_26_16_26.mp4
-
+    deleteExportedVideo: (hostName: string, videoName: string) => instanceApi.delete(`proxy/${hostName}/api/export/${videoName}`).then(res => res.data)
 }
 
 export const mapCamerasFromConfig = (config: FrigateConfig): string[] => {

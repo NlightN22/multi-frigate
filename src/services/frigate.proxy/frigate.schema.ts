@@ -1,4 +1,4 @@
-import { any, z } from "zod";
+import { z } from "zod";
 import { CameraConfig, FrigateConfig } from "../../types/frigateConfig";
 
 export const putConfigSchema = z.object({

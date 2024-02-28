@@ -7,6 +7,7 @@ import { Context } from '..';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import RetryErrorPage from '../pages/RetryErrorPage';
 import { strings } from '../shared/strings/strings';
+import { observer } from 'mobx-react-lite';
 const CameraAccordion = lazy(() => import('../shared/components/accordion/CameraAccordion'));
 
 
@@ -74,4 +75,4 @@ const SelectedHostList = ({
     )
 };
 
-export default SelectedHostList;
+export default observer(SelectedHostList);

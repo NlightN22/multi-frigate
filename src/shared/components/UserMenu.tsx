@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Avatar, createStyles, Group, Menu, UnstyledButton, Text, Button, Flex } from "@mantine/core";
+import { Avatar,  Group, Menu,  Text, Button, Flex } from "@mantine/core";
 import { useAuth } from 'react-oidc-context';
 import { strings } from '../strings/strings';
 import { useMediaQuery } from '@mantine/hooks';
 import { dimensions } from '../dimensions/dimensions';
 import ColorSchemeToggle from './buttons/ColorSchemeToggle';
-import { useNavigate } from 'react-router-dom';
 import { keycloakConfig } from '../..';
 
 interface UserMenuProps {
@@ -16,10 +15,9 @@ const UserMenu = ({ user }: UserMenuProps) => {
     const [userMenuOpened, setUserMenuOpened] = useState(false);
     const auth = useAuth()
     const isMiddleScreen = useMediaQuery(dimensions.middleScreenSize)
-    const navigate = useNavigate()
 
     const handleAboutMe = () => {
-        navigate(`USER_DETAILED_PATH`)
+        throw Error('Not yet implemented')
     }
 
     const handleLogout = async () => {
@@ -56,12 +54,12 @@ const UserMenu = ({ user }: UserMenuProps) => {
                         :
                         <></>
                 }
-                <Menu.Item>
+                {/* <Menu.Item>
                     {strings.settings}
                 </Menu.Item>
                 <Menu.Item onClick={handleAboutMe}>
                     {strings.aboutMe}
-                </Menu.Item>
+                </Menu.Item> */}
                 <Menu.Item onClick={handleLogout}>
                     {strings.logout}
                 </Menu.Item>

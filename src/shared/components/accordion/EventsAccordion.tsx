@@ -36,7 +36,7 @@ interface EventsAccordionProps {
  * @param cameraName e.g Backyard
  * @param hostName proxy format, e.g hostName: localhost:4000
  */
-const EventsAccordion = observer(({
+const EventsAccordion = ({
     day,
     hour,
     // TODO labels, score
@@ -184,6 +184,6 @@ const EventsAccordion = observer(({
             ))}
         </Accordion>
     );
-})
+}
 
-export default EventsAccordion;
+export default observer(EventsAccordion);

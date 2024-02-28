@@ -5,6 +5,7 @@ import { strings } from '../shared/strings/strings';
 import { redirect, useNavigate } from 'react-router-dom';
 import { routesPath } from '../router/routes.path';
 import { Context } from '..';
+import { observer } from 'mobx-react-lite';
 
 const Forbidden = () => {
 
@@ -29,4 +30,4 @@ const Forbidden = () => {
     );
 };
 
-export default Forbidden;
+export default observer(Forbidden);
