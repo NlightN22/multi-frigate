@@ -1,6 +1,6 @@
 import { Accordion, Center, Flex, Group, Loader, Text } from '@mantine/core';
 import { observer } from 'mobx-react-lite';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Context } from '../../..';
 import { useQuery } from '@tanstack/react-query';
 import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../../../services/frigate.proxy/frigate.api';
@@ -84,11 +84,11 @@ const EventsAccordion = ({
         }
     })
 
-    const createEventUrl = (eventId: string) => {
+    const createEventUrl = useCallback((eventId: string) => {
         if (hostName)
             return proxyApi.eventURL(hostName, eventId)
         return undefined
-    }
+    }, [hostName])
 
     useEffect(() => {
         if (playedValue) {
@@ -101,7 +101,7 @@ const EventsAccordion = ({
         } else {
             setPlayerUrl(undefined)
         }
-    }, [playedValue])
+    }, [playedValue, createEventUrl, host])
 
     if (isPending) return <Center><Loader /></Center>
     if (isError) return <RetryError onRetry={refetch} />
@@ -113,7 +113,7 @@ const EventsAccordion = ({
         if (openedValue !== playedValue) {
             setOpenedItem(openedValue)
             setPlayedValue(openedValue)
-        } else if (openedValue === playedValue && playedValue === playedValue) {
+        } else if (openedValue === playedValue) {
             setPlayedValue(undefined)
         }
     }

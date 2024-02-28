@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
     useQuery,
     useMutation,
@@ -19,18 +19,22 @@ import Forbidden from './403';
 import { observer } from 'mobx-react-lite';
 
 const SettingsPage = () => {
+    const executed = useRef(false)
     const queryClient = useQueryClient()
     const { isPending: configPending, error: configError, data, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getConfig],
         queryFn: frigateApi.getConfig,
     })
-    
+
     const { sideBarsStore } = useContext(Context)
     useEffect(() => {
-        sideBarsStore.rightVisible = false
-        sideBarsStore.setLeftChildren(null)
-        sideBarsStore.setRightChildren(null)
-    }, [])
+        if (!executed.current) {
+            sideBarsStore.rightVisible = false
+            sideBarsStore.setLeftChildren(null)
+            sideBarsStore.setRightChildren(null)
+            executed.current = true
+        }
+    }, [sideBarsStore])
 
     const { isAdmin, isLoading: adminLoading } = useAdminRole()
 
@@ -78,7 +82,7 @@ const SettingsPage = () => {
 
         const configsToUpdate = Object.keys(formDataObj).map(key => {
             const value = formDataObj[key]
-            const currData = data?.find( val => val.key === key)
+            const currData = data?.find(val => val.key === key)
             const isEncrypted = value === ecryptedValue
             if (currData && currData.encrypted && isEncrypted) {
                 return {

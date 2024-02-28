@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Avatar,  Group, Menu,  Text, Button, Flex } from "@mantine/core";
 import { useAuth } from 'react-oidc-context';
 import { strings } from '../strings/strings';
@@ -12,13 +12,10 @@ interface UserMenuProps {
 }
 
 const UserMenu = ({ user }: UserMenuProps) => {
-    const [userMenuOpened, setUserMenuOpened] = useState(false);
     const auth = useAuth()
     const isMiddleScreen = useMediaQuery(dimensions.middleScreenSize)
 
-    const handleAboutMe = () => {
-        throw Error('Not yet implemented')
-    }
+
 
     const handleLogout = async () => {
         await auth.removeUser()
@@ -30,8 +27,6 @@ const UserMenu = ({ user }: UserMenuProps) => {
         <Menu
             width={260}
             transitionProps={{ transition: 'pop-top-right' }}
-            onClose={() => setUserMenuOpened(false)}
-            onOpen={() => setUserMenuOpened(true)}
             withinPortal
         >
             <Menu.Target>

@@ -1,6 +1,5 @@
-import { Accordion, Center, Loader, Text } from '@mantine/core';
-import React, { useContext, useEffect, useState } from 'react';
-import { GetCameraWHostWConfig, GetFrigateHost } from '../../../services/frigate.proxy/frigate.schema';
+import { Accordion, Center, Loader } from '@mantine/core';
+import React, { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import DayAccordion from './DayAccordion';
@@ -11,11 +10,7 @@ import RetryError from '../RetryError';
 import { strings } from '../../strings/strings';
 import { RecordSummary } from '../../../types/record';
 
-interface CameraAccordionProps {
-}
-
-const CameraAccordion = ({
-}: CameraAccordionProps) => {
+const CameraAccordion = () => {
     const { recordingsStore: recStore } = useContext(Context)
 
     const camera = recStore.openedCamera || recStore.filteredCamera

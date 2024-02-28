@@ -1,5 +1,5 @@
 import { Flex, Button, Text } from '@mantine/core';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { routesPath } from '../router/routes.path';
 import { strings } from '../shared/strings/strings';
 import { useNavigate } from 'react-router-dom';
@@ -12,13 +12,19 @@ interface RetryErrorPageProps {
 }
 
 const RetryErrorPage = ({ onRetry }: RetryErrorPageProps) => {
+    const executed = useRef(false)
+
     const navigate = useNavigate()
 
     const { sideBarsStore } = useContext(Context)
     useEffect(() => {
-        sideBarsStore.setLeftChildren(null)
-        sideBarsStore.setRightChildren(null)
-    }, [])
+        if (!executed.current) {
+            sideBarsStore.rightVisible = false
+            sideBarsStore.setLeftChildren(null)
+            sideBarsStore.setRightChildren(null)
+            executed.current = true
+        }
+    }, [sideBarsStore])
 
     const handleGoToMain = () => {
         navigate(routesPath.MAIN_PATH)

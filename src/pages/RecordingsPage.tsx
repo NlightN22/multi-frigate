@@ -1,6 +1,6 @@
 
-import { useState, useContext, useEffect } from 'react';
-import {  Flex, Text } from '@mantine/core';
+import { useState, useContext, useEffect, useRef, useMemo } from 'react';
+import { Flex, Text } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Context } from '..';
@@ -21,16 +21,18 @@ export const recordingsPageQuery = {
 }
 
 const RecordingsPage = () => {
+  const executed = useRef(false)
   const { sideBarsStore, recordingsStore: recStore } = useContext(Context)
 
   const location = useLocation()
   const navigate = useNavigate()
-  const queryParams = new URLSearchParams(location.search)
+  const queryParams = useMemo(() => {
+    return new URLSearchParams(location.search);
+  }, [location.search])
   const paramHostId = queryParams.get(recordingsPageQuery.hostId)
   const paramCameraId = queryParams.get(recordingsPageQuery.cameraId);
   const paramStartDay = queryParams.get(recordingsPageQuery.startDay);
   const paramEndDay = queryParams.get(recordingsPageQuery.endDay);
-  const paramTime = queryParams.get(recordingsPageQuery.hour);
 
   const [hostId, setHostId] = useState<string>('')
   const [cameraId, setCameraId] = useState<string>('')
@@ -38,23 +40,25 @@ const RecordingsPage = () => {
   const [firstRender, setFirstRender] = useState(false)
 
   useEffect(() => {
-    sideBarsStore.rightVisible = true
-    sideBarsStore.setRightChildren(
-      <RecordingsFiltersRightSide />
-    )
-    if (paramHostId) recStore.hostIdParam = paramHostId
-    if (paramCameraId) recStore.cameraIdParam = paramCameraId
-    if (paramStartDay && paramEndDay) {
-      const parsedStartDay = parseQueryDateToDate(paramStartDay)
-      const parsedEndDay = parseQueryDateToDate(paramEndDay)
-      recStore.selectedRange = [parsedStartDay, parsedEndDay]
+    if (!executed.current) {
+      sideBarsStore.rightVisible = true
+      sideBarsStore.setRightChildren(
+        <RecordingsFiltersRightSide />
+      )
+      if (paramHostId) recStore.hostIdParam = paramHostId
+      if (paramCameraId) recStore.cameraIdParam = paramCameraId
+      if (paramStartDay && paramEndDay) {
+        const parsedStartDay = parseQueryDateToDate(paramStartDay)
+        const parsedEndDay = parseQueryDateToDate(paramEndDay)
+        recStore.selectedRange = [parsedStartDay, parsedEndDay]
+      }
+      setFirstRender(true)
+      return () => {
+        sideBarsStore.setRightChildren(null)
+        sideBarsStore.rightVisible = false
+      }
     }
-    setFirstRender(true)
-    return () => {
-      sideBarsStore.setRightChildren(null)
-      sideBarsStore.rightVisible = false
-    }
-  }, [])
+  }, [paramCameraId, paramEndDay, paramHostId, paramStartDay, recStore, sideBarsStore])
 
   useEffect(() => {
     setHostId(recStore.filteredHost?.id || '')
@@ -64,7 +68,7 @@ const RecordingsPage = () => {
       queryParams.delete(recordingsPageQuery.hostId)
     }
     navigate({ pathname: location.pathname, search: queryParams.toString() });
-  }, [recStore.filteredHost])
+  }, [recStore.filteredHost, location.pathname, navigate, queryParams])
 
   useEffect(() => {
     setCameraId(recStore.filteredCamera?.id || '')
@@ -74,7 +78,7 @@ const RecordingsPage = () => {
       queryParams.delete(recordingsPageQuery.cameraId)
     }
     navigate({ pathname: location.pathname, search: queryParams.toString() });
-  }, [recStore.filteredCamera])
+  }, [recStore.filteredCamera, location.pathname, navigate, queryParams])
 
   useEffect(() => {
     setPeriod(recStore.selectedRange)
@@ -89,7 +93,7 @@ const RecordingsPage = () => {
       queryParams.delete(recordingsPageQuery.endDay)
     }
     navigate({ pathname: location.pathname, search: queryParams.toString() });
-  }, [recStore.selectedRange])
+  }, [recStore.selectedRange, location.pathname, navigate, queryParams])
 
   console.log('RecordingsPage rendered')
 

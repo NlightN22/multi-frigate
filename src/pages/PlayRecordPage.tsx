@@ -1,9 +1,7 @@
 import { Flex } from '@mantine/core';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import VideoPlayer from '../shared/components/players/VideoPlayer';
-import { proxyURL } from '../shared/env.const';
-import { proxyApi } from '../services/frigate.proxy/frigate.api';
 import NotFound from './404';
 import { Context } from '..';
 import { observer } from 'mobx-react-lite';
@@ -14,12 +12,16 @@ export const playRecordPageQuery = {
 }
 
 const PlayRecordPage = () => {
+    const executed = useRef(false)
     const { sideBarsStore } = useContext(Context)
     useEffect(() => {
-        sideBarsStore.rightVisible = false
-        sideBarsStore.setLeftChildren(null)
-        sideBarsStore.setRightChildren(null)
-    }, [])
+        if (!executed.current) {
+            sideBarsStore.rightVisible = false
+            sideBarsStore.setLeftChildren(null)
+            sideBarsStore.setRightChildren(null)
+            executed.current = true
+        }
+    }, [sideBarsStore])
 
     const location = useLocation()
     const queryParams = new URLSearchParams(location.search)

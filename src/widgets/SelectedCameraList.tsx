@@ -8,11 +8,8 @@ import RetryErrorPage from '../pages/RetryErrorPage';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import { observer } from 'mobx-react-lite';
 
-interface SelectedCameraListProps {
-}
 
-const SelectedCameraList = ({
-}: SelectedCameraListProps) => {
+const SelectedCameraList = () => {
 
     const { recordingsStore: recStore } = useContext(Context)
 

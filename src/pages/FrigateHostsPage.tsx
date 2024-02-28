@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import FrigateHostsTable from '../widgets/FrigateHostsTable';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
@@ -13,6 +13,7 @@ import { useAdminRole } from '../hooks/useAdminRole';
 import Forbidden from './403';
 
 const FrigateHostsPage = () => {
+    const executed = useRef(false)
     const queryClient = useQueryClient()
     const { isPending: hostsPending, error: hostsError, data } = useQuery({
         queryKey: [frigateQueryKeys.getFrigateHosts],
@@ -21,11 +22,13 @@ const FrigateHostsPage = () => {
 
     const { sideBarsStore } = useContext(Context)
     useEffect(() => {
-        sideBarsStore.rightVisible = false
-        sideBarsStore.setLeftChildren(null)
-        sideBarsStore.setRightChildren(null)
-    }, [])
-
+        if (!executed.current) {
+            sideBarsStore.rightVisible = false
+            sideBarsStore.setLeftChildren(null)
+            sideBarsStore.setRightChildren(null)
+            executed.current = true
+        }
+    }, [sideBarsStore])
     const { isAdmin, isLoading: adminLoading } = useAdminRole()
     const [pageData, setPageData] = useState(data)
 

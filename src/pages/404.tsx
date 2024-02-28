@@ -1,20 +1,23 @@
 import { Button, Flex, Text } from '@mantine/core';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import CogWheelWithText from '../shared/components/loaders/CogWheelWithText';
 import { strings } from '../shared/strings/strings';
-import { redirect, useNavigate } from 'react-router-dom';
 import { routesPath } from '../router/routes.path';
 import { Context } from '..';
 import { observer } from 'mobx-react-lite';
 
 const NotFound = () => {
-
+    const executed = useRef(false)
     const { sideBarsStore } = useContext(Context)
 
     useEffect(() => {
-        sideBarsStore.setLeftChildren(null)
-        sideBarsStore.setRightChildren(null)
-    }, [])
+        if (!executed.current) {
+            sideBarsStore.rightVisible = false
+            sideBarsStore.setLeftChildren(null)
+            sideBarsStore.setRightChildren(null)
+            executed.current = true
+        }
+    }, [sideBarsStore])
 
     const handleGoToMain = () => {
         window.location.replace(routesPath.MAIN_PATH)

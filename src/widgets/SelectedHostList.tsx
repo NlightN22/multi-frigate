@@ -1,6 +1,5 @@
 import { Accordion, Flex, Text } from '@mantine/core';
 import React, { Suspense, lazy, useContext, useState } from 'react';
-import { host } from '../shared/env.const';
 import { useQuery } from '@tanstack/react-query';
 import { frigateQueryKeys, frigateApi } from '../services/frigate.proxy/frigate.api';
 import { Context } from '..';
@@ -9,7 +8,6 @@ import RetryErrorPage from '../pages/RetryErrorPage';
 import { strings } from '../shared/strings/strings';
 import { observer } from 'mobx-react-lite';
 const CameraAccordion = lazy(() => import('../shared/components/accordion/CameraAccordion'));
-
 
 interface SelectedHostListProps {
     hostId: string

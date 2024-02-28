@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Context } from '..';
 import { observer } from 'mobx-react-lite';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -13,6 +13,7 @@ import { routesPath } from '../router/routes.path';
 import { recordingsPageQuery } from './RecordingsPage';
 
 const LiveCameraPage = () => {
+    const executed = useRef(false)
     const navigate = useNavigate()
     let { id: cameraId } = useParams<'id'>()
     if (!cameraId) throw Error('Camera id does not exist')
@@ -24,10 +25,13 @@ const LiveCameraPage = () => {
 
     const { sideBarsStore } = useContext(Context)
     useEffect(() => {
-        sideBarsStore.rightVisible = false
-        sideBarsStore.setLeftChildren(null)
-        sideBarsStore.setRightChildren(null)
-    }, [])
+        if (!executed.current) {
+            sideBarsStore.rightVisible = false
+            sideBarsStore.setLeftChildren(null)
+            sideBarsStore.setRightChildren(null)
+            executed.current = true
+        }
+    }, [sideBarsStore])
 
 
     if (isPending) return <CenterLoader />

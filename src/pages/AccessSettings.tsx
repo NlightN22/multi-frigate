@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import RetryErrorPage from './RetryErrorPage';
 import { Flex, Group, Select, Text } from '@mantine/core';
-import OneSelectFilter, { OneSelectItem } from '../shared/components/filters.aps/OneSelectFilter';
+import { OneSelectItem } from '../shared/components/filters.aps/OneSelectFilter';
 import { useMediaQuery } from '@mantine/hooks';
 import { dimensions } from '../shared/dimensions/dimensions';
 import CamerasTransferList from '../shared/components/CamerasTransferList';
@@ -15,6 +15,7 @@ import Forbidden from './403';
 import { observer } from 'mobx-react-lite';
 
 const AccessSettings = () => {
+    const executed = useRef(false)
     const { data, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getRoles],
         queryFn: frigateApi.getRoles
@@ -23,17 +24,20 @@ const AccessSettings = () => {
     const { isAdmin, isLoading: adminLoading } = useAdminRole()
 
     useEffect(() => {
-        sideBarsStore.rightVisible = false
-        sideBarsStore.setLeftChildren(null)
-        sideBarsStore.setRightChildren(null)
-    }, [])
+        if (!executed.current) {
+            sideBarsStore.rightVisible = false
+            sideBarsStore.setLeftChildren(null)
+            sideBarsStore.setRightChildren(null)
+            executed.current = true
+        }
+    }, [sideBarsStore])
 
     const isMobile = useMediaQuery(dimensions.mobileSize)
     const [roleId, setRoleId] = useState<string>()
 
 
     if (isPending || adminLoading) return <CenterLoader />
-    if (isError || !data) return <RetryErrorPage />
+    if (isError || !data) return <RetryErrorPage onRetry={refetch} />
     if (!isAdmin) return <Forbidden />
     const rolesSelect: OneSelectItem[] = data.map(role => ({ value: role.id, label: role.name }))
 

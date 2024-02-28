@@ -1,20 +1,22 @@
-import React, { useContext, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
 import Forbidden from './403';
 import { observer } from 'mobx-react-lite';
 
 const HostSystemPage = () => {
-    let { id } = useParams<'id'>()
+    const executed = useRef(false)
     const { sideBarsStore } = useContext(Context)
-    const { isAdmin, isLoading: adminLoading } = useAdminRole()
+    const { isAdmin } = useAdminRole()
 
     useEffect(() => {
-        sideBarsStore.rightVisible = false
-        sideBarsStore.setLeftChildren(null)
-        sideBarsStore.setRightChildren(null)
-    }, [])
+        if (!executed.current) {
+            sideBarsStore.rightVisible = false
+            sideBarsStore.setLeftChildren(null)
+            sideBarsStore.setRightChildren(null)
+            executed.current = true
+        }
+    }, [sideBarsStore])
 
     if (!isAdmin) return <Forbidden />
 

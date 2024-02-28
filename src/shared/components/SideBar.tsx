@@ -1,4 +1,4 @@
-import React, { FC, JSX, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Aside, Button, createStyles, Navbar } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useMantineSize } from '../utils/mantine.size.convertor';
@@ -48,7 +48,7 @@ const SideBar = ({ isHidden, side, children }: SideBarProps) => {
         } else if (!sideBarsStore.rightVisible && side === 'right' && visible) {
             close()
         }
-    }, [sideBarsStore.rightVisible])
+    }, [sideBarsStore.rightVisible, close, open, side, visible])
 
     const [leftChildren, setLeftChildren] = useState<React.ReactNode>(() => {
         if (children && side === 'left') return children
@@ -71,7 +71,7 @@ const SideBar = ({ isHidden, side, children }: SideBarProps) => {
 
     useEffect(() => {
         isHidden(!visible)
-    }, [visible])
+    }, [visible, isHidden])
 
     // resize controller
     useEffect(() => {
@@ -89,7 +89,7 @@ const SideBar = ({ isHidden, side, children }: SideBarProps) => {
         return () => {
             window.removeEventListener('resize', checkWindowSize);
         }
-    }, [visible])
+    }, [visible, open, close, hideSizePx,])
 
     return (
         <div>

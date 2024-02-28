@@ -15,6 +15,7 @@ import { observer } from 'mobx-react-lite';
 
 
 const HostConfigPage = () => {
+  const executed = useRef(false)
   const { sideBarsStore } = useContext(Context)
 
   let { id } = useParams<'id'>()
@@ -32,10 +33,13 @@ const HostConfigPage = () => {
   })
 
   useEffect(() => {
-    sideBarsStore.rightVisible = false
-    sideBarsStore.setLeftChildren(null)
-    sideBarsStore.setRightChildren(null)
-}, [])
+    if (!executed.current) {
+        sideBarsStore.rightVisible = false
+        sideBarsStore.setLeftChildren(null)
+        sideBarsStore.setRightChildren(null)
+        executed.current = true
+    }
+}, [sideBarsStore])
 
   const clipboard = useClipboard({ timeout: 500 })
 
@@ -73,7 +77,7 @@ const HostConfigPage = () => {
     }
 
     clipboard.copy(editorRef.current.getValue());
-  }, [editorRef]);
+  }, [editorRef, clipboard]);
 
   const onHandleSaveConfig = useCallback(
     async (save_option: string) => {
@@ -106,7 +110,7 @@ const HostConfigPage = () => {
           defaultLanguage='yaml'
           value={config}
           defaultValue="// Data empty"
-          theme={theme.colorScheme == "dark" ? "vs-dark" : "vs-light"}
+          theme={theme.colorScheme === "dark" ? "vs-dark" : "vs-light"}
           beforeMount={handleEditorWillMount}
           onMount={handleEditorDidMount}
         />
