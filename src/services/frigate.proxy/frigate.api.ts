@@ -20,7 +20,7 @@ export const getToken = (): string | undefined => {
 
 const instanceApi = axios.create({
     baseURL: proxyURL.toString(),
-    timeout: 30000,
+    timeout: 60 * 1000,
 })
 
 instanceApi.interceptors.request.use(
@@ -29,7 +29,6 @@ instanceApi.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
         }
-        config.timeout = 60 * 1000
         return config;
     },
     error => Promise.reject(error)
