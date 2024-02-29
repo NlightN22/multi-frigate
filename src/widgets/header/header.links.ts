@@ -1,6 +1,6 @@
 import { routesPath } from "../../router/routes.path";
 import { headerMenu } from "../../shared/strings/header.menu.strings";
-import { HeaderActionProps, LinkItem } from "./HeaderAction";
+import { LinkItem } from "./HeaderAction";
 
 export const headerLinks: LinkItem[] = [
     { link: routesPath.MAIN_PATH, label: headerMenu.home },

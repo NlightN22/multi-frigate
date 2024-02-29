@@ -1,8 +1,7 @@
-import { Flex, Paper } from '@mantine/core';
+import { Flex } from '@mantine/core';
 import { IconPower } from '@tabler/icons-react';
-import React from 'react';
-import { frigateApi, frigateQueryKeys } from '../../services/frigate.proxy/frigate.api';
 import { useQuery } from '@tanstack/react-query';
+import { frigateApi, frigateQueryKeys } from '../../services/frigate.proxy/frigate.api';
 
 interface StateCellProps {
     id?: string
@@ -12,7 +11,7 @@ const StateCell = ({
     id,
     width,
 }: StateCellProps) => {
-    const { isPending, isError, data } = useQuery({
+    const { data } = useQuery({
         queryKey: [frigateQueryKeys.getFrigateHosts, id],
         queryFn: frigateApi.getHosts,
         staleTime: 60 * 1000,

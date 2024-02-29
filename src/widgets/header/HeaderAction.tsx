@@ -1,13 +1,12 @@
-import { Burger, createStyles, Header, rem, Menu, Container, Group, Button, Flex } from "@mantine/core";
-import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import UserMenu from '../../shared/components/UserMenu';
+import { Button, Container, Flex, Group, Header, Menu, createStyles, rem } from "@mantine/core";
 import { useAuth } from 'react-oidc-context';
 import { useNavigate } from 'react-router-dom';
+import { useAdminRole } from "../../hooks/useAdminRole";
+import { routesPath } from "../../router/routes.path";
+import UserMenu from '../../shared/components/UserMenu';
 import ColorSchemeToggle from "../../shared/components/buttons/ColorSchemeToggle";
 import Logo from "../../shared/components/images/LogoImage";
-import { routesPath } from "../../router/routes.path";
 import DrawerMenu from "../../shared/components/menu/DrawerMenu";
-import { useAdminRole } from "../../hooks/useAdminRole";
 
 const HEADER_HEIGHT = rem(60)
 

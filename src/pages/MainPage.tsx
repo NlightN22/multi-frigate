@@ -1,17 +1,17 @@
-import { Flex, Grid, Group, TextInput } from '@mantine/core';
-import { useContext, useState, useEffect, useMemo } from 'react';
-import { Context } from '..';
-import { observer } from 'mobx-react-lite'
-import CenterLoader from '../shared/components/loaders/CenterLoader';
-import { useQuery } from '@tanstack/react-query';
-import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
-import RetryErrorPage from './RetryErrorPage';
-import CameraCard from '../widgets/CameraCard';
+import { Flex, Grid, TextInput } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';
-import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { observer } from 'mobx-react-lite';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Context } from '..';
+import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
+import CenterLoader from '../shared/components/loaders/CenterLoader';
+import CameraCard from '../widgets/CameraCard';
+import RetryErrorPage from './RetryErrorPage';
 
 const MainPage = () => {
+    const executed = useRef(false)
     const { sideBarsStore } = useContext(Context)
     const [searchQuery, setSearchQuery] = useState<string>()
     const [filteredCameras, setFilteredCameras] = useState<GetCameraWHostWConfig[]>()
@@ -30,28 +30,37 @@ const MainPage = () => {
     }, [searchQuery, cameras])
 
     useEffect(() => {
-        sideBarsStore.rightVisible = false
-        sideBarsStore.setLeftChildren(null)
-        sideBarsStore.setRightChildren(null)
-    }, [])
+        if (!executed.current) {
+            sideBarsStore.rightVisible = false
+            sideBarsStore.setLeftChildren(null)
+            sideBarsStore.setRightChildren(null)
+            executed.current = true
+        }
+    }, [sideBarsStore])
 
     const cards = useMemo(() => {
         if (filteredCameras)
-            return filteredCameras.map(camera => (
+            return filteredCameras.filter(camera => {
+                if (camera.frigateHost && !camera.frigateHost.enabled) return false
+                return true
+            }).map(camera => (
                 <CameraCard
                     key={camera.id}
                     camera={camera}
                 />)
             )
-        else
-            return cameras?.map(
-                camera => (
-                    <CameraCard
-                        key={camera.id}
-                        camera={camera}
-                    />)
+        else if (cameras)
+            return cameras.filter(camera => {
+                if (camera.frigateHost && !camera.frigateHost.enabled) return false
+                return true
+            }).map(camera => (
+                <CameraCard
+                    key={camera.id}
+                    camera={camera}
+                />)
             )
-    }, [cameras, filteredCameras, searchQuery])
+        else return []
+    }, [cameras, filteredCameras])
 
     if (isPending) return <CenterLoader />
 

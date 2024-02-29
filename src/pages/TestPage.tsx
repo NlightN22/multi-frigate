@@ -1,35 +1,31 @@
-import React, { Fragment, useContext, useEffect, useRef, useState } from 'react';
+import { Flex, Grid, Group } from '@mantine/core';
 import { observer } from 'mobx-react-lite';
-import { Button, Flex, Grid, Group, Indicator, Paper, Skeleton } from '@mantine/core';
-import RetryError from '../shared/components/RetryError';
-import { DatePickerInput } from '@mantine/dates';
-import HeadSearch from '../shared/components/inputs/HeadSearch';
-import ViewSelector from '../shared/components/TableGridViewSelector';
-import { useIntersection } from '@mantine/hooks';
-import TestItem from './TestItem';
+import { useContext, useEffect, useRef } from 'react';
 import { Context } from '..';
+import HeadSearch from '../shared/components/inputs/HeadSearch';
+import TestItem from './TestItem';
 
 const Test = () => {
-  const [value, setValue] = useState<[Date | null, Date | null]>([null, null])
+  const executed = useRef(false)
+
   const { sideBarsStore } = useContext(Context)
   sideBarsStore.rightVisible = true
 
   useEffect(() => {
-    sideBarsStore.rightVisible = true
-    return () => {
-      sideBarsStore.rightVisible = false
+    if (!executed.current) {
+        sideBarsStore.rightVisible = false
+        sideBarsStore.setLeftChildren(null)
+        sideBarsStore.setRightChildren(null)
+        executed.current = true
     }
-  }, [])
+}, [sideBarsStore])
 
-  useEffect(() => {
-    console.log('value', value)
-  }, [value])
 
-  const handleClick = () => {
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-    setValue([startOfDay, startOfDay])
-  }
+  // const handleClick = () => {
+  //   const startOfDay = new Date();
+  //   startOfDay.setHours(0, 0, 0, 0);
+  //   setValue([startOfDay, startOfDay])
+  // }
 
   const cards = (qty: number) => {
     let items = []
