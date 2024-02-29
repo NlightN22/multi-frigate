@@ -16,6 +16,7 @@ import AccordionControlButton from '../buttons/AccordionControlButton';
 import AccordionShareButton from '../buttons/AccordionShareButton';
 import { useNavigate } from 'react-router-dom';
 import EventPanel from './EventPanel';
+import { isProduction } from '../../env.const';
 
 /**
  * @param day frigate format, e.g day: 2024-02-23
@@ -92,10 +93,9 @@ const EventsAccordion = ({
 
     useEffect(() => {
         if (playedValue) {
-            // console.log('openVideoPlayer', playedValue)
             if (playedValue && host) {
                 const url = createEventUrl(playedValue)
-                console.log('GET EVENT URL: ', url)
+                if (!isProduction) console.log('GET EVENT URL: ', url)
                 setPlayerUrl(url)
             }
         } else {
@@ -108,8 +108,6 @@ const EventsAccordion = ({
     if (!data || data.length < 1) return <Center><Text>Not have events at that period</Text></Center>
 
     const handleOpenPlayer = (openedValue: string) => {
-        // console.log(`openVideoPlayer day:${day} hour:${hour}, opened value: ${openedValue}`)
-        // console.log(`opened value: ${openedValue}, eventId: ${playedValue}`)
         if (openedValue !== playedValue) {
             setOpenedItem(openedValue)
             setPlayedValue(openedValue)

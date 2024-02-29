@@ -32,7 +32,7 @@ export const DeliveryPointSchema = z.object({
 export type DeliveryPoint = z.infer<typeof DeliveryPointSchema>
 
 export class UserStore {
-    private _user: Resource<UserServer> = new Resource<UserServer>
+    private _user: Resource<UserServer> = new Resource<UserServer>()
     public get user() {
         return this._user;
     }
@@ -55,8 +55,8 @@ export class UserStore {
         this._user.isLoading = true
         const res = await this.fetchUserFromServer()
         try {
-            runInAction( () => {
-                this._user = {...this._user, data: res}
+            runInAction(() => {
+                this._user = { ...this._user, data: res }
             })
         } catch (error) {
             console.error(error)

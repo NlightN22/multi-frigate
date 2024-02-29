@@ -44,7 +44,7 @@ function MSEPlayer({
 
   const wsURL = useMemo(() => {
     return wsUrl; 
-  }, [camera]);
+  }, [wsUrl]);
 
   const play = () => {
     const currentVideo = videoRef.current;
@@ -70,7 +70,7 @@ function MSEPlayer({
     return CODECS.filter((codec) =>
       isSupported(`video/mp4; codecs="${codec}"`)
     ).join();
-  }, []);
+  }, [CODECS]);
 
   const onConnect = useCallback(() => {
     if (!videoRef.current?.isConnected || !wsURL || wsRef.current) return false;
@@ -252,7 +252,7 @@ function MSEPlayer({
     return () => {
       onDisconnect();
     };
-  }, [playbackEnabled, onDisconnect, onConnect]);
+  }, [playbackEnabled, onDisconnect, onConnect, visibilityCheck]);
 
   return (
     <video

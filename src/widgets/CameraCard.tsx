@@ -1,12 +1,10 @@
-import React from 'react';
-import { CameraConfig } from '../types/frigateConfig';
-import { AspectRatio, Button, Card, Flex, Grid, Group, Space, Text, createStyles, useMantineTheme } from '@mantine/core';
+import { Button, Card, Flex, Grid, Group, Text, createStyles } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
-import { routesPath } from '../router/routes.path';
-import { GetCameraWHostWConfig, GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
-import { frigateApi, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
-import AutoUpdatedImage from '../shared/components/images/AutoUpdatedImage';
 import { recordingsPageQuery } from '../pages/RecordingsPage';
+import { routesPath } from '../router/routes.path';
+import { mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
+import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
+import AutoUpdatedImage from '../shared/components/images/AutoUpdatedImage';
 import { strings } from '../shared/strings/strings';
 
 

@@ -1,14 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import JSMpegPlayer from '../shared/components/players/JSMpegPlayer';
-import MSEPlayer from '../shared/components/players/MsePlayer';
-import { CameraConfig } from '../types/frigateConfig';
-import { LivePlayerMode } from '../types/live';
+import { useEffect, useMemo, useState } from 'react';
 import useCameraActivity from '../hooks/use-camera-activity';
 import useCameraLiveMode from '../hooks/use-camera-live-mode';
-import WebRtcPlayer from '../shared/components/players/WebRTCPlayer';
-import { AspectRatio, Flex } from '@mantine/core';
-import { frigateApi, proxyApi } from '../services/frigate.proxy/frigate.api';
+import { proxyApi } from '../services/frigate.proxy/frigate.api';
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
+import JSMpegPlayer from '../shared/components/players/JSMpegPlayer';
+import MSEPlayer from '../shared/components/players/MsePlayer';
+import WebRtcPlayer from '../shared/components/players/WebRTCPlayer';
+import { LivePlayerMode } from '../types/live';
+import { isProduction } from '../shared/env.const';
 
 type LivePlayerProps = {
   camera: GetCameraWHostWConfig;
@@ -27,7 +26,7 @@ const Player = ({
   const wsUrl = proxyApi.cameraWsURL(hostNameWPort, camera.name)
   const cameraConfig = camera.config!
 
-  const { activeMotion, activeAudio, activeTracking } =
+  const { activeMotion, activeTracking } =
     useCameraActivity(cameraConfig);
 
   const cameraActive = useMemo(
@@ -41,7 +40,7 @@ const Player = ({
   const [liveReady, setLiveReady] = useState(false);
   useEffect(() => {
     if (!liveReady) {
-      if (cameraActive && liveMode == "jsmpeg") {
+      if (cameraActive && liveMode === "jsmpeg") {
         setLiveReady(true);
       }
 
@@ -51,11 +50,11 @@ const Player = ({
     if (!cameraActive) {
       setLiveReady(false);
     }
-  }, [cameraActive, liveReady]);
+  }, [cameraActive, liveReady, liveMode]);
 
-  console.log(`liveMode: `, liveMode)
+  if (!isProduction) console.log(`liveMode: `, liveMode)
   let player;
-  if (liveMode == "webrtc") {
+  if (liveMode === "webrtc") {
     player = (
       <WebRtcPlayer
         className={`rounded-2xl h-full ${liveReady ? "" : "hidden"}`}
@@ -65,7 +64,7 @@ const Player = ({
         wsUrl={wsUrl}
       />
     );
-  } else if (liveMode == "mse") {
+  } else if (liveMode === "mse") {
     if ("MediaSource" in window || "ManagedMediaSource" in window) {
       player = (
         <MSEPlayer
@@ -84,7 +83,7 @@ const Player = ({
         </div>
       );
     }
-  } else if (liveMode == "jsmpeg") {
+  } else if (liveMode === "jsmpeg") {
     player = (
       <JSMpegPlayer
         wsUrl={wsUrl}

@@ -1,12 +1,12 @@
-import { Center, Flex, MantineStyleSystemProps, Text, TextProps, Tooltip } from '@mantine/core';
+import { Center, Text, TextProps, Tooltip } from '@mantine/core';
 import { IconChevronDown, IconChevronUp, IconSelector, } from '@tabler/icons-react';
-import React, { FC } from 'react';
+import React from 'react';
 
 interface SortedThProps {
     title: string,
     reversed: boolean,
     sortedName: string | null,
-    textProps?: TextProps & React.RefAttributes<HTMLDivElement>
+    textProps?: TextProps
     sorting?: boolean
     onSort: (title: string) => void,
 }

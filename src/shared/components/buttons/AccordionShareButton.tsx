@@ -3,6 +3,7 @@ import { IconShare } from '@tabler/icons-react';
 import React from 'react';
 import AccordionControlButton from './AccordionControlButton';
 import { routesPath } from '../../../router/routes.path';
+import { isProduction } from '../../env.const';
 
 interface AccordionShareButtonProps {
     recordUrl?: string
@@ -19,13 +20,13 @@ const AccordionShareButton = ({
         if (canShare && url) {
             try {
                 await navigator.share({ url });
-                console.log('Content shared successfully');
+                if (!isProduction) console.log('Content shared successfully');
             } catch (err) {
                 console.error('Error sharing content: ', err);
             }
         } else {
             clipboard.copy(url)
-            console.log('URL copied to clipboard')
+            if (!isProduction) console.log('URL copied to clipboard')
         }
     }
 

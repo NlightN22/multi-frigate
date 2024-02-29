@@ -10,6 +10,7 @@ import SelectedHostList from '../widgets/SelectedHostList';
 import { dateToQueryString, parseQueryDateToDate } from '../shared/utils/dateUtil';
 import SelectedDayList from '../widgets/SelectedDayList';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
+import { isProduction } from '../shared/env.const';
 
 
 export const recordingsPageQuery = {
@@ -95,7 +96,7 @@ const RecordingsPage = () => {
     navigate({ pathname: location.pathname, search: queryParams.toString() });
   }, [recStore.selectedRange, location.pathname, navigate, queryParams])
 
-  console.log('RecordingsPage rendered')
+  if (!isProduction) console.log('RecordingsPage rendered')
 
   if (!firstRender) return <CenterLoader />
 

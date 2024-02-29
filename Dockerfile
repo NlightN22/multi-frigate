@@ -1,19 +1,26 @@
 # syntax=docker/dockerfile:1
 # Build commands:
-# - rm dist -r -Force ; yarn build
+# - rm build -r -Force ; yarn build
 # - $VERSION=0.1
-# - docker build --pull --rm -t oncharterliz/frigate-proxy:latest -t oncharterliz/frigate-proxy:$VERSION "."
-# - docker image push --all-tags oncharterliz/frigate-proxy
+# - docker build --pull --rm -t oncharterliz/multi-frigate:latest -t oncharterliz/multi-frigate:$VERSION "."
+# - docker image push --all-tags oncharterliz/multi-frigate
 
-FROM node:18-alpine AS frigate-proxy
-ENV NODE_ENV=production
+FROM nginx:alpine AS multi-frigate
 WORKDIR /app
+COPY ./build/ /usr/share/nginx/html/
+# Nginx config
+RUN rm -rf /etc/nginx/conf.d/*
+COPY ./nginx/default.conf /etc/nginx/conf.d/
 
-COPY  package.json yarn.lock ./
+# Default port exposure
+EXPOSE 80
 
-RUN yarn install --production
+# Copy enviornment script and vars
+COPY  env.sh .env.docker ./
+# Add bash
+RUN apk add --no-cache bash
+# Make our shell script executable
+RUN chmod +x env.sh
 
-COPY ./dist ./dist
-
-CMD yarn prod
-EXPOSE 4000
+# Start Nginx server
+CMD ["/bin/bash", "-c", "/app/env.sh && nginx -g \"daemon off;\""]

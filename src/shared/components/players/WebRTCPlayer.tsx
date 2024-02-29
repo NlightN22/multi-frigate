@@ -153,7 +153,7 @@ export default function WebRtcPlayer({
         pcRef.current = undefined;
       }
     };
-  }, [camera, connect, PeerConnection, pcRef, videoRef, playbackEnabled]);
+  }, [camera, connect, PeerConnection, pcRef, videoRef, playbackEnabled, wsUrl]);
 
   return (
     <video

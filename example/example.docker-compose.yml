@@ -1,8 +1,4 @@
-# Instruction
-Frontend for [Proxy Frigate](https://github.com/NlightN22/frigate-proxy)
- - create file: `docker-compose.yml`
-```yml
-version: '3.1'
+version: '3.0'
 
 services:
   front:
@@ -15,8 +11,3 @@ services:
       REACT_APP_CLIENT_ID: frontend-client
     ports:
       - 5173:80 # set your port here
-```
-- run: 
-```bash
-docker compose up -d
-```

@@ -5,10 +5,9 @@ import { strings } from '../../strings/strings';
 import { Box, Flex, Indicator, Text } from '@mantine/core';
 import CloseWithTooltip from '../buttons/CloseWithTooltip';
 import { Context } from '../../..';
+import { isProduction } from '../../env.const';
 
-interface DateRangeSelectFilterProps {
-
-}
+interface DateRangeSelectFilterProps {}
 
 const DateRangeSelectFilter = ({
 
@@ -16,11 +15,10 @@ const DateRangeSelectFilter = ({
     const { recordingsStore: recStore } = useContext(Context)
 
     const handlePick = (value: [Date | null, Date | null]) => {
-        console.log('handlePick',value)
         recStore.selectedRange = value
     }
 
-    console.log('DateRangeSelectFilter rendered')
+    if (!isProduction) console.log('DateRangeSelectFilter rendered')
     return (
         <Box>
             <Flex
@@ -35,7 +33,6 @@ const DateRangeSelectFilter = ({
                 allowSingleDateInRange
                 valueFormat="YYYY-MM-DD"
                 type="range"
-                placeholder={strings.selectRange}
                 mx="auto"
                 maw={400}
                 value={recStore.selectedRange}

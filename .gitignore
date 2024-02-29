@@ -13,13 +13,9 @@
 /build
 
 # misc
-.env
-.env.development
+.env*
+!.env.docker
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 .idea/*
 .vscode
 

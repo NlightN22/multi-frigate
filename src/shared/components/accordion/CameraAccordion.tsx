@@ -9,6 +9,7 @@ import { getResolvedTimeZone, parseQueryDateToDate } from '../../utils/dateUtil'
 import RetryError from '../RetryError';
 import { strings } from '../../strings/strings';
 import { RecordSummary } from '../../../types/record';
+import { isProduction } from '../../env.const';
 
 const CameraAccordion = () => {
     const { recordingsStore: recStore } = useContext(Context)
@@ -60,7 +61,7 @@ const CameraAccordion = () => {
         return []
     }
 
-    console.log('CameraAccordion rendered')
+    if (!isProduction) console.log('CameraAccordion rendered')
 
     return (
         <Accordion variant='separated' radius="md" w='100%'>

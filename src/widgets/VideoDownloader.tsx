@@ -1,11 +1,11 @@
-import { Button, Loader, Text, Notification, Progress } from '@mantine/core';
-import { useMutation } from '@tanstack/react-query';
-import { frigateApi, proxyApi } from '../services/frigate.proxy/frigate.api';
-import { IconAlertCircle, IconExternalLink } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
-import RetryError from '../shared/components/RetryError';
-import { formatFileTimestamps, unixTimeToDate } from '../shared/utils/dateUtil';
+import { Button, Loader, Progress, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import { IconAlertCircle, IconExternalLink } from '@tabler/icons-react';
+import { useMutation } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { proxyApi } from '../services/frigate.proxy/frigate.api';
+import RetryError from '../shared/components/RetryError';
+import { formatFileTimestamps } from '../shared/utils/dateUtil';
 
 interface VideoDownloaderProps {
     cameraName: string
@@ -84,7 +84,7 @@ const VideoDownloader = ({
                 setTimer(undefined)
             }, 5 * 60 * 1000)
         }
-    }, [createName, link, videoBlob])
+    }, [createName, link, videoBlob, checkVideo, getVideBlob, hostName, timer])
 
     useEffect(() => {
         if (videoBlob && videoBlob instanceof Blob && createName) {
@@ -97,7 +97,7 @@ const VideoDownloader = ({
                 }
             }
         }
-    }, [videoBlob, createName, link])
+    }, [videoBlob, createName, link, deleteVideo])
 
     const checkTime = () => {
         const duration = endUnixTime - startUnixTime
@@ -105,8 +105,6 @@ const VideoDownloader = ({
             notifications.show({
                 id: 'too-much-time',
                 withCloseButton: true,
-                onClose: () => console.log('unmounted'),
-                onOpen: () => console.log('mounted'),
                 autoClose: 5000,
                 title: "Max duration",
                 message: `Time can not be higher than ${maxVideoTime / 60} hour`,
@@ -124,12 +122,13 @@ const VideoDownloader = ({
 
     }
 
-    const handleCancel = () => {
-        clearTimeout(timer)
-        setTimer(undefined)
-        setCreateName(undefined)
-        setLink(undefined)
-    }
+    // TODO delete
+    // const handleCancel = () => {
+    //     clearTimeout(timer)
+    //     setTimer(undefined)
+    //     setCreateName(undefined)
+    //     setLink(undefined)
+    // }
 
 
     if (startUnixTime === 0 || endUnixTime === 0) return null

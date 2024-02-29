@@ -3,73 +3,77 @@ import videojs from 'video.js';
 import Player from 'video.js/dist/types/player';
 import 'video.js/dist/video-js.css'
 import { getToken } from '../../../services/frigate.proxy/frigate.api';
+import { isProduction } from '../../env.const';
 
 interface VideoPlayerProps {
   videoUrl: string
 }
 
 const VideoPlayer = ({ videoUrl }: VideoPlayerProps) => {
+  const executed = useRef(false)
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<Player | null>(null);
 
   useEffect(() => {
-
-    //@ts-ignore
-    videojs.Vhs.xhr.beforeRequest = function(options: any) {
-      options.headers = {
-        ...options.headers,
-        Authorization: `Bearer ${getToken()}`,
+    if (!executed.current) {
+      //@ts-ignore
+      videojs.Vhs.xhr.beforeRequest = function (options: any) {
+        options.headers = {
+          ...options.headers,
+          Authorization: `Bearer ${getToken()}`,
+        };
+        return options;
       };
-      return options;
-    };
 
-    const defaultOptions = {
-      preload: 'auto',
-      autoplay: true,
-      sources: [
-        {
-          src: videoUrl,
-          type: 'application/vnd.apple.mpegurl',
-          withCredentials: true,
+      const defaultOptions = {
+        preload: 'auto',
+        autoplay: true,
+        sources: [
+          {
+            src: videoUrl,
+            type: 'application/vnd.apple.mpegurl',
+            withCredentials: true,
+          },
+        ],
+        controls: true,
+        controlBar: {
+          skipButtons: { forward: 10, backward: 5 },
         },
-      ],
-      controls: true,
-      controlBar: {
-        skipButtons: { forward: 10, backward: 5 },
-      },
-      playbackRates: [0.5, 1, 2, 4, 8],
-      fluid: true,
-    };
+        playbackRates: [0.5, 1, 2, 4, 8],
+        fluid: true,
+      };
 
-    if (!videojs.browser.IS_FIREFOX) {
-      defaultOptions.playbackRates.push(16);
-    }
-
-    //TODO add rotations on IOS and android devices
-
-    console.log('playerRef.current', playerRef.current)
-
-    if (videoRef.current) {
-      console.log('mount new player')
-      playerRef.current = videojs(videoRef.current, { ...defaultOptions }, () => {
-        console.log('player is ready');
-      });
-    }
-    console.log('VideoPlayer rendered')
-    return () => {
-      if (playerRef.current !== null) {
-        playerRef.current.dispose();
-        playerRef.current = null;
-        console.log('unmount player')
+      if (!videojs.browser.IS_FIREFOX) {
+        defaultOptions.playbackRates.push(16);
       }
-    };
-  }, []);
+
+      //TODO add rotations on IOS and android devices
+
+      if (!isProduction) console.log('playerRef.current', playerRef.current)
+
+      if (videoRef.current) {
+        if (!isProduction) console.log('mount new player')
+        playerRef.current = videojs(videoRef.current, { ...defaultOptions }, () => {
+          if (!isProduction) console.log('player is ready')
+        });
+      }
+      if (!isProduction) console.log('VideoPlayer rendered')
+      return () => {
+        if (playerRef.current !== null) {
+          playerRef.current.dispose();
+          playerRef.current = null;
+          if (!isProduction) console.log('unmount player')
+        }
+      };
+    }
+    executed.current = true
+  }, [videoUrl]);
 
 
   useEffect(() => {
     if (playerRef.current) {
       playerRef.current.src(videoUrl);
-      console.log('player change src')
+      if (!isProduction) console.log('player change src')
     }
   }, [videoUrl]);
 

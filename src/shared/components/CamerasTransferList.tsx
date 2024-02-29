@@ -6,6 +6,7 @@ import RetryError from './RetryError';
 import { TransferList, Text, TransferListData, TransferListProps, TransferListItem, Button, Flex } from '@mantine/core';
 import { OneSelectItem } from './filters.aps/OneSelectFilter';
 import { strings } from '../strings/strings';
+import { isProduction } from '../env.const';
 
 interface CamerasTransferListProps {
     roleId: string
@@ -60,7 +61,7 @@ const CamerasTransferList = ({
         refetch()
     }
 
-    console.log('CamerasTransferListProps rendered')
+    if (!isProduction) console.log('CamerasTransferListProps rendered')
     return (
         <>
             <Flex w='100%' justify='center'>

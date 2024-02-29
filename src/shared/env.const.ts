@@ -1,28 +1,15 @@
 export const appMode = process.env.NODE_ENV
-const isProduction = appMode === "production"
-if (isProduction && typeof process.env.REACT_APP_HOST === 'undefined') {
-    throw new Error('REACT_APP_HOST environment variable is undefined');
-}
-export const host = process.env.REACT_APP_HOST
+export const isProduction = appMode === "production"
+export const host = isProduction ? window.env?.REACT_APP_HOST : process.env.HOST
 
-if (isProduction && typeof process.env.REACT_APP_PORT === 'undefined') {
-    throw new Error('REACT_APP_PORT environment variable is undefined');
-}
-export const port = process.env.REACT_APP_PORT
+export const port = isProduction ?  window.env?.REACT_APP_PORT : process.env.PORT
 
-if (typeof process.env.REACT_APP_FRIGATE_PROXY === 'undefined') {
-    throw new Error('REACT_APP_FRIGATE_PROXY environment variable is undefined');
-}
-export const proxyURL = new URL(process.env.REACT_APP_FRIGATE_PROXY)
+const proxy = isProduction ?  window.env?.REACT_APP_FRIGATE_PROXY : process.env.REACT_APP_FRIGATE_PROXY
+export const proxyURL = new URL(proxy || '')
 
-if (typeof process.env.REACT_APP_OPENID_SERVER === 'undefined') {
-    throw new Error('REACT_APP_OPENID_SERVER environment variable is undefined');
-}
-if (typeof process.env.REACT_APP_CLIENT_ID === 'undefined') {
-    throw new Error('REACT_APP_CLIENT_ID environment variable is undefined');
-}
-
+const oidpServer = isProduction ? window.env?.REACT_APP_OPENID_SERVER : process.env.REACT_APP_OPENID_SERVER
+const oidpClientId = isProduction ? window.env?.REACT_APP_CLIENT_ID : process.env.REACT_APP_CLIENT_ID
 export const oidpSettings = {
-    server: process.env.REACT_APP_OPENID_SERVER,
-    clientId: process.env.REACT_APP_CLIENT_ID,
+    server: oidpServer || '',
+    clientId: oidpClientId || '',
 }

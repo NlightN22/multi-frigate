@@ -4,15 +4,12 @@ import { Context } from '..';
 import CameraSelectFilter from '../shared/components/filters.aps/CameraSelectFilter';
 import DateRangeSelectFilter from '../shared/components/filters.aps/DateRangeSelectFilter';
 import HostSelectFilter from '../shared/components/filters.aps/HostSelectFilter';
+import { isProduction } from '../shared/env.const';
 
-interface RecordingsFiltersRightSideProps {
-}
-
-const RecordingsFiltersRightSide = ({
-}: RecordingsFiltersRightSideProps) => {
+const RecordingsFiltersRightSide = () => {
     const { recordingsStore: recStore } = useContext(Context)
 
-    console.log('RecordingsFiltersRightSide rendered')
+    if (!isProduction) console.log('RecordingsFiltersRightSide rendered')
     return (
         <>
             <HostSelectFilter />

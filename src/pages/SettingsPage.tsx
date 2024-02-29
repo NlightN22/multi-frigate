@@ -17,6 +17,7 @@ import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
 import Forbidden from './403';
 import { observer } from 'mobx-react-lite';
+import { isProduction } from '../shared/env.const';
 
 const SettingsPage = () => {
     const executed = useRef(false)
@@ -59,17 +60,17 @@ const SettingsPage = () => {
     })
 
     const handleDiscard = () => {
-        console.log('Discard changes')
+        if (!isProduction) console.log('Discard changes')
         refetch()
         setConfigs(data ? mapEncryptedToView(data) : [])
     }
     useEffect(() => {
-        console.log('data changed')
+        if (!isProduction) console.log('data changed')
         setConfigs(mapEncryptedToView(data))
     }, [data])
 
     useEffect(() => {
-        console.log('configs changed')
+        if (!isProduction) console.log('configs changed')
     }, [configs])
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -95,7 +96,7 @@ const SettingsPage = () => {
                 value: value,
             }
         });
-        console.log('configsToUpdate', configsToUpdate)
+        if (!isProduction) console.log('configsToUpdate', configsToUpdate)
         mutation.mutate(configsToUpdate);
     }
 

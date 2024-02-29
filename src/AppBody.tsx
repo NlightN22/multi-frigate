@@ -6,6 +6,7 @@ import AppRouter from './router/AppRouter';
 import { Context } from '.';
 import SideBar from './shared/components/SideBar';
 import { observer } from 'mobx-react-lite';
+import { isProduction } from './shared/env.const';
 
 const AppBody = () => {
 
@@ -23,7 +24,7 @@ const AppBody = () => {
 
     const theme = useMantineTheme();
 
-    console.log("render Main")
+    if (!isProduction) console.log("render Main")
     return (
         <AppShell
             styles={{

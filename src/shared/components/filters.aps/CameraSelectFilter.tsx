@@ -8,6 +8,7 @@ import { Center, Loader, Text } from '@mantine/core';
 import OneSelectFilter, { OneSelectItem } from './OneSelectFilter';
 import { strings } from '../../strings/strings';
 import RetryError from '../RetryError';
+import { isProduction } from '../../env.const';
 
 interface CameraSelectFilterProps {
     selectedHostId: string,
@@ -26,7 +27,7 @@ const CameraSelectFilter = ({
     useEffect(() => { 
         if (!data) return
         if (recStore.cameraIdParam) {
-            console.log('change camera by param')
+            if (!isProduction) console.log('change camera by param')
             recStore.filteredCamera = data.find( camera => camera.id === recStore.cameraIdParam)
             recStore.cameraIdParam = undefined
         }
@@ -47,8 +48,7 @@ const CameraSelectFilter = ({
         recStore.filteredCamera = camera
     }
 
-    console.log('CameraSelectFilter rendered')
-    // console.log('recStore.selectedCameraId', recStore.selectedCameraId)
+    if (!isProduction) console.log('CameraSelectFilter rendered')
 
     return (
         <OneSelectFilter

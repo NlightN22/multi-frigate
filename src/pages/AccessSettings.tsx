@@ -13,6 +13,7 @@ import { strings } from '../shared/strings/strings';
 import { useAdminRole } from '../hooks/useAdminRole';
 import Forbidden from './403';
 import { observer } from 'mobx-react-lite';
+import { isProduction } from '../shared/env.const';
 
 const AccessSettings = () => {
     const executed = useRef(false)
@@ -45,7 +46,7 @@ const AccessSettings = () => {
         setRoleId(value)
     }
 
-    console.log('AccessSettings rendered')
+    if (!isProduction) console.log('AccessSettings rendered')
     return (
         <Flex w='100%' h='100%' direction='column'>
             <Text align='center' size='xl'>{strings.pleaseSelectRole}</Text>

@@ -228,7 +228,7 @@ export const formatUnixTimestampToDateTime = (unixTimestamp: number, config: Dat
     const options: Intl.DateTimeFormatOptions = {
       dateStyle: date_style,
       timeStyle: time_style,
-      hour12: time_format !== 'browser' ? time_format == '12hour' : undefined,
+      hour12: time_format !== 'browser' ? time_format === '12hour' : undefined,
     };
 
     // Only set timeZone option when resolvedTimeZone does not match UTC±HH:MM format, or when timezone is set in config

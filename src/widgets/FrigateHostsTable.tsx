@@ -1,16 +1,17 @@
-import { Button, Flex, Switch, Table, Text, TextInput, useMantineTheme } from '@mantine/core';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Button, Flex, Table } from '@mantine/core';
+import { IconPlus, IconTrash } from '@tabler/icons-react';
+import ObjectId from 'bson-objectid';
+import React, { useCallback, useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
+import HostSettingsMenu from '../shared/components/menu/HostSettingsMenu';
 import SortedTh from '../shared/components/table.aps/SortedTh';
 import { strings } from '../shared/strings/strings';
-import { v4 as uuidv4 } from 'uuid'
-import { IconBulbFilled, IconBulbOff, IconDeviceFloppy, IconPencil, IconPlus, IconSettings, IconTrash } from '@tabler/icons-react';
+import { debounce } from '../shared/utils/debounce';
+import StateCell from './hosts.table/StateCell';
 import SwitchCell from './hosts.table/SwitchCell';
 import TextInputCell from './hosts.table/TextInputCell';
-import ObjectId from 'bson-objectid';
-import { debounce } from '../shared/utils/debounce';
-import HostSettingsMenu from '../shared/components/menu/HostSettingsMenu';
-import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
-import StateCell from './hosts.table/StateCell';
+import { isProduction } from '../shared/env.const';
 
 interface TableProps<T> {
     data: T[],
@@ -20,7 +21,7 @@ interface TableProps<T> {
 }
 
 const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedCallback }: TableProps<GetFrigateHost>) => {
-    console.log('FrigateHostsTable rendered')
+    if (!isProduction) console.log('FrigateHostsTable rendered')
     const [tableData, setTableData] = useState(data)
     const [reversed, setReversed] = useState(false)
     const [sortedName, setSortedName] = useState<string | null>(null)
@@ -31,7 +32,7 @@ const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedC
 
     const debouncedChanged = useCallback(debounce((tableData: GetFrigateHost[]) => {
         if (changedCallback) changedCallback(tableData)
-    }, 200), [])
+    }, 200), [tableData])
 
     useEffect(() => {
         debouncedChanged(tableData)

@@ -15,6 +15,7 @@ import { IconExternalLink, IconShare } from '@tabler/icons-react';
 import { routesPath } from '../../../router/routes.path';
 import AccordionShareButton from '../buttons/AccordionShareButton';
 import VideoDownloader from '../../../widgets/VideoDownloader';
+import { isProduction } from '../../env.const';
 
 interface RecordingAccordionProps {
   recordSummary?: RecordSummary
@@ -57,7 +58,7 @@ const DayAccordion = ({
     if (playedValue) {
       const url = createRecordURL(playedValue)
       if (url) {
-        console.log('GET URL: ', url)
+        if (!isProduction) console.log('GET URL: ', url)
         setPlayerUrl(url)
       }
     } else {
@@ -85,7 +86,7 @@ const DayAccordion = ({
     setVideoPlayerState(undefined)
   }
 
-  console.log('DayAccordion rendered')
+  if (!isProduction) console.log('DayAccordion rendered')
 
   const hourLabel = (hour: string, eventsQty: number) => (
     <Group>

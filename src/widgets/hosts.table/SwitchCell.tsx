@@ -14,7 +14,7 @@ interface SwithCellProps {
 export const SwitchCell = ( { value, defaultValue, width, id, propertyName, toggle }: SwithCellProps ) => {
     const theme = useMantineTheme();
 
-    if (typeof value === undefined && typeof defaultValue !== undefined) value = defaultValue
+    if (!value  && !defaultValue) value = defaultValue
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (id && toggle && propertyName) toggle(id, propertyName, event.target.value)
     }

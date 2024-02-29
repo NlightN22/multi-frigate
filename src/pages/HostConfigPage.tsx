@@ -12,6 +12,7 @@ import RetryErrorPage from './RetryErrorPage';
 import { useAdminRole } from '../hooks/useAdminRole';
 import Forbidden from './403';
 import { observer } from 'mobx-react-lite';
+import { isProduction } from '../shared/env.const';
 
 
 const HostConfigPage = () => {
@@ -84,7 +85,7 @@ const HostConfigPage = () => {
       if (!editorRef.current) {
         return;
       }
-      console.log('save config', save_option)
+      if (!isProduction) console.log('save config', save_option)
     }, [editorRef])
 
   if (configPending || adminLoading) return <CenterLoader />
