@@ -4,7 +4,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import RootStore from './shared/stores/root.store';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
-import { oidpSettings } from './shared/env.const';
+import { isProduction, oidpSettings } from './shared/env.const';
+import { BrowserRouter } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -21,14 +22,22 @@ export const keycloakConfig: AuthProviderProps = {
 const rootStore = new RootStore()
 export const Context = createContext<RootStore>(rootStore)
 
+if (!isProduction) {
+  console.log('keycloakConfig.authority', keycloakConfig.authority)
+  console.log('keycloakConfig.client_id', keycloakConfig.client_id)
+  console.log('keycloakConfig.redirect_uri', keycloakConfig.redirect_uri)
+}
+
 root.render(
-    <Context.Provider value={rootStore}>
-      <AuthProvider {...keycloakConfig}>
+  <Context.Provider value={rootStore}>
+    <AuthProvider {...keycloakConfig}>
+      <BrowserRouter>
         {/* <React.StrictMode> */}
-          <App />
+        <App />
         {/* </React.StrictMode> */}
-      </AuthProvider>
-    </Context.Provider>
+      </BrowserRouter>
+    </AuthProvider>
+  </Context.Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

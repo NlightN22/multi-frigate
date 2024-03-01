@@ -8,10 +8,18 @@ import { Context } from '..';
 import { observer } from 'mobx-react-lite';
 
 interface RetryErrorPageProps {
+    repeatVisible?: boolean
+    backVisible?: boolean
+    mainVisible?: boolean
     onRetry?: () => void
 }
 
-const RetryErrorPage = ({ onRetry }: RetryErrorPageProps) => {
+const RetryErrorPage = ({
+    repeatVisible = true,
+    backVisible = true,
+    mainVisible = true,
+    onRetry
+}: RetryErrorPageProps) => {
     const executed = useRef(false)
 
     const navigate = useNavigate()
@@ -45,9 +53,9 @@ const RetryErrorPage = ({ onRetry }: RetryErrorPageProps) => {
             {ExclamationCogWheel}
             <Text fz='lg' fw={700}>{strings.youCanRetryOrGoToMain}</Text>
             <Flex>
-                <Button ml='1rem' onClick={handleRetry}>{strings.retry}</Button>
-                <Button ml='1rem' onClick={handleGoBack}>{strings.back}</Button>
-                <Button ml='1rem' onClick={handleGoToMain}>{strings.goToMainPage}</Button>
+                {repeatVisible ? <Button ml='1rem' onClick={handleRetry}>{strings.retry}</Button> : null}
+                { backVisible ? <Button ml='1rem' onClick={handleGoBack}>{strings.back}</Button> : null }
+                { mainVisible ? <Button ml='1rem' onClick={handleGoToMain}>{strings.goToMainPage}</Button> : null }
             </Flex>
         </Flex>
     );

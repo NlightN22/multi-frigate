@@ -10,4 +10,4 @@ services:
       REACT_APP_OPENID_SERVER: https://server:port/realms/your-realm
       REACT_APP_CLIENT_ID: frontend-client
     ports:
-      - 5173:80 # set your port here
+      - 80:80 # set your port here
