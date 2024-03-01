@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # Build commands:
 # - rm build -r -Force ; yarn build
-# - $VERSION=0.1
+# - $VERSION=0.2
 # - docker build --pull --rm -t oncharterliz/multi-frigate:latest -t oncharterliz/multi-frigate:$VERSION "."
 # - docker image push --all-tags oncharterliz/multi-frigate
 
