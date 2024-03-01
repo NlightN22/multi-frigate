@@ -11,7 +11,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import RetryErrorPage from './pages/RetryErrorPage';
 import { keycloakConfig } from '.';
 
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -21,7 +20,7 @@ const queryClient = new QueryClient({
 })
 
 function App() {
-  const maxErrorAuthConts = 10
+  const maxErrorAuthConts = 2
   const systemColorScheme = useColorScheme()
   const [colorScheme, setColorScheme] = useState<ColorScheme>(getCookie('mantine-color-scheme') as ColorScheme || systemColorScheme)
   const [authErrorCounter, setAuthErrorCounter] = useState(0)
@@ -37,7 +36,8 @@ function App() {
   useEffect(() => {
     if (!hasAuthParams() &&
       !auth.isAuthenticated && !auth.activeNavigator && !auth.isLoading && authErrorCounter < maxErrorAuthConts) {
-      console.log('not authenticated! redirect!')
+      console.log('Not authenticated! Redirect! ErrorCounter', authErrorCounter)
+      setAuthErrorCounter(prevCount => prevCount + 1)
       auth.signinRedirect()
     }
   }, [auth, auth.isAuthenticated, auth.activeNavigator, auth.isLoading, auth.signinRedirect])
@@ -55,13 +55,13 @@ function App() {
   }
 
   if (!auth.isAuthenticated && !auth.isLoading && authErrorCounter < maxErrorAuthConts) {
-    console.log('not authenticated! redirect!')
+    console.log('Not authenticated! Redirect! auth ErrorCounter', authErrorCounter)
     setAuthErrorCounter(prevCount => prevCount + 1);
     auth.signinRedirect()
   }
 
   if ((!hasAuthParams() && !auth.isAuthenticated && !auth.isLoading) || auth.error) {
-    setAuthErrorCounter(prevCount => prevCount + 1);
+    setAuthErrorCounter(prevCount => prevCount + 1)
     console.error(`auth.error:`, auth.error)
     return <Forbidden />
   }
