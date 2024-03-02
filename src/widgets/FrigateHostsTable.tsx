@@ -1,17 +1,16 @@
 import { Button, Flex, Table } from '@mantine/core';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
 import ObjectId from 'bson-objectid';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
 import HostSettingsMenu from '../shared/components/menu/HostSettingsMenu';
 import SortedTh from '../shared/components/table.aps/SortedTh';
+import { isProduction } from '../shared/env.const';
 import { strings } from '../shared/strings/strings';
-import { debounce } from '../shared/utils/debounce';
 import StateCell from './hosts.table/StateCell';
 import SwitchCell from './hosts.table/SwitchCell';
 import TextInputCell from './hosts.table/TextInputCell';
-import { isProduction } from '../shared/env.const';
 
 interface TableProps<T> {
     data: T[],
@@ -21,22 +20,22 @@ interface TableProps<T> {
 }
 
 const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedCallback }: TableProps<GetFrigateHost>) => {
-    if (!isProduction) console.log('FrigateHostsTable rendered')
     const [tableData, setTableData] = useState(data)
     const [reversed, setReversed] = useState(false)
     const [sortedName, setSortedName] = useState<string | null>(null)
 
-    useEffect(() => {
-        setTableData(data)
-    }, [data])
-
-    const debouncedChanged = useCallback(debounce((tableData: GetFrigateHost[]) => {
-        if (changedCallback) changedCallback(tableData)
-    }, 200), [tableData])
+    console.log('data', data)
+    console.log('tableData', tableData)
 
     useEffect(() => {
-        debouncedChanged(tableData)
-    }, [tableData, debouncedChanged])
+        setTableData(data);
+      }, [data]);
+
+    useEffect(() => {
+        if (!isProduction) console.log('TableData', tableData)
+        if (changedCallback) 
+            changedCallback(tableData)
+    }, [tableData])
 
     function sortByKey<T, K extends keyof T>(array: T[], key: K): T[] {
         return array.sort((a, b) => {
@@ -80,7 +79,7 @@ const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedC
         )
     })
 
-    const handleTextChange = (id: string | number, propertyName: string, value: string,) => {
+    const handleTextChange = (id: string | number, propertyName: string, value: string | number | boolean | undefined,) => {
         setTableData(tableData.map(item => {
             if (item.id === id) {
                 return {
@@ -116,7 +115,7 @@ const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedC
             name: '',
             enabled: true
         }
-        setTableData(prevTableData => [...prevTableData, newHost])
+        setTableData([...tableData, newHost])
     }
 
     const rows = tableData.map(item => {
@@ -135,7 +134,7 @@ const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedC
             </tr>
         )
     })
-    
+    if (!isProduction) console.log('FrigateHostsTable rendered')
     return (
         <div>
             <Table >

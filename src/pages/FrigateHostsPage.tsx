@@ -1,16 +1,20 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import FrigateHostsTable from '../widgets/FrigateHostsTable';
+import { Button, Flex, Text } from '@mantine/core';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
-import { deleteFrigateHostSchema, GetFrigateHost, putFrigateHostSchema } from '../services/frigate.proxy/frigate.schema';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
-import RetryErrorPage from './RetryErrorPage';
+import { observer } from 'mobx-react-lite';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Context } from '..';
-import { strings } from '../shared/strings/strings';
-import { Button, Flex } from '@mantine/core';
-import { observer } from 'mobx-react-lite'
 import { useAdminRole } from '../hooks/useAdminRole';
+import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
+import { GetFrigateHost, deleteFrigateHostSchema, putFrigateHostSchema } from '../services/frigate.proxy/frigate.schema';
+import CenterLoader from '../shared/components/loaders/CenterLoader';
+import { isProduction } from '../shared/env.const';
+import { strings } from '../shared/strings/strings';
+import FrigateHostsTable from '../widgets/FrigateHostsTable';
 import Forbidden from './403';
+import RetryErrorPage from './RetryErrorPage';
+import { notifications } from '@mantine/notifications';
+import { IconAlertCircle } from '@tabler/icons-react';
+
 
 const FrigateHostsPage = () => {
     const executed = useRef(false)
@@ -36,6 +40,10 @@ const FrigateHostsPage = () => {
         if (data) setPageData(data)
     }, [data])
 
+    useEffect(() => {
+        if (!isProduction) console.log('pageData', pageData)
+    }, [pageData])
+
     const { mutate } = useMutation({
         mutationFn: (tableData: GetFrigateHost[]) => {
             let fetchPromises = []
@@ -48,16 +56,29 @@ const FrigateHostsPage = () => {
                 const parsedChanged = putFrigateHostSchema.array().parse(tableData)
                 fetchPromises.push(frigateApi.putHosts(parsedChanged))
             }
-            return Promise.all(fetchPromises)
+            return Promise.all(fetchPromises).catch(error => {
+                if (error.response && error.response.data) {
+                    return Promise.reject(error.response.data);
+                }
+                return Promise.reject(error);
+            })
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [frigateQueryKeys.getFrigateHosts] })
         },
-        onError: () => {
+        onError: (e) => {
+            if (e && e.message) {
+                notifications.show({
+                    id: e.message,
+                    withCloseButton: true,
+                    autoClose: 5000,
+                    title: "Error",
+                    message: e.message,
+                    color: 'red',
+                    icon: <IconAlertCircle />,
+                })
+            }
             queryClient.invalidateQueries({ queryKey: [frigateQueryKeys.getFrigateHosts] })
-        },
-        onSettled: () => {
-            if (data) setPageData([...data])
         }
     })
 
@@ -79,18 +100,16 @@ const FrigateHostsPage = () => {
     if (hostsPending || adminLoading) return <CenterLoader />
     if (!isAdmin) return <Forbidden />
     if (hostsError) return <RetryErrorPage />
+    if (!pageData) return <Text>Empty server response</Text>
 
     return (
-        <div>
-            {
-                !pageData ? <></> :
-                    <FrigateHostsTable data={pageData} showAddButton changedCallback={handleChange} />
-            }
+        <Flex w='100%' h='100%' direction='column'>
+            <FrigateHostsTable data={pageData} showAddButton changedCallback={handleChange} />
             <Flex justify='center'>
                 <Button m='0.5rem' onClick={handleDiscard}>{strings.discard}</Button>
                 <Button m='0.5rem' onClick={handleSave}>{strings.save}</Button>
             </Flex>
-        </div>
+        </Flex>
     );
 }
 

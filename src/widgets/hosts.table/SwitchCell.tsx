@@ -1,6 +1,7 @@
 import { Flex, Switch, useMantineTheme } from '@mantine/core';
 import { IconBulbFilled, IconBulbOff } from '@tabler/icons-react';
 import React from 'react';
+import { boolean } from 'zod';
 
 interface SwithCellProps {
     value?: boolean,
@@ -14,7 +15,7 @@ interface SwithCellProps {
 export const SwitchCell = ( { value, defaultValue, width, id, propertyName, toggle }: SwithCellProps ) => {
     const theme = useMantineTheme();
 
-    if (!value  && !defaultValue) value = defaultValue
+    if (typeof value !== 'boolean') value = defaultValue
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (id && toggle && propertyName) toggle(id, propertyName, event.target.value)
     }

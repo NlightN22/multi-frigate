@@ -1,5 +1,6 @@
 import { TextInput } from '@mantine/core';
-import React from 'react';
+import { useDebouncedValue } from '@mantine/hooks';
+import React, { useEffect, useState } from 'react';
 
 interface TextImputCellProps {
     text?: string | number | boolean,
@@ -9,18 +10,25 @@ interface TextImputCellProps {
     onChange?: (
         id: string | number,
         propertyName: string,
-        value: string,
+        value?: string | number | boolean,
     ) => void,
 }
 
 const TextInputCell = ({ text, width, id, propertyName, onChange }: TextImputCellProps) => {
+    const [value, setValue] = useState(text);
+    const [debouncedValue] = useDebouncedValue(value, 300)
+    useEffect(() => {
+        if (debouncedValue !== text) {
+            if (id && propertyName && onChange)
+                onChange(id, propertyName, debouncedValue)
+        }
+    }, [debouncedValue, id, propertyName, onChange, text])
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (id && propertyName && onChange)
-            onChange(id, propertyName, event.currentTarget.value)
+        setValue(event.currentTarget.value)
     }
     return (
         <td style={{ width: width, textAlign: 'center' }}>
-            <TextInput onChange={handleChange} size='sm' value={String(text)} />
+            <TextInput onChange={handleChange} size='sm' value={String(value)} />
         </td>
     )
 }
