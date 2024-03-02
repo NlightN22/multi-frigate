@@ -1,6 +1,5 @@
-import React from 'react';
-import { Flex, Group, Text, createStyles } from '@mantine/core';
-import { IconPlayerPlay, IconPlayerPlayFilled, IconPlayerStop, IconPlayerStopFilled } from '@tabler/icons-react';
+import { Flex, createStyles } from '@mantine/core';
+import { IconPlayerPlayFilled, IconPlayerStopFilled } from '@tabler/icons-react';
 import { strings } from '../../strings/strings';
 import AccordionControlButton from './AccordionControlButton';
 
@@ -15,28 +14,26 @@ const useStyles = createStyles((theme) => ({
 }))
 
 interface PlayControlProps {
-    value: string,
-    playedValue?: string,
-    onClick?: (value: string) => void
+    played: boolean,
+    onClick?: () => void
 }
 
 const PlayControl = ({
-    value,
-    playedValue,
+    played,
     onClick
 }: PlayControlProps) => {
     const { classes } = useStyles();
 
-    const handleClick = (value: string) => {
-        if (onClick) onClick(value)
+    const handleClick = () => {
+        if (onClick) onClick()
     }
     return (
         <AccordionControlButton
-            onClick={() => { handleClick(value) }}
+            onClick={() => { handleClick() }}
         >
             <Flex align='center'>
-                {playedValue === value ? strings.player.stopVideo : strings.player.startVideo}
-                {playedValue === value ?
+                {played ? strings.player.stopVideo : strings.player.startVideo}
+                {played ?
                     <IconPlayerStopFilled
                         className={classes.iconStop} />
                     :

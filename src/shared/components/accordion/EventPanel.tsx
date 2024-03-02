@@ -1,29 +1,29 @@
-import { Flex,  Button, Text } from '@mantine/core';
+import { Button, Flex, Text } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons-react';
-import React from 'react';
 import { proxyApi } from '../../../services/frigate.proxy/frigate.api';
-import { strings } from '../../strings/strings';
-import { unixTimeToDate, getDurationFromTimestamps } from '../../utils/dateUtil';
-import VideoPlayer from '../players/VideoPlayer';
 import { EventFrigate } from '../../../types/event';
+import { strings } from '../../strings/strings';
+import { getDurationFromTimestamps, unixTimeToDate } from '../../utils/dateUtil';
 import BlobImage from '../images/BlobImage';
+import VideoPlayer from '../players/VideoPlayer';
 
 interface EventPanelProps {
     event: EventFrigate
-    playedValue?: string
-    playerUrl?: string
     hostName?: string
+    videoURL?: string,
+    playedURL?: string,
 }
 
 const EventPanel = ({
     event,
-    playedValue,
-    playerUrl,
     hostName,
+    videoURL,
+    playedURL,
 }: EventPanelProps) => {
+
     return (
         <>
-            {playedValue === event.id && playerUrl ? <VideoPlayer videoUrl={playerUrl} /> : <></>}
+            {playedURL && playedURL === videoURL ? <VideoPlayer videoUrl={playedURL} /> : <></>}
             <Flex w='100%' justify='space-between'>
                 {!hostName ? <></> :
                     <BlobImage

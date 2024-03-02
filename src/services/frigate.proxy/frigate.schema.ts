@@ -105,6 +105,14 @@ export const getExpotedFile = z.object({
     size: z.number(),
 })
 
+export const recordingSchema = z.object({
+    hostName: z.string(),
+    cameraName: z.string(),
+    hour: z.string(),
+    day: z.string(),
+    timezone: z.string(),
+})
+
 export type GetConfig = z.infer<typeof getConfigSchema>
 export type PutConfig = z.infer<typeof putConfigSchema>
 export type GetFrigateHost = z.infer<typeof getFrigateHostSchema>

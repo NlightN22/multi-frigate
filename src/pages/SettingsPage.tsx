@@ -40,11 +40,11 @@ const SettingsPage = () => {
     const { isAdmin, isLoading: adminLoading } = useAdminRole()
 
 
-    const ecryptedValue = '**********'
+    const ecryptedTemplate = '**********'
     const mapEncryptedToView = (data: GetConfig[] | undefined): GetConfig[] | undefined => {
         return data?.map(item => {
             const { value, encrypted, ...rest } = item
-            if (encrypted) return { value: ecryptedValue, encrypted, ...rest }
+            if (encrypted && value) return { value: ecryptedTemplate, encrypted, ...rest }
             return item
         })
     }
@@ -84,8 +84,8 @@ const SettingsPage = () => {
         const configsToUpdate = Object.keys(formDataObj).map(key => {
             const value = formDataObj[key]
             const currData = data?.find(val => val.key === key)
-            const isEncrypted = value === ecryptedValue
-            if (currData && currData.encrypted && isEncrypted) {
+            const notChangedEncrypted = value === ecryptedTemplate
+            if (currData && currData.encrypted && notChangedEncrypted) {
                 return {
                     key,
                     value: currData.value
@@ -121,7 +121,7 @@ const SettingsPage = () => {
                                 label={config.description}
                                 value={config.value}
                                 placeholder={config.description}
-                                ecryptedValue={ecryptedValue}
+                                ecryptedValue={ecryptedTemplate}
                             />
                         ))}
                     <Space h='2%' />

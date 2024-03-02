@@ -1,111 +1,64 @@
-import { Accordion, Center, Flex, Group, NavLink, Progress, Text, UnstyledButton } from '@mantine/core';
-import React, { useContext, useEffect, useState } from 'react';
-import { RecordSummary } from '../../../types/record';
+import { Accordion, Text } from '@mantine/core';
 import { observer } from 'mobx-react-lite';
-import PlayControl from '../buttons/PlayControl';
-import { mapHostToHostname, proxyApi } from '../../../services/frigate.proxy/frigate.api';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { Context } from '../../..';
-import VideoPlayer from '../players/VideoPlayer';
-import { getResolvedTimeZone, mapDateHourToUnixTime } from '../../utils/dateUtil';
-import DayEventsAccordion from './DayEventsAccordion';
-import { strings } from '../../strings/strings';
-import { useNavigate } from 'react-router-dom';
-import AccordionControlButton from '../buttons/AccordionControlButton';
-import { IconExternalLink, IconShare } from '@tabler/icons-react';
-import { routesPath } from '../../../router/routes.path';
-import AccordionShareButton from '../buttons/AccordionShareButton';
-import VideoDownloader from '../../../widgets/VideoDownloader';
+import { mapHostToHostname } from '../../../services/frigate.proxy/frigate.api';
+import { RecordSummary } from '../../../types/record';
 import { isProduction } from '../../env.const';
+import DayAccordionItem from './DayAccordionItem';
 
 interface RecordingAccordionProps {
-  recordSummary?: RecordSummary
+  recordSummary?: RecordSummary,
 }
 
+const DayAccordionItemMemo = React.memo(DayAccordionItem)
+
 const DayAccordion = ({
-  recordSummary
+  recordSummary,
 }: RecordingAccordionProps) => {
   const { recordingsStore: recStore } = useContext(Context)
-  const [playedValue, setVideoPlayerState] = useState<string>()
   const [openedValue, setOpenedValue] = useState<string>()
-  const [playerUrl, setPlayerUrl] = useState<string>()
-  const navigate = useNavigate()
 
   const camera = recStore.openedCamera || recStore.filteredCamera
   const hostName = mapHostToHostname(recStore.filteredHost)
 
-  const createRecordURL = (recordId: string): string | undefined => {
-    const record = {
-      hostName: hostName ? hostName : '',
-      cameraName: camera?.name,
-      day: recordSummary?.day,
-      hour: recordId,
-      timezone: getResolvedTimeZone().replace('/', ','),
+  const handleOpenPlayer = useCallback((value?: string) => {
+    if (recStore.playedItem !== value) {
+      setOpenedValue(value);
+      recStore.playedItem = value;
+    } else if (openedValue === value && recStore.playedItem === value) {
+      recStore.playedItem = undefined;
     }
-    const parsed = recStore.getFullRecordForPlay(record)
-    if (parsed.success) {
-      return proxyApi.recordingURL(
-        parsed.data.hostName,
-        parsed.data.cameraName,
-        parsed.data.timezone,
-        parsed.data.day,
-        parsed.data.hour
-      )
-    }
-    return undefined
-  }
+  }, [openedValue, recStore]);
 
-  useEffect(() => {
-    if (playedValue) {
-      const url = createRecordURL(playedValue)
-      if (url) {
-        if (!isProduction) console.log('GET URL: ', url)
-        setPlayerUrl(url)
-      }
-    } else {
-      setPlayerUrl(undefined)
+  const dayItems = useMemo(() => {
+    if (recordSummary && recordSummary.hours.length > 0) {
+      return recordSummary.hours.map(hour => {
+        const played = recordSummary.day + hour.hour === recStore.playedItem;
+        return (
+          <DayAccordionItemMemo
+            key={recordSummary.day + hour.hour}
+            recordSummary={recordSummary}
+            recordHour={hour}
+            hostName={hostName}
+            cameraName={camera?.name}
+            played={played}
+            openPlayer={handleOpenPlayer}
+          />
+        );
+      });
     }
-  }, [playedValue])
+    return [];
+  }, [recordSummary, hostName, camera, recStore.playedItem, handleOpenPlayer])
 
-  if (!recordSummary || recordSummary.hours.length < 1) return <Text>Not have record at that day</Text>
-
-  const handleOpenPlayer = (value: string) => {
-    if (playedValue !== value) {
-      setOpenedValue(value)
-      setVideoPlayerState(value)
-    } else if (openedValue === value && playedValue === value) {
-      setVideoPlayerState(undefined)
-    }
-  }
+  if (!recordSummary || recordSummary.hours.length < 1) return <Text>Not have record at {recordSummary?.day}</Text>
 
   const handleOpenItem = (value: string) => {
-    if (openedValue === value) {
-      setOpenedValue(undefined)
-    } else {
-      setOpenedValue(value)
-    }
-    setVideoPlayerState(undefined)
+    setOpenedValue(value !== openedValue ? value : undefined)
+    recStore.playedItem = undefined
   }
 
   if (!isProduction) console.log('DayAccordion rendered')
-
-  const hourLabel = (hour: string, eventsQty: number) => (
-    <Group>
-      <Text>{strings.hour}: {hour}:00</Text>
-      {eventsQty > 0 ?
-        <Text>{strings.events}: {eventsQty}</Text>
-        :
-        <Text>{strings.notHaveEvents}</Text>
-      }
-    </Group>
-  )
-
-  const hanleOpenNewLink = (recordId: string) => {
-    const link = createRecordURL(recordId)
-    if (link) {
-      const url = `${routesPath.PLAYER_PATH}?link=${encodeURIComponent(link)}`
-      navigate(url)
-    }
-  }
 
   return (
     <Accordion
@@ -115,45 +68,7 @@ const DayAccordion = ({
       value={openedValue}
       onChange={handleOpenItem}
     >
-      {recordSummary.hours.map(hour => (
-        <Accordion.Item key={hour.hour + 'Item'} value={hour.hour}>
-          <Accordion.Control key={hour.hour + 'Control'}>
-            <Flex justify='space-between'>
-              {hourLabel(hour.hour, hour.events)}
-              <Group>
-                <AccordionShareButton recordUrl={createRecordURL(hour.hour)} />
-                <AccordionControlButton onClick={() => hanleOpenNewLink(hour.hour)}>
-                  <IconExternalLink />
-                </AccordionControlButton>
-                <PlayControl
-                  value={hour.hour}
-                  playedValue={playedValue}
-                  onClick={handleOpenPlayer} />
-              </Group>
-            </Flex>
-          </Accordion.Control>
-          <Accordion.Panel key={hour.hour + 'Panel'}>
-            {playedValue === hour.hour && playerUrl ? <VideoPlayer videoUrl={playerUrl} /> : <></>}
-            { }
-            {recStore.filteredHost && camera && hostName ?
-              <Flex w='100%' justify='center' mb='0.5rem'>
-                <VideoDownloader
-                  cameraName={camera.name}
-                  hostName={hostName}
-                  startUnixTime={mapDateHourToUnixTime(recordSummary.day, hour.hour)[0]}
-                  endUnixTime={mapDateHourToUnixTime(recordSummary.day, hour.hour)[1]}
-                />
-              </Flex>
-              : ''}
-            {hour.events > 0 ?
-              <DayEventsAccordion day={recordSummary.day} hour={hour.hour} qty={hour.events} />
-              :
-              <Center><Text>{strings.notHaveEvents}</Text></Center>
-            }
-          </Accordion.Panel>
-        </Accordion.Item>
-      ))}
-
+      {dayItems}
     </Accordion>
 
   )

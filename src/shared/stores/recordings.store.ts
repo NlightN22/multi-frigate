@@ -10,28 +10,19 @@ export type RecordForPlay = {
     timezone?: string
 }
 
+
+
 export class RecordingsStore {
     constructor() {
         makeAutoObservable(this)
     }
 
-    private _recordingSchema = z.object({
-        hostName: z.string(),
-        cameraName: z.string(),
-        hour: z.string(),
-        day: z.string(),
-        timezone: z.string(),
-    })
-
-    // private _recordToPlay: RecordForPlay = {}
-    // public get recordToPlay(): RecordForPlay {
-    //     return this._recordToPlay
-    // }
-    // public set recordToPlay(value: RecordForPlay) {
-    //     this._recordToPlay = value
-    // }
-    getFullRecordForPlay(value: RecordForPlay) {
-        return this._recordingSchema.safeParse(value)
+    private _playedURL: string | undefined
+    public get playedItem(): string | undefined {
+        return this._playedURL
+    }
+    public set playedItem(value: string | undefined) {
+        this._playedURL = value
     }
 
     private _hostIdParam: string | undefined

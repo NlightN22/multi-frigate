@@ -3,12 +3,13 @@ import { proxyURL } from "../../shared/env.const"
 import {
     GetConfig, DeleteFrigateHost, GetFrigateHost, PutConfig, PutFrigateHost,
     GetCameraWHostWConfig, GetRole,
-    GetRoleWCameras, GetExportedFile
+    GetRoleWCameras, GetExportedFile, recordingSchema
 } from "./frigate.schema";
 import { FrigateConfig } from "../../types/frigateConfig";
 import { RecordSummary } from "../../types/record";
 import { EventFrigate } from "../../types/event";
 import { keycloakConfig } from "../..";
+import { getResolvedTimeZone } from "../../shared/utils/dateUtil";
 
 
 export const getToken = (): string | undefined => {
@@ -67,7 +68,8 @@ export const proxyApi = {
     getHostConfig: (hostName: string) => instanceApi.get(`proxy/${hostName}/api/config`).then(res => res.data),
     getImageFrigate: async (imageUrl: string) => {
         const response = await instanceApi.get<Blob>(imageUrl, {
-            responseType: 'blob'
+            responseType: 'blob',
+            timeout: 10 * 1000
         })
         return response.data
     },
@@ -144,10 +146,21 @@ export const proxyApi = {
     eventThumbnailUrl: (hostName: string, eventId: string) => `${proxyPrefix}${hostName}/api/events/${eventId}/thumbnail.jpg`,
     eventDownloadURL: (hostName: string, eventId: string) => `${proxyPrefix}${hostName}/api/events/${eventId}/clip.mp4?download=true`,
     // http://127.0.0.1:5000/vod/2024-02/23/19/CameraName/Asia,Krasnoyarsk/master.m3u8
-    recordingURL: (hostName: string, cameraName: string, timezone: string, day: string, hour: string) => {//  day:2024-02-23 hour:19
-        const parts = day.split('-')
-        const date = `${parts[0]}-${parts[1]}/${parts[2]}/${hour}`
-        return `${proxyPrefix}${hostName}/vod/${date}/${cameraName}/${timezone}/master.m3u8`
+    recordingURL: (hostName?: string, cameraName?: string, timezone?: string, day?: string, hour?: string) => {//  day:2024-02-23 hour:19
+        const record = {
+            hostName: hostName,
+            cameraName: cameraName,
+            day: day,
+            hour: hour,
+            timezone: getResolvedTimeZone().replace('/', ','),
+        }
+        const parsed = recordingSchema.safeParse(record)
+        if (parsed.success) {
+            const parts = parsed.data.day.split('-')
+            const date = `${parts[0]}-${parts[1]}/${parts[2]}/${hour}`
+            return `${proxyPrefix}${hostName}/vod/${date}/${cameraName}/${timezone}/master.m3u8`
+        }
+        return undefined
     },
     postExportVideoTask: (hostName: string, cameraName: string, startUnixTime: number, endUnixTime: number) => {
         const url = `proxy/${hostName}/api/export/${cameraName}/start/${startUnixTime}/end/${endUnixTime}`

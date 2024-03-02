@@ -1,16 +1,15 @@
 
-import { useState, useContext, useEffect, useRef, useMemo } from 'react';
 import { Flex, Text } from '@mantine/core';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Context } from '..';
+import { isProduction } from '../shared/env.const';
+import { dateToQueryString, parseQueryDateToDate } from '../shared/utils/dateUtil';
 import RecordingsFiltersRightSide from '../widgets/RecordingsFiltersRightSide';
 import SelectedCameraList from '../widgets/SelectedCameraList';
-import SelectedHostList from '../widgets/SelectedHostList';
-import { dateToQueryString, parseQueryDateToDate } from '../shared/utils/dateUtil';
 import SelectedDayList from '../widgets/SelectedDayList';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
-import { isProduction } from '../shared/env.const';
+import SelectedHostList from '../widgets/SelectedHostList';
 
 
 export const recordingsPageQuery = {
@@ -38,7 +37,6 @@ const RecordingsPage = () => {
   const [hostId, setHostId] = useState<string>('')
   const [cameraId, setCameraId] = useState<string>('')
   const [period, setPeriod] = useState<[Date | null, Date | null]>([null, null])
-  const [firstRender, setFirstRender] = useState(false)
 
   useEffect(() => {
     if (!executed.current) {
@@ -53,13 +51,13 @@ const RecordingsPage = () => {
         const parsedEndDay = parseQueryDateToDate(paramEndDay)
         recStore.selectedRange = [parsedStartDay, parsedEndDay]
       }
-      setFirstRender(true)
+      executed.current = true
       return () => {
         sideBarsStore.setRightChildren(null)
         sideBarsStore.rightVisible = false
       }
     }
-  }, [paramCameraId, paramEndDay, paramHostId, paramStartDay, recStore, sideBarsStore])
+  }, [])
 
   useEffect(() => {
     setHostId(recStore.filteredHost?.id || '')
@@ -97,8 +95,6 @@ const RecordingsPage = () => {
   }, [recStore.selectedRange, location.pathname, navigate, queryParams])
 
   if (!isProduction) console.log('RecordingsPage rendered')
-
-  if (!firstRender) return <CenterLoader />
 
   const [startDay, endDay] = period
   if (startDay && endDay) {

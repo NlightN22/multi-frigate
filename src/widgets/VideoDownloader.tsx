@@ -84,7 +84,7 @@ const VideoDownloader = ({
                 setTimer(undefined)
             }, 5 * 60 * 1000)
         }
-    }, [createName, link, videoBlob, checkVideo, getVideBlob, hostName, timer])
+    }, [createName, link, videoBlob])
 
     useEffect(() => {
         if (videoBlob && videoBlob instanceof Blob && createName) {
@@ -97,7 +97,7 @@ const VideoDownloader = ({
                 }
             }
         }
-    }, [videoBlob, createName, link, deleteVideo])
+    }, [videoBlob, createName, link])
 
     const checkTime = () => {
         const duration = endUnixTime - startUnixTime

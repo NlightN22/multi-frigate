@@ -54,10 +54,17 @@ function App() {
     return <RetryErrorPage backVisible={false} mainVisible={false} onRetry={() => auth.signinRedirect()} />
   }
 
+
   if (!auth.isAuthenticated && !auth.isLoading && authErrorCounter < maxErrorAuthConts) {
-    console.log('Not authenticated! Redirect! auth ErrorCounter', authErrorCounter)
-    setAuthErrorCounter(prevCount => prevCount + 1);
-    auth.signinRedirect()
+    if (hasAuthParams()) {
+      console.log('auth.isAuthenticated', auth.isAuthenticated)
+      console.log('auth.isLoading', auth.isLoading)
+      return <RetryErrorPage backVisible={false} mainVisible={false} onRetry={() => auth.signinRedirect()} />
+    } else {
+      console.log('Not authenticated! Redirect! auth ErrorCounter', authErrorCounter)
+      setAuthErrorCounter(prevCount => prevCount + 1);
+      auth.signinRedirect()
+    }
   }
 
   if ((!hasAuthParams() && !auth.isAuthenticated && !auth.isLoading) || auth.error) {

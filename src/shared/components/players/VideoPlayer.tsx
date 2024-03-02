@@ -67,7 +67,7 @@ const VideoPlayer = ({ videoUrl }: VideoPlayerProps) => {
       };
     }
     executed.current = true
-  }, [videoUrl]);
+  }, []);
 
 
   useEffect(() => {
