@@ -30,6 +30,7 @@ const AutoUpdatedImage = ({
     staleTime: 60 * 1000,
     gcTime: Infinity,
     refetchInterval: isVisible ? 30 * 1000 : undefined,
+    retry: 1,
   });
 
   useEffect(() => {
