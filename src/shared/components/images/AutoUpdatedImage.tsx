@@ -66,7 +66,7 @@ const AutoUpdatedImage = ({
 
   return (
     <Flex direction="column" justify="center" h="100%">
-      {enabled ? <Image ref={ref} src={imageSrc} alt="Dynamic Content" {...rest} />
+      {enabled ? <Image ref={ref} src={imageSrc} alt="Dynamic Content" {...rest} withPlaceholder />
         :
         <Text align="center">Camera is disabled in config, no stream or snapshot available!</Text>
       }

@@ -1,4 +1,6 @@
 import { Button, Card, Flex, Grid, Group, Text, createStyles } from '@mantine/core';
+import { useIntersection } from '@mantine/hooks';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { recordingsPageQuery } from '../pages/RecordingsPage';
 import { routesPath } from '../router/routes.path';
@@ -6,7 +8,6 @@ import { mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.a
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
 import AutoUpdatedImage from '../shared/components/images/AutoUpdatedImage';
 import { strings } from '../shared/strings/strings';
-
 
 const useStyles = createStyles((theme) => ({
     mainCard: {
@@ -40,10 +41,17 @@ interface CameraCardProps {
 const CameraCard = ({
     camera
 }: CameraCardProps) => {
+    const [renderImage, setRenderImage] = useState<boolean>(false)
     const { classes } = useStyles();
+    const { ref, entry } = useIntersection({ threshold: 0.5, })
     const navigate = useNavigate()
     const hostName = mapHostToHostname(camera.frigateHost)
     const imageUrl = hostName ? proxyApi.cameraImageURL(hostName, camera.name) : '' //todo implement get URL from live cameras
+
+    useEffect(() => {
+        if (entry?.isIntersecting)
+            setRenderImage(true)
+     }, [entry?.isIntersecting])
 
     const handleOpenLiveView = () => {
         const url = routesPath.LIVE_PATH.replace(':id', camera.id)
@@ -55,9 +63,11 @@ const CameraCard = ({
     }
     return (
         <Grid.Col md={6} lg={3} p='0.2rem'>
-            <Card h='100%' radius="lg" padding='0.5rem' className={classes.mainCard}>
+            <Card ref={ref} h='100%' radius="lg" padding='0.5rem' className={classes.mainCard}>
                 <Text align='center' size='md' className={classes.headText} >{camera.name} / {camera.frigateHost?.name}</Text>
-                <AutoUpdatedImage onClick={handleOpenLiveView} enabled={camera.config?.enabled} imageUrl={imageUrl} />
+                {!renderImage ? '' :
+                    <AutoUpdatedImage onClick={handleOpenLiveView} enabled={camera.config?.enabled} imageUrl={imageUrl} />
+                }
                 <Group
                     className={classes.bottomGroup}>
                     <Flex justify='space-evenly' mt='0.5rem' w='100%'>
