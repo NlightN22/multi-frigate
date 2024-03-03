@@ -20,7 +20,7 @@ const queryClient = new QueryClient({
 })
 
 function App() {
-  const maxErrorAuthConts = 2
+  const maxErrorAuthCounts = 2
   const systemColorScheme = useColorScheme()
   const [colorScheme, setColorScheme] = useState<ColorScheme>(getCookie('mantine-color-scheme') as ColorScheme || systemColorScheme)
   const [authErrorCounter, setAuthErrorCounter] = useState(0)
@@ -35,33 +35,33 @@ function App() {
   // automatically sign-in
   useEffect(() => {
     if (!hasAuthParams() &&
-      !auth.isAuthenticated && !auth.activeNavigator && !auth.isLoading && authErrorCounter < maxErrorAuthConts) {
-      console.log('Not authenticated! Redirect! ErrorCounter', authErrorCounter)
+      !auth.isAuthenticated && !auth.activeNavigator && !auth.isLoading && authErrorCounter < maxErrorAuthCounts) {
+      console.error('Not authenticated! Redirect! ErrorCounter', authErrorCounter)
       setAuthErrorCounter(prevCount => prevCount + 1)
       auth.signinRedirect()
     }
-  }, [auth, auth.isAuthenticated, auth.activeNavigator, auth.isLoading, auth.signinRedirect])
+  }, [auth, auth.isAuthenticated, auth.activeNavigator, auth.isLoading, auth.signinRedirect, authErrorCounter])
 
 
   if (auth.activeNavigator || auth.isLoading) {
     return <CenterLoader />
   }
 
-  if (authErrorCounter > maxErrorAuthConts) {
-    console.log('maxErrorAuthConts authority', keycloakConfig.authority)
-    console.log('maxErrorAuthConts client_id', keycloakConfig.client_id)
-    console.log('maxErrorAuthConts redirect_uri', keycloakConfig.redirect_uri)
+  if (authErrorCounter > maxErrorAuthCounts) {
+    console.error('maxErrorAuthCounts authority', keycloakConfig.authority)
+    console.error('maxErrorAuthCounts client_id', keycloakConfig.client_id)
+    console.error('maxErrorAuthCounts redirect_uri', keycloakConfig.redirect_uri)
     return <RetryErrorPage backVisible={false} mainVisible={false} onRetry={() => auth.signinRedirect()} />
   }
 
 
-  if (!auth.isAuthenticated && !auth.isLoading && authErrorCounter < maxErrorAuthConts) {
+  if (!auth.isAuthenticated && !auth.isLoading && authErrorCounter < maxErrorAuthCounts) {
     if (hasAuthParams()) {
-      console.log('auth.isAuthenticated', auth.isAuthenticated)
-      console.log('auth.isLoading', auth.isLoading)
+      console.warn('Not authenticated, isAuthenticated:', auth.isAuthenticated)
+      console.warn('Not authenticated, isLoading:', auth.isLoading)
       return <RetryErrorPage backVisible={false} mainVisible={false} onRetry={() => auth.signinRedirect()} />
     } else {
-      console.log('Not authenticated! Redirect! auth ErrorCounter', authErrorCounter)
+      console.error('Not authenticated! Redirect! Error Counter:', authErrorCounter)
       setAuthErrorCounter(prevCount => prevCount + 1);
       auth.signinRedirect()
     }
@@ -89,13 +89,6 @@ function App() {
                     radius: "xl",
                   }
                 },
-                // Image: {
-                //   styles: (theme) => ({
-                //     placeholder: {
-                //       backgroundColor: 'transparent',
-                //     }
-                //   })
-                // },
               }
             }}
           >
