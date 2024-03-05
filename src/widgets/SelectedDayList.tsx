@@ -20,7 +20,6 @@ const SelectedDayList = ({
     const { recordingsStore: recStore } = useContext(Context)
     const camera = recStore.filteredCamera
     const host = recStore.filteredHost
-    const playedItem = recStore.playedItem
 
     const { data, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getRecordingsSummary, recStore.filteredCamera?.id, day],
@@ -41,7 +40,7 @@ const SelectedDayList = ({
 
     if (isPending) return <CenterLoader />
     if (isError) return <RetryErrorPage onRetry={handleRetry} />
-    if (!camera || !host) return <CenterLoader />
+    if (!camera || !host) return <Center><Text>Please select host or camera</Text></Center>
     if (!data) return <Text>Not have response from server</Text>
 
     const stringDay = dateToQueryString(day)

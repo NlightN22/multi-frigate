@@ -1,9 +1,10 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { routes } from "./routes";
 import { v4 as uuidv4 } from 'uuid'
 import { routesPath } from "./routes.path";
 
 const AppRouter = () => {
+
     return (
         <Routes>
             {routes.map(({ path, component }) =>

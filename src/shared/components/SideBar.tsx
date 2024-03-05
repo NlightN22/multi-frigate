@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Aside, Button, createStyles, Navbar } from "@mantine/core";
+import { Aside, Button, Navbar, createStyles } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { observer } from 'mobx-react-lite';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { Context } from '../..';
+import { dimensions } from '../dimensions/dimensions';
+import { strings } from '../strings/strings';
 import { useMantineSize } from '../utils/mantine.size.convertor';
 import { SideButton } from './SideButton';
-import { strings } from '../strings/strings';
-import { dimensions } from '../dimensions/dimensions';
-import { Context } from '../..';
-import { observer } from 'mobx-react-lite';
 
 export interface SideBarProps {
     isHidden: (isHidden: boolean) => void,
@@ -48,7 +48,7 @@ const SideBar = ({ isHidden, side, children }: SideBarProps) => {
         } else if (!sideBarsStore.rightVisible && side === 'right' && visible) {
             close()
         }
-    }, [sideBarsStore.rightVisible, close, open, side, visible])
+    }, [sideBarsStore.rightVisible])
 
     const [leftChildren, setLeftChildren] = useState<React.ReactNode>(() => {
         if (children && side === 'left') return children
@@ -71,7 +71,7 @@ const SideBar = ({ isHidden, side, children }: SideBarProps) => {
 
     useEffect(() => {
         isHidden(!visible)
-    }, [visible, isHidden])
+    }, [visible])
 
     // resize controller
     useEffect(() => {
@@ -89,7 +89,7 @@ const SideBar = ({ isHidden, side, children }: SideBarProps) => {
         return () => {
             window.removeEventListener('resize', checkWindowSize);
         }
-    }, [visible, open, close, hideSizePx,])
+    }, [visible])
 
     return (
         <div>

@@ -10,6 +10,7 @@ import { Notifications } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import RetryErrorPage from './pages/RetryErrorPage';
 import { keycloakConfig } from '.';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,6 +32,8 @@ function App() {
   }
 
   const auth = useAuth()
+  const location = useLocation()
+  const navigate = useNavigate()
 
   // automatically sign-in
   useEffect(() => {
@@ -52,6 +55,14 @@ function App() {
     console.error('maxErrorAuthCounts client_id', keycloakConfig.client_id)
     console.error('maxErrorAuthCounts redirect_uri', keycloakConfig.redirect_uri)
     return <RetryErrorPage backVisible={false} mainVisible={false} onRetry={() => auth.signinRedirect()} />
+  }
+
+  if (hasAuthParams()) {
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.delete('state');
+    urlParams.delete('session_state');
+    urlParams.delete('code');
+    navigate(`${location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`, { replace: true })
   }
 
 

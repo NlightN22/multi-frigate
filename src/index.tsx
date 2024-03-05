@@ -17,6 +17,22 @@ export const keycloakConfig: AuthProviderProps = {
   authority: oidpSettings.server,
   client_id: oidpSettings.clientId,
   redirect_uri: hostURL.toString(),
+  onSigninCallback: () => {
+    const currentUrl = new URL(window.location.href);
+    const params = currentUrl.searchParams;
+    console.log('params', params.toString())
+
+    params.delete('state');
+    params.delete('session_state');
+    params.delete('code');
+
+    const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`
+    console.log('newUrl', newUrl)
+
+    window.history.replaceState({}, document.title, newUrl)
+  }
+
+
 }
 
 const rootStore = new RootStore()
@@ -32,9 +48,7 @@ root.render(
   <Context.Provider value={rootStore}>
     <AuthProvider {...keycloakConfig}>
       <BrowserRouter>
-        {/* <React.StrictMode> */}
         <App />
-        {/* </React.StrictMode> */}
       </BrowserRouter>
     </AuthProvider>
   </Context.Provider>
