@@ -12,7 +12,7 @@ import HostSystemPage from "../pages/HostSystemPage";
 import HostStoragePage from "../pages/HostStoragePage";
 import LiveCameraPage from "../pages/LiveCameraPage";
 import RecordingsPage from "../pages/RecordingsPage";
-import AccessSettings from "../pages/AccessSettings";
+import AccessSettings from "../pages/AccessSettingsPage";
 import PlayRecordPage from "../pages/PlayRecordPage";
 
 interface IRoute {

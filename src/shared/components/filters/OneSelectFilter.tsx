@@ -11,15 +11,15 @@ export interface OneSelectItem {
     disabled?: boolean;
 }
 
-interface OneSelectFilterProps extends SelectProps {
+export interface OneSelectFilterProps extends SelectProps {
     id?: string
     data: OneSelectItem[]
     spaceBetween?: SystemProp<SpacingValue>
     label?: string
-    defaultValue?: string
+    defaultValue?: string | null
     textClassName?: string
     showClose?: boolean,
-    value?: string,
+    value?: string | null,
     onChange?: (value: string, id?: string,) => void
     onClose?: () => void
 }
@@ -41,11 +41,13 @@ const OneSelectFilter = ({
 
     return (
         <Box mt={spaceBetween}>
-            <Flex justify='space-between'>
-                <Text className={textClassName}>{label}</Text>
-                {showClose ? <CloseWithTooltip label={strings.hide} onClose={handleOnClose} />
-                    : null}
-            </Flex>
+            {!label ? null :
+                <Flex justify='space-between'>
+                    <Text className={textClassName}>{label}</Text>
+                    {showClose ? <CloseWithTooltip label={strings.hide} onClose={handleOnClose} />
+                        : null}
+                </Flex>
+            }
             <Select
                 mt={spaceBetween}
                 data={data}

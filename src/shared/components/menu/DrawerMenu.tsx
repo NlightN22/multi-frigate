@@ -3,6 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import React from 'react';
 import { LinkItem } from '../../../widgets/header/HeaderAction';
 import { useNavigate } from 'react-router-dom';
+import { useAdminRole } from '../../../hooks/useAdminRole';
 
 const useStyles = createStyles((theme) => ({
     burger: {
@@ -38,6 +39,8 @@ const DrawerMenu = ({
     links
 }: DrawerMenuProps) => {
     const navigate = useNavigate()
+    const { isAdmin } = useAdminRole()
+
 
     const { classes } = useStyles();
     const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false)
@@ -47,7 +50,7 @@ const DrawerMenu = ({
         closeDrawer()
     }
 
-    const items = links.map(item => (
+    const items = links.filter(link => !(link.admin && !isAdmin)).map(item => (
         <UnstyledButton
             className={classes.drawerButton}
             key={item.link}

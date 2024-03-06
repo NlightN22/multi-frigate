@@ -4,7 +4,7 @@ import { frigateApi, frigateQueryKeys } from '../../services/frigate.proxy/friga
 import CogwheelLoader from './loaders/CogwheelLoader';
 import RetryError from './RetryError';
 import { TransferList, Text, TransferListData, TransferListProps, TransferListItem, Button, Flex } from '@mantine/core';
-import { OneSelectItem } from './filters.aps/OneSelectFilter';
+import { OneSelectItem } from './filters/OneSelectFilter';
 import { strings } from '../strings/strings';
 import { isProduction } from '../env.const';
 
@@ -65,8 +65,8 @@ const CamerasTransferList = ({
     return (
         <>
             <Flex w='100%' justify='center'>
-                <Button mt='1rem' w='10%' miw='6rem' mr='1rem' onClick={handleDiscard}>{strings.discard}</Button>
-                <Button mt='1rem' w='10%' miw='5rem' onClick={handleSave}>{strings.save}</Button>
+                <Button mt='1rem' miw='6rem' mr='1rem' onClick={handleDiscard}>{strings.discard}</Button>
+                <Button mt='1rem' miw='5rem' onClick={handleSave}>{strings.save}</Button>
                 </Flex>
             <TransferList
                 transferAllMatchingFilter

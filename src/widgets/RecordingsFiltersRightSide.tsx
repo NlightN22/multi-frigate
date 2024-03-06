@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Context } from '..';
-import CameraSelectFilter from '../shared/components/filters.aps/CameraSelectFilter';
-import DateRangeSelectFilter from '../shared/components/filters.aps/DateRangeSelectFilter';
-import HostSelectFilter from '../shared/components/filters.aps/HostSelectFilter';
+import CameraSelectFilter from '../shared/components/filters/CameraSelectFilter';
+import DateRangeSelectFilter from '../shared/components/filters/DateRangeSelectFilter';
+import RecordingsHostFilter from '../shared/components/filters/RecordingsHostFilter';
 import { isProduction } from '../shared/env.const';
 
 const RecordingsFiltersRightSide = () => {
@@ -12,7 +12,7 @@ const RecordingsFiltersRightSide = () => {
     if (!isProduction) console.log('RecordingsFiltersRightSide rendered')
     return (
         <>
-            <HostSelectFilter />
+            <RecordingsHostFilter />
             {recStore.filteredHost ?
                 <CameraSelectFilter 
                 selectedHostId={recStore.filteredHost.id} />

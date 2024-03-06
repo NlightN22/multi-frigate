@@ -30,13 +30,19 @@ const useStyles = createStyles((theme,
 
 const SideBar = ({ isHidden, side, children }: SideBarProps) => {
     const hideSizePx = useMantineSize(dimensions.hideSidebarsSize)
-    const [visible, { open, close }] = useDisclosure(window.innerWidth > hideSizePx);
-    const manualVisible: React.MutableRefObject<null | boolean> = useRef(null)
+    const initialVisible = () => {
+        const savedVisibility = localStorage.getItem(`sidebarVisible_${side}`);
+        if (savedVisibility === null) {
+            return window.innerWidth < hideSizePx;
+        }
+        return savedVisibility === 'true';
+    }
+    const [visible, { open, close }] = useDisclosure(initialVisible());
 
     const { classes } = useStyles({ visible })
 
     const handleClickVisible = (state: boolean) => {
-        manualVisible.current = state
+        localStorage.setItem(`sidebarVisible_${side}`, String(state))
         if (state) open()
         else close()
     }
@@ -73,23 +79,14 @@ const SideBar = ({ isHidden, side, children }: SideBarProps) => {
         isHidden(!visible)
     }, [visible])
 
-    // resize controller
     useEffect(() => {
-        const checkWindowSize = () => {
-            if (window.innerWidth <= hideSizePx && visible) {
-                close()
-            }
-            if (window.innerWidth > hideSizePx && !visible && manualVisible.current === null) {
-                open()
-            }
+        const savedVisibility = localStorage.getItem(`sidebarVisible_${side}`);
+        if (savedVisibility === null && window.innerWidth < hideSizePx) {
+            open()
+        } else if (savedVisibility) {
+            savedVisibility === 'true' ? open() : close()
         }
-        window.addEventListener('resize', checkWindowSize);
-
-        // Cleanup function to remove event listener
-        return () => {
-            window.removeEventListener('resize', checkWindowSize);
-        }
-    }, [visible])
+    }, [])
 
     return (
         <div>
@@ -112,7 +109,6 @@ const SideBar = ({ isHidden, side, children }: SideBarProps) => {
                         {rightChildren}
                     </Aside>
             }
-
             <SideButton side={side} hide={visible} onClick={() => handleClickVisible(true)} />
         </div>
     )

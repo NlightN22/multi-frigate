@@ -20,19 +20,12 @@ export const keycloakConfig: AuthProviderProps = {
   onSigninCallback: () => {
     const currentUrl = new URL(window.location.href);
     const params = currentUrl.searchParams;
-    console.log('params', params.toString())
-
     params.delete('state');
     params.delete('session_state');
     params.delete('code');
-
     const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`
-    console.log('newUrl', newUrl)
-
     window.history.replaceState({}, document.title, newUrl)
   }
-
-
 }
 
 const rootStore = new RootStore()

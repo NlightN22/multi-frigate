@@ -100,9 +100,9 @@ const SettingsPage = () => {
         mutation.mutate(configsToUpdate);
     }
 
+    if (!isAdmin) return <Forbidden />
     if (configPending || adminLoading) return <CenterLoader />
     if (configError) return <RetryErrorPage onRetry={refetch} />
-    if (!isAdmin) return <Forbidden />
 
     return (
         <Flex h='100%'>

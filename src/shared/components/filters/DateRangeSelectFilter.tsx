@@ -1,11 +1,10 @@
+import { Box, Flex, Indicator, Text } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { observer } from 'mobx-react-lite';
-import React, { useContext } from 'react';
-import { strings } from '../../strings/strings';
-import { Box, Flex, Indicator, Text } from '@mantine/core';
-import CloseWithTooltip from '../buttons/CloseWithTooltip';
+import { useContext } from 'react';
 import { Context } from '../../..';
 import { isProduction } from '../../env.const';
+import { strings } from '../../strings/strings';
 
 interface DateRangeSelectFilterProps {}
 

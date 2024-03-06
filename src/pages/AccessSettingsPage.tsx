@@ -4,7 +4,7 @@ import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import RetryErrorPage from './RetryErrorPage';
 import { Flex, Group, Select, Text } from '@mantine/core';
-import { OneSelectItem } from '../shared/components/filters.aps/OneSelectFilter';
+import { OneSelectItem } from '../shared/components/filters/OneSelectFilter';
 import { useMediaQuery } from '@mantine/hooks';
 import { dimensions } from '../shared/dimensions/dimensions';
 import CamerasTransferList from '../shared/components/CamerasTransferList';

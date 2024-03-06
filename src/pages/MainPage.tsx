@@ -6,7 +6,9 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Context } from '..';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
+import HostSelect from '../shared/components/filters/HostSelect';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
+import { strings } from '../shared/strings/strings';
 import CameraCard from '../widgets/CameraCard';
 import RetryErrorPage from './RetryErrorPage';
 
@@ -14,6 +16,7 @@ const MainPage = () => {
     const executed = useRef(false)
     const { sideBarsStore } = useContext(Context)
     const [searchQuery, setSearchQuery] = useState<string>()
+    const [selectedHostId, setSelectedHostId] = useState<string>()
     const [filteredCameras, setFilteredCameras] = useState<GetCameraWHostWConfig[]>()
 
     const { data: cameras, isPending, isError, refetch } = useQuery({
@@ -22,12 +25,19 @@ const MainPage = () => {
     })
 
     useEffect(() => {
-        if (searchQuery && cameras) {
-            setFilteredCameras(cameras.filter(camera => camera.name.toLowerCase().includes(searchQuery.toLowerCase())))
-        } else {
+        if (!cameras) {
             setFilteredCameras(undefined)
+            return
         }
-    }, [searchQuery, cameras])
+    
+        const filterCameras = (camera: GetCameraWHostWConfig) => {
+            const matchesHostId = selectedHostId ? camera.frigateHost?.id === selectedHostId : true
+            const matchesSearchQuery = searchQuery ? camera.name.toLowerCase().includes(searchQuery.toLowerCase()) : true
+            return matchesHostId && matchesSearchQuery
+        }
+    
+        setFilteredCameras(cameras.filter(filterCameras))
+    }, [searchQuery, cameras, selectedHostId])
 
     useEffect(() => {
         if (!executed.current) {
@@ -66,6 +76,10 @@ const MainPage = () => {
 
     if (isError) return <RetryErrorPage onRetry={refetch} />
 
+    const handleSelectHost = (hostId: string) => {
+        setSelectedHostId(hostId)
+    }
+
     return (
         <Flex direction='column' h='100%' w='100%' >
             <Flex justify='space-between' align='center' w='100%'>
@@ -77,10 +91,17 @@ const MainPage = () => {
                     <TextInput
                         maw={400}
                         style={{ flexGrow: 1 }}
-                        placeholder="Search..."
+                        placeholder={strings.search}
                         icon={<IconSearch size="0.9rem" stroke={1.5} />}
                         value={searchQuery}
                         onChange={(event) => setSearchQuery(event.currentTarget.value)}
+                    />
+                    <HostSelect
+                        valueId={selectedHostId}
+                        onChange={handleSelectHost}
+                        ml='1rem'
+                        spaceBetween='0px'
+                        placeholder={strings.selectHost}
                     />
                 </Flex>
             </Flex>
