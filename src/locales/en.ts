@@ -1,4 +1,15 @@
 const en = {
+    detectorCard: {
+        pid: 'PID',
+        inferenceSpeed: 'Inference Speed',
+        memory: 'Memory',
+    },
+    gpuStatCard: {
+        gpu: 'GPU',
+        memory: 'Memory',
+        decoder: 'Decoder',
+        encoder: 'Encoder',
+    },
     cameraStatTable: {
         process: 'Process',
         pid: 'PID',
@@ -35,6 +46,8 @@ const en = {
         doubleClickToFullHint: 'Double click for fullscreen',
         rating: 'Rating',
     },
+    version: 'Version',
+    uptime: 'Uptime',
     pleaseSelectRole: 'Please select Role',
     pleaseSelectHost: 'Please select Host',
     pleaseSelectCamera: 'Please select Camera',
@@ -46,10 +59,12 @@ const en = {
     camersDoesNotExist: 'No cameras',
     search: 'Search',
     recordings: 'Recordings',
+    day: 'Day',
     hour: 'Hour',
+    minute: 'Minute',
+    second: 'Second',
     events: 'Events',
     notHaveEvents: 'No events',
-    day: 'Day',
     selectHost: 'Select host',
     selectCamera: 'Select Camera',
     selectRange: 'Select period',

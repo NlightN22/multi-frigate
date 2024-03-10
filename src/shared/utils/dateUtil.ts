@@ -4,6 +4,26 @@ export const longToDate = (long: number): Date => new Date(long * 1000);
 export const epochToLong = (date: number): number => date / 1000;
 export const dateToLong = (date: Date): number => epochToLong(date.getTime());
 
+/**
+ * 
+ * @param uptimeInSeconds 
+ * @returns value: number, unit: 'day' / 'hour' / 'minute' / 'second'
+ */
+export const formatUptime = (uptimeInSeconds: number) => {
+  const secondsInAMinute = 60
+  const secondsInAnHour = 3600
+  const secondsInADay = 86400
+
+  if (uptimeInSeconds >= secondsInADay) {
+    return { value: (uptimeInSeconds / secondsInADay), unit: 'day' };
+  } else if (uptimeInSeconds >= secondsInAnHour) {
+    return { value: (uptimeInSeconds / secondsInAnHour), unit: 'hour' };
+  } else if (uptimeInSeconds >= secondsInAMinute) {
+    return { value: (uptimeInSeconds / secondsInAMinute), unit: 'minute' };
+  } else {
+    return { value: uptimeInSeconds, unit: 'second' };
+  }
+}
 
 export const formatFileTimestamps = (startUnixTime: number, endUnixTime: number, cameraName: string) => {
   const formatTime = (time: number) => {

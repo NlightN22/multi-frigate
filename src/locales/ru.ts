@@ -1,4 +1,15 @@
 const ru = {
+    detectorCard: {
+        pid: 'PID',
+        inferenceSpeed: 'Скорость вывода',
+        memory: 'Память',
+    },
+    gpuStatCard: {
+        gpu: 'GPU',
+        memory: 'Память',
+        decoder: 'Декодер',
+        encoder: 'Кодер',
+    },
     hostMenu: {
         editConfig: 'Редакт. конфиг.',
         restart: 'Перезагрузка',
@@ -28,6 +39,8 @@ const ru = {
         doubleClickToFullHint: 'Двойное нажатие мышью для полноэкранного просмотра',
         rating: 'Рейтинг',
     },
+    version: 'Версия',
+    uptime: 'Время работы',
     pleaseSelectRole: 'Пожалуйста выберите роль',
     pleaseSelectHost: 'Пожалуйста выберите хост',
     pleaseSelectCamera: 'Пожалуйста выберите камеру',
@@ -39,10 +52,12 @@ const ru = {
     camersDoesNotExist: 'Камер нет',
     search: 'Поиск',
     recordings: 'Записи',
+    day: 'День',
     hour: 'Час',
+    minute: 'Минута',
+    second: 'Час',
     events: 'События',
     notHaveEvents: 'Событий нет',
-    day: 'День',
     selectHost:'Выбери хост',
     selectCamera: 'Выбери камеру',
     selectRange: 'Выбери период',
