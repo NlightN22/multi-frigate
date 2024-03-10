@@ -5,6 +5,7 @@ import { Context } from '../../..';
 import { frigateApi, frigateQueryKeys } from '../../../services/frigate.proxy/frigate.api';
 import HostSelect from './HostSelect';
 import { useTranslation } from 'react-i18next';
+import { isProduction } from '../../env.const';
 
 const RecordingsHostFilter = () => {
     const { t } = useTranslation()
@@ -17,6 +18,7 @@ const RecordingsHostFilter = () => {
 
 
     const handleSelect = (value: string) => {
+        if (!isProduction) console.log('handleSelect value', value)
         const host = hosts?.find(host => host.id === value)
         if (!host) {
             recStore.filteredHost = undefined
@@ -39,11 +41,11 @@ const RecordingsHostFilter = () => {
 
     return (
         <HostSelect
-        label={t('selectHost')}
-        valueId={recStore.filteredHost?.id}
-        defaultId={recStore.filteredHost?.id}
-        onChange={handleSelect}
-        onSuccess={handleSuccess}
+            label={t('selectHost')}
+            valueId={recStore.filteredHost?.id}
+            defaultId={recStore.filteredHost?.id}
+            onChange={handleSelect}
+            onSuccess={handleSuccess}
         />
     );
 };

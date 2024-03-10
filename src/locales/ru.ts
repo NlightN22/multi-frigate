@@ -1,4 +1,10 @@
 const ru = {
+    hostMenu: {
+        editConfig: 'Редакт. конфиг.',
+        restart: 'Перезагрузка',
+        system: 'Система',
+        storage: 'Хранилище',
+    }, 
     header: {
         home: 'Главная',
         settings: 'Настройки',

@@ -1,11 +1,25 @@
 const en = {
+    cameraStatTable: {
+        process: 'Process',
+        pid: 'PID',
+        fps: 'FPS',
+        cpu: 'CPU %',
+        memory: 'Memory %'
+    },
+    hostMenu: {
+        editConfig: 'Edit config',
+        restart: 'Restart',
+        system: 'System',
+        storage: 'Storage',
+    }, 
     header: {
         home: 'Main',
         settings: 'Settings',
         recordings: 'Recordings',
         hostsConfig: 'Frigate servers',
         acessSettings: 'Access settings',
-    },    hostArr: {
+    }, 
+    hostArr: {
         host: 'Host',
         name: 'Host name',
         url: 'Address',

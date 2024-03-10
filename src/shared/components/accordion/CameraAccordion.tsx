@@ -64,6 +64,9 @@ const CameraAccordion = () => {
 
     if (!data || !camera) return null
 
+    if (!isProduction) console.log('camera', camera)
+    if (!isProduction) console.log('data', data)
+    if (!isProduction) console.log('hostName', hostName)
     if (!isProduction) console.log('CameraAccordion rendered')
 
     return (

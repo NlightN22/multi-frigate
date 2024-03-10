@@ -3,14 +3,15 @@ import { IconPlus, IconTrash } from '@tabler/icons-react';
 import ObjectId from 'bson-objectid';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
-import HostSettingsMenu from '../shared/components/menu/HostSettingsMenu';
-import SortedTh from '../shared/components/table.aps/SortedTh';
-import { isProduction } from '../shared/env.const';
-import StateCell from './hosts.table/StateCell';
-import SwitchCell from './hosts.table/SwitchCell';
-import TextInputCell from './hosts.table/TextInputCell';
+import { GetFrigateHost } from '../../services/frigate.proxy/frigate.schema';
+import HostSettingsMenu from '../../shared/components/menu/HostSettingsMenu';
+import SortedTh from '../../shared/components/table.aps/SortedTh';
+import { isProduction } from '../../shared/env.const';
+import StateCell from './StateCell';
+import SwitchCell from './SwitchCell';
+import TextInputCell from './TextInputCell';
 import { useTranslation } from 'react-i18next';
+import { sortByKey } from '../../shared/utils/sort.array';
 
 interface TableProps<T> {
     data: T[],
@@ -36,20 +37,6 @@ const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedC
         if (changedCallback) 
             changedCallback(tableData)
     }, [tableData])
-
-    function sortByKey<T, K extends keyof T>(array: T[], key: K): T[] {
-        return array.sort((a, b) => {
-            let valueA = a[key];
-            let valueB = b[key];
-
-            const stringValueA = String(valueA).toLowerCase();
-            const stringValueB = String(valueB).toLowerCase();
-
-            if (stringValueA < stringValueB) return -1;
-            if (stringValueA > stringValueB) return 1;
-            return 0;
-        });
-    }
 
     const handleSort = (headName: string, propertyName: string,) => {
         const reverse = headName === sortedName ? !reversed : false;

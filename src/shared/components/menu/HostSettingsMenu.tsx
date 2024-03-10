@@ -1,9 +1,9 @@
-import { Button, Menu, rem, Text } from '@mantine/core';
-import { IconEdit, IconGraph, IconMessageCircle, IconRotateClockwise, IconServer, IconSettings } from '@tabler/icons-react';
-import React from 'react';
+import { Button, Menu, rem } from '@mantine/core';
+import { IconEdit, IconGraph, IconRotateClockwise, IconServer, IconSettings } from '@tabler/icons-react';
+import { useMutation } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { routesPath } from '../../../router/routes.path';
-import { useMutation } from '@tanstack/react-query';
 import { mapHostToHostname, proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { GetFrigateHost } from '../../../services/frigate.proxy/frigate.schema';
 
@@ -12,6 +12,7 @@ interface HostSettingsMenuProps {
 }
 
 const HostSettingsMenu = ({ host }: HostSettingsMenuProps) => {
+    const {t} = useTranslation()
     const navigate = useNavigate()
     const mutation = useMutation({
         mutationFn: (hostName: string) => proxyApi.getHostRestart(hostName)
@@ -44,23 +45,23 @@ const HostSettingsMenu = ({ host }: HostSettingsMenuProps) => {
                 <Menu.Item
                     onClick={handleConfig}
                     icon={<IconEdit style={{ width: rem(14), height: rem(14) }} />}>
-                    Edit Config
+                    {t('hostMenu.editConfig')}
                 </Menu.Item>
                 <Menu.Item
                     onClick={handleRestart}
                     icon={<IconRotateClockwise style={{ width: rem(14), height: rem(14) }} />}>
-                    Restart
+                    {t('hostMenu.restart')}
                 </Menu.Item>
                 <Menu.Item
                     onClick={handleSystem}
                     icon={<IconGraph style={{ width: rem(14), height: rem(14) }} />}>
-                    System
+                    {t('hostMenu.system')}
                 </Menu.Item>
                 <Menu.Item
                     onClick={handleStorage}
                     icon={<IconServer
                         style={{ width: rem(14), height: rem(14) }} />}>
-                    Storage
+                    {t('hostMenu.storage')}
                 </Menu.Item>
             </Menu.Dropdown>
         </Menu>

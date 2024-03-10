@@ -17,6 +17,8 @@ const AccordionShareButton = ({
     const url = recordUrl ? `${routesPath.PLAYER_PATH}?link=${encodeURIComponent(recordUrl)}` : ''
 
     const handleShare = async () => {
+        if (!isProduction) console.log('canShare', canShare)
+        if (!isProduction) console.log('shared URL', url)
         if (canShare && url) {
             try {
                 await navigator.share({ url });

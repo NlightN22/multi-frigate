@@ -30,7 +30,9 @@ const SelectedCameraList = () => {
     if (cameraPending) return <CenterLoader />
     if (cameraError) return <RetryErrorPage onRetry={handleRetry} />
 
-    if (!camera?.frigateHost) return null
+    if (!camera || !camera?.frigateHost) return null
+
+    recStore.openedCamera = camera
 
     return (
         <Flex w='100%' h='100%' direction='column' align='center'>

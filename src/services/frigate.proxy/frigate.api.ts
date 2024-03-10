@@ -10,6 +10,7 @@ import { RecordSummary } from "../../types/record";
 import { EventFrigate } from "../../types/event";
 import { keycloakConfig } from "../..";
 import { getResolvedTimeZone } from "../../shared/utils/dateUtil";
+import { FrigateStats } from "../../types/frigateStats";
 
 
 export const getToken = (): string | undefined => {
@@ -171,7 +172,8 @@ export const proxyApi = {
     getExportedVideoList: (hostName: string) => instanceApi.get<GetExportedFile[]>(`proxy/${hostName}/exports/`).then(res => res.data),
     getVideoUrl: (hostName: string, fileName: string) => `${proxyPrefix}${hostName}/exports/${fileName}`,
     // filename example Home_1_Backyard_2024_02_26_16_25__2024_02_26_16_26.mp4
-    deleteExportedVideo: (hostName: string, videoName: string) => instanceApi.delete(`proxy/${hostName}/api/export/${videoName}`).then(res => res.data)
+    deleteExportedVideo: (hostName: string, videoName: string) => instanceApi.delete(`proxy/${hostName}/api/export/${videoName}`).then(res => res.data),
+    getHostStats: (hostName: string) => instanceApi.get<FrigateStats>(`proxy/${hostName}/api/stats`).then( res => res.data),
 }
 
 export const mapCamerasFromConfig = (config: FrigateConfig): string[] => {
@@ -194,6 +196,7 @@ export const frigateQueryKeys = {
     getCameraWHost: 'camera-frigate-host',
     getCameraByHostId: 'camera-by-hostId',
     getHostConfig: 'host-config',
+    getHostStats: 'host-stats',
     getRecordingsSummary: 'recordings-frigate-summary',
     getRecordings: 'recordings-frigate',
     getEvents: 'events-frigate',

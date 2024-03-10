@@ -11,7 +11,7 @@ import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.
 import { GetFrigateHost, deleteFrigateHostSchema, putFrigateHostSchema } from '../services/frigate.proxy/frigate.schema';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import { isProduction } from '../shared/env.const';
-import FrigateHostsTable from '../widgets/FrigateHostsTable';
+import FrigateHostsTable from '../widgets/hosts.table/FrigateHostsTable';
 import Forbidden from './403';
 import RetryErrorPage from './RetryErrorPage';
 
