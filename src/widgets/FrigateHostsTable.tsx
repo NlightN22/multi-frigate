@@ -7,10 +7,10 @@ import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
 import HostSettingsMenu from '../shared/components/menu/HostSettingsMenu';
 import SortedTh from '../shared/components/table.aps/SortedTh';
 import { isProduction } from '../shared/env.const';
-import { strings } from '../shared/strings/strings';
 import StateCell from './hosts.table/StateCell';
 import SwitchCell from './hosts.table/SwitchCell';
 import TextInputCell from './hosts.table/TextInputCell';
+import { useTranslation } from 'react-i18next';
 
 interface TableProps<T> {
     data: T[],
@@ -20,6 +20,8 @@ interface TableProps<T> {
 }
 
 const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedCallback }: TableProps<GetFrigateHost>) => {
+    const { t } = useTranslation()
+
     const [tableData, setTableData] = useState(data)
     const [reversed, setReversed] = useState(false)
     const [sortedName, setSortedName] = useState<string | null>(null)
@@ -59,9 +61,9 @@ const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedC
     }
 
     const headTitle = [
-        { propertyName: 'name', title: strings.hostArr.name },
-        { propertyName: 'host', title: strings.hostArr.url },
-        { propertyName: 'enabled', title: strings.hostArr.enabled },
+        { propertyName: 'name', title: t('hostArr.host') },
+        { propertyName: 'host', title: t('hostArr.url') },
+        { propertyName: 'enabled', title: t('hostArr.enabled') },
         { title: '', sorting: false },
     ]
 

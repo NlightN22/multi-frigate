@@ -1,8 +1,8 @@
 import { Accordion, Center, Flex, Text } from '@mantine/core';
 import VideoDownloader from '../../../widgets/VideoDownloader';
-import { strings } from '../../strings/strings';
 import VideoPlayer from '../players/VideoPlayer';
 import DayEventsAccordion from './DayEventsAccordion';
+import { useTranslation } from 'react-i18next';
 
 interface DayPanelProps {
     day: string,
@@ -27,6 +27,7 @@ const DayPanel = ({
     startUnixTime,
     endUnixTime,
 }: DayPanelProps) => {
+    const { t } = useTranslation()
     return (
         <Accordion.Panel key={hour + 'Panel'}>
             {playedURL && playedURL === videoURL ? <VideoPlayer videoUrl={playedURL} /> : <></>}
@@ -43,7 +44,7 @@ const DayPanel = ({
             {events > 0 ?
                 <DayEventsAccordion day={day} hour={hour} qty={events} />
                 :
-                <Center><Text>{strings.notHaveEvents}</Text></Center>
+                <Center><Text>{t('notHaveEvents')}</Text></Center>
             }
         </Accordion.Panel>
     );

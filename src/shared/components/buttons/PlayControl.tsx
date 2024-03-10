@@ -1,7 +1,7 @@
 import { Flex, createStyles } from '@mantine/core';
 import { IconPlayerPlayFilled, IconPlayerStopFilled } from '@tabler/icons-react';
-import { strings } from '../../strings/strings';
 import AccordionControlButton from './AccordionControlButton';
+import { useTranslation } from 'react-i18next';
 
 
 const useStyles = createStyles((theme) => ({
@@ -22,6 +22,7 @@ const PlayControl = ({
     played,
     onClick
 }: PlayControlProps) => {
+    const { t } = useTranslation()
     const { classes } = useStyles();
 
     const handleClick = () => {
@@ -32,7 +33,7 @@ const PlayControl = ({
             onClick={() => { handleClick() }}
         >
             <Flex align='center'>
-                {played ? strings.player.stopVideo : strings.player.startVideo}
+                {played ? t('player.stopVideo') : t('player.startVideo')}
                 {played ?
                     <IconPlayerStopFilled
                         className={classes.iconStop} />

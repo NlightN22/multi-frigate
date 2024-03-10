@@ -1,11 +1,11 @@
 import { Flex, Button, Text } from '@mantine/core';
 import React, { useContext, useEffect, useRef } from 'react';
 import { routesPath } from '../router/routes.path';
-import { strings } from '../shared/strings/strings';
 import { useNavigate } from 'react-router-dom';
 import { ExclamationCogWheel } from '../shared/components/svg/ExclamationCogWheel';
 import { Context } from '..';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 
 interface RetryErrorPageProps {
     repeatVisible?: boolean
@@ -20,6 +20,7 @@ const RetryErrorPage = ({
     mainVisible = true,
     onRetry
 }: RetryErrorPageProps) => {
+    const { t } = useTranslation()
     const executed = useRef(false)
 
     const navigate = useNavigate()
@@ -49,13 +50,13 @@ const RetryErrorPage = ({
 
     return (
         <Flex h='100%' direction='column' justify='center' align='center' gap='1rem'>
-            <Text fz='lg' fw={700}>{strings.errors.somthengGoesWrong}</Text>
+            <Text fz='lg' fw={700}>{t('errors.somthingGoesWrong')}</Text>
             {ExclamationCogWheel}
-            <Text fz='lg' fw={700}>{strings.youCanRetryOrGoToMain}</Text>
+            <Text fz='lg' fw={700}>{t('youCanRetryOrGoToMain')}</Text>
             <Flex>
-                {repeatVisible ? <Button ml='1rem' onClick={handleRetry}>{strings.retry}</Button> : null}
-                { backVisible ? <Button ml='1rem' onClick={handleGoBack}>{strings.back}</Button> : null }
-                { mainVisible ? <Button ml='1rem' onClick={handleGoToMain}>{strings.goToMainPage}</Button> : null }
+                {repeatVisible ? <Button ml='1rem' onClick={handleRetry}>{t('retry')}</Button> : null}
+                { backVisible ? <Button ml='1rem' onClick={handleGoBack}>{t('back')}</Button> : null }
+                { mainVisible ? <Button ml='1rem' onClick={handleGoToMain}>{t('goToMainPage')}</Button> : null }
             </Flex>
         </Flex>
     );

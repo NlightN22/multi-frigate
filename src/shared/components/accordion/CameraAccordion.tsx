@@ -1,17 +1,18 @@
 import { Accordion, Center, Loader } from '@mantine/core';
-import React, { useContext, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../../../services/frigate.proxy/frigate.api';
-import DayAccordion from './DayAccordion';
 import { observer } from 'mobx-react-lite';
+import { useContext, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Context } from '../../..';
-import { getResolvedTimeZone, parseQueryDateToDate } from '../../utils/dateUtil';
-import RetryError from '../RetryError';
-import { strings } from '../../strings/strings';
+import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { RecordSummary } from '../../../types/record';
 import { isProduction } from '../../env.const';
+import { getResolvedTimeZone, parseQueryDateToDate } from '../../utils/dateUtil';
+import RetryError from '../RetryError';
+import DayAccordion from './DayAccordion';
 
 const CameraAccordion = () => {
+    const { t } = useTranslation()
     const { recordingsStore: recStore } = useContext(Context)
 
     const camera = recStore.openedCamera || recStore.filteredCamera
@@ -30,7 +31,7 @@ const CameraAccordion = () => {
 
     const recodItem = (record: RecordSummary) => (
         <Accordion.Item key={record.day} value={record.day}>
-            <Accordion.Control key={record.day + 'control'}>{strings.day}: {record.day}</Accordion.Control>
+            <Accordion.Control key={record.day + 'control'}>{t('day')}: {record.day}</Accordion.Control>
             <Accordion.Panel key={record.day + 'panel'}>
                 <DayAccordion key={record.day + 'day'} recordSummary={record} />
             </Accordion.Panel>

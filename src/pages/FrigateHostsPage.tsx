@@ -1,22 +1,24 @@
 import { Button, Flex, Text } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { IconAlertCircle } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
 import { useContext, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { GetFrigateHost, deleteFrigateHostSchema, putFrigateHostSchema } from '../services/frigate.proxy/frigate.schema';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import { isProduction } from '../shared/env.const';
-import { strings } from '../shared/strings/strings';
 import FrigateHostsTable from '../widgets/FrigateHostsTable';
 import Forbidden from './403';
 import RetryErrorPage from './RetryErrorPage';
-import { notifications } from '@mantine/notifications';
-import { IconAlertCircle } from '@tabler/icons-react';
 
 
 const FrigateHostsPage = () => {
+    const { t } = useTranslation()
+
     const executed = useRef(false)
     const queryClient = useQueryClient()
     const { isPending: hostsPending, error: hostsError, data } = useQuery({
@@ -106,8 +108,8 @@ const FrigateHostsPage = () => {
         <Flex w='100%' h='100%' direction='column'>
             <FrigateHostsTable data={pageData} showAddButton changedCallback={handleChange} />
             <Flex justify='center'>
-                <Button m='0.5rem' onClick={handleDiscard}>{strings.discard}</Button>
-                <Button m='0.5rem' onClick={handleSave}>{strings.save}</Button>
+                <Button m='0.5rem' onClick={handleDiscard}>{t('discard')}</Button>
+                <Button m='0.5rem' onClick={handleSave}>{t('save')}</Button>
             </Flex>
         </Flex>
     );

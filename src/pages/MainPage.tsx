@@ -8,11 +8,13 @@ import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
 import HostSelect from '../shared/components/filters/HostSelect';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
-import { strings } from '../shared/strings/strings';
 import CameraCard from '../widgets/CameraCard';
 import RetryErrorPage from './RetryErrorPage';
+import ClearableTextInput from '../shared/components/inputs/ClearableTextInput';
+import { useTranslation } from 'react-i18next';
 
 const MainPage = () => {
+    const { t } = useTranslation()
     const executed = useRef(false)
     const { sideBarsStore } = useContext(Context)
     const [searchQuery, setSearchQuery] = useState<string>()
@@ -29,13 +31,13 @@ const MainPage = () => {
             setFilteredCameras(undefined)
             return
         }
-    
+
         const filterCameras = (camera: GetCameraWHostWConfig) => {
             const matchesHostId = selectedHostId ? camera.frigateHost?.id === selectedHostId : true
             const matchesSearchQuery = searchQuery ? camera.name.toLowerCase().includes(searchQuery.toLowerCase()) : true
             return matchesHostId && matchesSearchQuery
         }
-    
+
         setFilteredCameras(cameras.filter(filterCameras))
     }, [searchQuery, cameras, selectedHostId])
 
@@ -88,10 +90,11 @@ const MainPage = () => {
                         justifyContent: 'center',
                     }}
                 >
-                    <TextInput
+                    <ClearableTextInput
+                        clerable
                         maw={400}
                         style={{ flexGrow: 1 }}
-                        placeholder={strings.search}
+                        placeholder={t('search')}
                         icon={<IconSearch size="0.9rem" stroke={1.5} />}
                         value={searchQuery}
                         onChange={(event) => setSearchQuery(event.currentTarget.value)}
@@ -101,7 +104,7 @@ const MainPage = () => {
                         onChange={handleSelectHost}
                         ml='1rem'
                         spaceBetween='0px'
-                        placeholder={strings.selectHost}
+                        placeholder={t('selectHost')}
                     />
                 </Flex>
             </Flex>

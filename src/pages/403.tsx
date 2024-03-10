@@ -1,12 +1,13 @@
 import { Button, Flex, Text } from '@mantine/core';
-import React, { useContext, useEffect, useRef } from 'react';
-import CogWheelWithText from '../shared/components/loaders/CogWheelWithText';
-import { strings } from '../shared/strings/strings';
-import { routesPath } from '../router/routes.path';
-import { Context } from '..';
 import { observer } from 'mobx-react-lite';
+import { useContext, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Context } from '..';
+import { routesPath } from '../router/routes.path';
+import CogWheelWithText from '../shared/components/loaders/CogWheelWithText';
 
 const Forbidden = () => {
+    const { t } = useTranslation()
     const executed = useRef(false)
     const { sideBarsStore } = useContext(Context)
 
@@ -25,9 +26,9 @@ const Forbidden = () => {
 
     return (
         <Flex h='100%' direction='column' justify='center' align='center' gap='1rem'>
-            <Text fz='lg' fw={700}>{strings.errors[403]}</Text>
+            <Text fz='lg' fw={700}>{t('errors.403')}</Text>
             <CogWheelWithText text='403' />
-            <Button onClick={handleGoToMain}>{strings.goToMainPage}</Button>
+            <Button onClick={handleGoToMain}>{t('goToMainPage')}</Button>
         </Flex>
 
     );

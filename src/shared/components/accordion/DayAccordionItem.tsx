@@ -1,12 +1,12 @@
 import { Accordion, Flex, Group, Text } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { routesPath } from '../../../router/routes.path';
 import { proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { RecordHour, RecordSummary } from '../../../types/record';
 import { isProduction } from '../../env.const';
-import { strings } from '../../strings/strings';
 import { getResolvedTimeZone, mapDateHourToUnixTime } from '../../utils/dateUtil';
 import AccordionControlButton from '../buttons/AccordionControlButton';
 import AccordionShareButton from '../buttons/AccordionShareButton';
@@ -30,6 +30,7 @@ const DayAccordionItem = ({
     played,
     openPlayer
 }: DayAccordionItemProps) => {
+    const { t } = useTranslation()
     const navigate = useNavigate()
     const [playedURL, setPlayedUrl] = useState<string>()
 
@@ -72,11 +73,11 @@ const DayAccordionItem = ({
             <Accordion.Control key={hour + 'Control'}>
                 <Flex justify='space-between'>
                     <Group>
-                        <Text>{strings.hour}: {hour}:00</Text>
+                        <Text>{t('hour')}: {hour}:00</Text>
                         {recordHour.events > 0 ?
-                            <Text>{strings.events}: {recordHour.events}</Text>
+                            <Text>{t('events')}: {recordHour.events}</Text>
                             :
-                            <Text>{strings.notHaveEvents}</Text>
+                            <Text>{t('notHaveEvents')}</Text>
                         }
                     </Group>
                     <Group>

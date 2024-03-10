@@ -6,11 +6,11 @@ import AccordionShareButton from '../buttons/AccordionShareButton';
 import PlayControl from '../buttons/PlayControl';
 import EventPanel from './EventPanel';
 import { EventFrigate } from '../../../types/event';
-import { strings } from '../../strings/strings';
 import { unixTimeToDate, getDurationFromTimestamps } from '../../utils/dateUtil';
 import { useNavigate } from 'react-router-dom';
 import { routesPath } from '../../../router/routes.path';
 import { proxyApi } from '../../../services/frigate.proxy/frigate.api';
+import { useTranslation } from 'react-i18next';
 
 
 interface EventsAccordionItemProps {
@@ -25,8 +25,8 @@ const EventsAccordionItem = ({
     hostName,
     played,
     openPlayer,
-} : EventsAccordionItemProps) => {
-
+}: EventsAccordionItemProps) => {
+    const { t } = useTranslation()
     const [playedURL, setPlayedUrl] = useState<string>()
 
     const navigate = useNavigate()
@@ -44,7 +44,7 @@ const EventsAccordionItem = ({
         const duration = getDurationFromTimestamps(event.start_time, event.end_time)
         return (
             <Group>
-                <Text>{strings.player.object}: {event.label}</Text>
+                <Text>{t('player.object')}: {event.label}</Text>
                 <Text>{time}</Text>
                 {duration ?
                     <Text>{duration}</Text>
@@ -75,28 +75,28 @@ const EventsAccordionItem = ({
 
     return (
         <Accordion.Item key={event.id + 'Item'} value={event.id}>
-        <Accordion.Control key={event.id + 'Control'}>
-            <Flex justify='space-between'>
-                {eventLabel(event)}
-                <Group>
-                    <AccordionShareButton recordUrl={eventVideoURL} />
-                    <AccordionControlButton onClick={hanleOpenNewLink}>
-                        <IconExternalLink />
-                    </AccordionControlButton>
-                    <PlayControl
-                        played={played ? played : false }
-                        onClick={handleOpenPlayer} />
-                </Group>
-            </Flex>
-        </Accordion.Control>
-        <Accordion.Panel key={event.id + 'Panel'}>
-            <EventPanel
-                event={event}
-                videoURL={eventVideoURL}
-                playedURL={playedURL}
-                hostName={hostName} />
-        </Accordion.Panel>
-    </Accordion.Item>
+            <Accordion.Control key={event.id + 'Control'}>
+                <Flex justify='space-between'>
+                    {eventLabel(event)}
+                    <Group>
+                        <AccordionShareButton recordUrl={eventVideoURL} />
+                        <AccordionControlButton onClick={hanleOpenNewLink}>
+                            <IconExternalLink />
+                        </AccordionControlButton>
+                        <PlayControl
+                            played={played ? played : false}
+                            onClick={handleOpenPlayer} />
+                    </Group>
+                </Flex>
+            </Accordion.Control>
+            <Accordion.Panel key={event.id + 'Panel'}>
+                <EventPanel
+                    event={event}
+                    videoURL={eventVideoURL}
+                    playedURL={playedURL}
+                    hostName={hostName} />
+            </Accordion.Panel>
+        </Accordion.Item>
     );
 };
 

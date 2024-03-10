@@ -1,9 +1,9 @@
 import { ActionIcon, CloseButton, Flex, Modal, NumberInput, TextInput, Tooltip, createStyles, } from '@mantine/core';
 import { getHotkeyHandler, useMediaQuery } from '@mantine/hooks';
 import React, { ReactEventHandler, useState, FocusEvent, useRef, Ref } from 'react';
-import { strings } from '../../strings/strings';
 import { IconAlertCircle, IconX } from '@tabler/icons-react';
 import { dimensions } from '../../dimensions/dimensions';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = createStyles((theme) => ({
     rightSection: {
@@ -21,6 +21,7 @@ interface InputModalProps {
 }
 
 const InputModal = ({ inValue, putValue, opened, open, close }: InputModalProps) => {
+    const { t } = useTranslation()
     const { classes } = useStyles()
     const [value, setValue] = useState(inValue)
     const isMobile = useMediaQuery(dimensions.mobileSize)
@@ -54,7 +55,7 @@ const InputModal = ({ inValue, putValue, opened, open, close }: InputModalProps)
             fullScreen={isMobile}
         >
             <Flex justify="space-between">
-                <div>{strings.enterQuantity}</div>
+                <div>{t('enterQuantity')}</div>
                 <CloseButton size="lg" onClick={handleClose} />
             </Flex>
             <NumberInput
@@ -64,7 +65,7 @@ const InputModal = ({ inValue, putValue, opened, open, close }: InputModalProps)
                 value={value}
                 onChange={handleSetValue}
                 data-autofocus
-                placeholder={strings.quantity}
+                placeholder={t('quantity')}
                 hideControls
                 min={0}
                 onFocus={handeLoaded}
@@ -73,9 +74,9 @@ const InputModal = ({ inValue, putValue, opened, open, close }: InputModalProps)
                         ['Enter', handleClose]
                     ])
                 }
-                rightSection={ // value.toString().length > 0 ? <ActionIcon onClick={(event) => handeClear()}><IconX size="1.4rem" /></ActionIcon> : null // todo move to textinput
+                rightSection={
                     <Flex  w='100%' h='100%' justify='right' align='center'>
-                        <Tooltip label={strings.tooltip_close} position="top-end" withArrow>
+                        <Tooltip label={t('tooltipСlose')} position="top-end" withArrow>
                             <div>
                                 <IconAlertCircle size="1.4rem" style={{ display: 'block', opacity: 0.5 }} />
                             </div>

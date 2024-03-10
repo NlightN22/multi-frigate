@@ -1,6 +1,6 @@
 import { Accordion, Text } from '@mantine/core';
-import React, { Suspense, lazy, useState } from 'react';
-import { strings } from '../../strings/strings';
+import { Suspense, lazy, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 const EventsAccordion = lazy(() => import('./EventsAccordion'))
 
 interface DayEventsAccordionProps {
@@ -14,6 +14,7 @@ const DayEventsAccordion = ({
     hour,
     qty,
 }: DayEventsAccordionProps) => {
+    const { t } = useTranslation()
     const [openedItem, setOpenedItem] = useState<string>()
 
     const handleClick = (value: string | null) => {
@@ -22,7 +23,7 @@ const DayEventsAccordion = ({
     return (
         <Accordion onChange={handleClick}>
             <Accordion.Item value={hour}>
-                <Accordion.Control><Text>{strings.events}: {qty}</Text></Accordion.Control>
+                <Accordion.Control><Text>{t('events')}: {qty}</Text></Accordion.Control>
                 <Accordion.Panel>
                     {openedItem === hour ?
                         <Suspense>

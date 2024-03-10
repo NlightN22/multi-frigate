@@ -2,15 +2,16 @@ import { Box, Flex, Indicator, Text } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Context } from '../../..';
 import { isProduction } from '../../env.const';
-import { strings } from '../../strings/strings';
 
 interface DateRangeSelectFilterProps {}
 
 const DateRangeSelectFilter = ({
 
 }: DateRangeSelectFilterProps) => {
+    const { t } = useTranslation()
     const { recordingsStore: recStore } = useContext(Context)
 
     const handlePick = (value: [Date | null, Date | null]) => {
@@ -23,7 +24,7 @@ const DateRangeSelectFilter = ({
             <Flex
                 mt='1rem'
                 justify='space-between'>
-                <Text>{strings.selectRange}</Text>
+                <Text>{t('selectRange')}</Text>
             </Flex>
             <DatePickerInput
                 w='100%'

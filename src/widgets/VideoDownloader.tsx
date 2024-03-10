@@ -122,15 +122,6 @@ const VideoDownloader = ({
 
     }
 
-    // TODO delete
-    // const handleCancel = () => {
-    //     clearTimeout(timer)
-    //     setTimer(undefined)
-    //     setCreateName(undefined)
-    //     setLink(undefined)
-    // }
-
-
     if (startUnixTime === 0 || endUnixTime === 0) return null
     if (error) return <RetryError onRetry={() => createVideo.mutate()} />
     if (link && progress && !videoSrc) return (

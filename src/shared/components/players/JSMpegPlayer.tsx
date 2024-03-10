@@ -1,9 +1,8 @@
 // @ts-ignore we know this doesn't have types
 import JSMpeg from "@cycjimmy/jsmpeg-player";
-import { Flex } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
-import { strings } from "../../strings/strings";
+import { useTranslation } from "react-i18next";
 
 type JSMpegPlayerProps = {
   wsUrl: string;
@@ -18,6 +17,7 @@ const JSMpegPlayer = (
     cameraHeight = 800,
   }: JSMpegPlayerProps
 ) => {
+  const { t } = useTranslation()
   const playerRef = useRef<HTMLDivElement>(null);
   const [playerInitialized, setPlayerInitialized] = useState(false)
 
@@ -28,7 +28,7 @@ const JSMpegPlayer = (
       playerRef.current,
       wsUrl,
       {},
-      {protocols: [], audio: false, videoBufferSize: 1024*1024*4}
+      { protocols: [], audio: false, videoBufferSize: 1024 * 1024 * 4 }
     );
 
     const toggleFullscreen = () => {
@@ -54,7 +54,7 @@ const JSMpegPlayer = (
       }
     };
 
-    video.els.canvas.addEventListener('dblclick',toggleFullscreen);
+    video.els.canvas.addEventListener('dblclick', toggleFullscreen);
 
     return () => {
       video.destroy();
@@ -63,11 +63,11 @@ const JSMpegPlayer = (
   }, [wsUrl]);
 
   return (
-      <div 
-      ref={playerRef} 
-      key={wsUrl} 
-      title={strings.player.doubleClickToFullHint}
-      style={{width:cameraWidth, height:cameraHeight, maxWidth:maxWidth, maxHeight: maxHeight-100, }} />
+    <div
+      ref={playerRef}
+      key={wsUrl}
+      title={t('player.doubleClickToFullHint')}
+      style={{ width: cameraWidth, height: cameraHeight, maxWidth: maxWidth, maxHeight: maxHeight - 100, }} />
   )
 };
 

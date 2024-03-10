@@ -7,7 +7,7 @@ import { routesPath } from '../router/routes.path';
 import { mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
 import AutoUpdatedImage from '../shared/components/images/AutoUpdatedImage';
-import { strings } from '../shared/strings/strings';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = createStyles((theme) => ({
     mainCard: {
@@ -41,6 +41,7 @@ interface CameraCardProps {
 const CameraCard = ({
     camera
 }: CameraCardProps) => {
+    const { t } = useTranslation()
     const [renderImage, setRenderImage] = useState<boolean>(false)
     const { classes } = useStyles();
     const { ref, entry } = useIntersection({ threshold: 0.5, })
@@ -71,7 +72,7 @@ const CameraCard = ({
                 <Group
                     className={classes.bottomGroup}>
                     <Flex justify='space-evenly' mt='0.5rem' w='100%'>
-                        <Button size='sm' onClick={handleOpenRecordings}>{strings.recordings}</Button>
+                        <Button size='sm' onClick={handleOpenRecordings}>{t('recordings')}</Button>
                     </Flex>
                 </Group>
             </Card>

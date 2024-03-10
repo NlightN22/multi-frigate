@@ -8,11 +8,12 @@ import CenterLoader from '../shared/components/loaders/CenterLoader';
 import RetryErrorPage from './RetryErrorPage';
 import Player from '../widgets/Player';
 import { Button, Flex, Text } from '@mantine/core';
-import { strings } from '../shared/strings/strings';
 import { routesPath } from '../router/routes.path';
 import { recordingsPageQuery } from './RecordingsPage';
+import { useTranslation } from 'react-i18next';
 
 const LiveCameraPage = () => {
+    const { t } = useTranslation()
     const executed = useRef(false)
     const navigate = useNavigate()
     let { id: cameraId } = useParams<'id'>()
@@ -48,9 +49,9 @@ const LiveCameraPage = () => {
     return (
         <Flex w='100%' h='100%' justify='center' align='center' direction='column'>
             <Flex w='100%' justify='center' align='baseline' mb='1rem'>
-                <Text mr='1rem'>{strings.camera}: {camera.name} {camera.frigateHost ? `/ ${camera.frigateHost.name}` : ''}</Text>
+                <Text mr='1rem'>{t('camera')}: {camera.name} {camera.frigateHost ? `/ ${camera.frigateHost.name}` : ''}</Text>
                 {!camera.frigateHost ? <></> :
-                    <Button onClick={handleOpenRecordings}>{strings.recordings}</Button>
+                    <Button onClick={handleOpenRecordings}>{t('recordings')}</Button>
                 }
             </Flex>
             <Player camera={camera} />

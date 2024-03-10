@@ -1,7 +1,6 @@
-import { SelectItem, SystemProp, SpacingValue, SelectProps, Box, Flex, CloseButton, Text, Select } from '@mantine/core';
-import React, { CSSProperties } from 'react';
+import { Box, Flex, Select, SelectProps, SpacingValue, SystemProp, Text } from '@mantine/core';
+import { useTranslation } from 'react-i18next';
 import CloseWithTooltip from '../buttons/CloseWithTooltip';
-import { strings } from '../../strings/strings';
 
 
 export interface OneSelectItem {
@@ -30,6 +29,7 @@ const OneSelectFilter = ({
     label, defaultValue, textClassName,
     showClose, value, onChange: onChange, onClose, ...selectProps
 }: OneSelectFilterProps) => {
+    const { t } = useTranslation()
 
     const handleOnChange = (value: string) => {
         if (onChange) onChange(value, id,)
@@ -44,7 +44,7 @@ const OneSelectFilter = ({
             {!label ? null :
                 <Flex justify='space-between'>
                     <Text className={textClassName}>{label}</Text>
-                    {showClose ? <CloseWithTooltip label={strings.hide} onClose={handleOnClose} />
+                    {showClose ? <CloseWithTooltip label={t('hide')} onClose={handleOnClose} />
                         : null}
                 </Flex>
             }

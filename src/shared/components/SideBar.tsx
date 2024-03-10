@@ -1,10 +1,10 @@
 import { Aside, Button, Navbar, createStyles } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { observer } from 'mobx-react-lite';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { useTranslation } from "react-i18next";
 import { Context } from '../..';
 import { dimensions } from '../dimensions/dimensions';
-import { strings } from '../strings/strings';
 import { useMantineSize } from '../utils/mantine.size.convertor';
 import { SideButton } from './SideButton';
 
@@ -29,6 +29,7 @@ const useStyles = createStyles((theme,
 
 
 const SideBar = ({ isHidden, side, children }: SideBarProps) => {
+    const { t } = useTranslation()
     const hideSizePx = useMantineSize(dimensions.hideSidebarsSize)
     const initialVisible = () => {
         const savedVisibility = localStorage.getItem(`sidebarVisible_${side}`);
@@ -97,7 +98,7 @@ const SideBar = ({ isHidden, side, children }: SideBarProps) => {
                         p={dimensions.hideSidebarsSize}
                         width={{ sm: 200, lg: 300, }}
                     >
-                        <Button onClick={() => handleClickVisible(false)}>{strings.hide}</Button>
+                        <Button onClick={() => handleClickVisible(false)}>{t('hide')}</Button>
                         {leftChildren}
                     </Navbar>
                     :
@@ -105,7 +106,7 @@ const SideBar = ({ isHidden, side, children }: SideBarProps) => {
                         className={classes.aside}
                         p={dimensions.hideSidebarsSize}
                         width={{ sm: 200, lg: 300 }}>
-                        <Button onClick={() => handleClickVisible(false)}>{strings.hide}</Button>
+                        <Button onClick={() => handleClickVisible(false)}>{t('hide')}</Button>
                         {rightChildren}
                     </Aside>
             }

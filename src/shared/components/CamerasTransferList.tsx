@@ -1,12 +1,11 @@
+import { Button, Flex, Text, TransferList, TransferListData, TransferListItem } from '@mantine/core';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { frigateApi, frigateQueryKeys } from '../../services/frigate.proxy/frigate.api';
-import CogwheelLoader from './loaders/CogwheelLoader';
-import RetryError from './RetryError';
-import { TransferList, Text, TransferListData, TransferListProps, TransferListItem, Button, Flex } from '@mantine/core';
-import { OneSelectItem } from './filters/OneSelectFilter';
-import { strings } from '../strings/strings';
 import { isProduction } from '../env.const';
+import RetryError from './RetryError';
+import CogwheelLoader from './loaders/CogwheelLoader';
 
 interface CamerasTransferListProps {
     roleId: string
@@ -15,6 +14,7 @@ interface CamerasTransferListProps {
 const CamerasTransferList = ({
     roleId,
 }: CamerasTransferListProps) => {
+    const { t } = useTranslation()
     const queryClient = useQueryClient()
     const { data: cameras, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getCamerasWHost, roleId],
@@ -50,7 +50,7 @@ const CamerasTransferList = ({
 
     if (isPending) return <CogwheelLoader />
     if (isError || !cameras) return <RetryError onRetry={refetch} />
-    if (cameras.length < 1) return <Text> {strings.camersDoesNotExist}</Text>
+    if (cameras.length < 1) return <Text> {t('camersDoesNotExist')}</Text>
 
 
     const handleSave = () => {
@@ -65,8 +65,8 @@ const CamerasTransferList = ({
     return (
         <>
             <Flex w='100%' justify='center'>
-                <Button mt='1rem' miw='6rem' mr='1rem' onClick={handleDiscard}>{strings.discard}</Button>
-                <Button mt='1rem' miw='5rem' onClick={handleSave}>{strings.save}</Button>
+                <Button mt='1rem' miw='6rem' mr='1rem' onClick={handleDiscard}>{t('discard')}</Button>
+                <Button mt='1rem' miw='5rem' onClick={handleSave}>{t('save')}</Button>
                 </Flex>
             <TransferList
                 transferAllMatchingFilter
@@ -74,9 +74,9 @@ const CamerasTransferList = ({
                 mt='1rem'
                 value={lists}
                 onChange={handleChange}
-                searchPlaceholder={strings.search}
-                nothingFound={strings.nothingHere}
-                titles={[strings.notAllowed, strings.allowed]}
+                searchPlaceholder={t('search')}
+                nothingFound={t('nothingHere')}
+                titles={[t('notAllowed'), t('allowed')]}
                 breakpoint="sm"
             />
         </>

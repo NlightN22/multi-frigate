@@ -6,6 +6,7 @@ import RootStore from './shared/stores/root.store';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import { isProduction, oidpSettings } from './shared/env.const';
 import { BrowserRouter } from 'react-router-dom';
+import './services/i18n';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -23,6 +24,7 @@ export const keycloakConfig: AuthProviderProps = {
     params.delete('state');
     params.delete('session_state');
     params.delete('code');
+    params.delete('iss');
     const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`
     window.history.replaceState({}, document.title, newUrl)
   }

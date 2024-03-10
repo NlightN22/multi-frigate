@@ -6,9 +6,9 @@ import { frigateApi, frigateQueryKeys } from '../../../services/frigate.proxy/fr
 import CogwheelLoader from '../loaders/CogwheelLoader';
 import { Center, Loader, Text } from '@mantine/core';
 import OneSelectFilter, { OneSelectItem } from './OneSelectFilter';
-import { strings } from '../../strings/strings';
 import RetryError from '../RetryError';
 import { isProduction } from '../../env.const';
+import { useTranslation } from 'react-i18next';
 
 interface CameraSelectFilterProps {
     selectedHostId: string,
@@ -17,6 +17,7 @@ interface CameraSelectFilterProps {
 const CameraSelectFilter = ({
     selectedHostId,
 }: CameraSelectFilterProps) => {
+    const { t } = useTranslation()
     const { recordingsStore: recStore } = useContext(Context)
 
     const { data, isError, isPending, isSuccess, refetch } = useQuery({
@@ -53,7 +54,7 @@ const CameraSelectFilter = ({
     return (
         <OneSelectFilter
             id='frigate-cameras'
-            label={strings.selectCamera}
+            label={t('selectCamera')}
             spaceBetween='1rem'
             value={recStore.filteredCamera?.id || ''}
             defaultValue={recStore.filteredCamera?.id || ''}

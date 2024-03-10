@@ -1,6 +1,6 @@
-import { SystemProp, SpacingValue, Box, Flex, CloseButton, MultiSelect, SelectItem, MultiSelectProps, Text, Tooltip } from '@mantine/core';
-import React, { CSSProperties, useState } from 'react';
-import { strings } from '../../strings/strings';
+import { Box, Flex, MultiSelect, MultiSelectProps, SelectItem, SpacingValue, SystemProp, Text } from '@mantine/core';
+import { CSSProperties } from 'react';
+import { useTranslation } from 'react-i18next';
 import CloseWithTooltip from '../buttons/CloseWithTooltip';
 
 interface MultiSelectFilterProps {
@@ -22,6 +22,7 @@ const MultiSelectFilter = ({
     label, defaultValue, textClassName,
     selectProps, display, showClose, changedState, onClose
 }: MultiSelectFilterProps) => {
+    const { t } = useTranslation()
 
     const handleOnChange = (value: string[]) => {
         if (changedState) {
@@ -34,7 +35,7 @@ const MultiSelectFilter = ({
             <Flex justify='space-between'>
                 <Text className={textClassName}>{label}</Text>
                 {showClose ?
-                    <CloseWithTooltip label={strings.hide} onClose={onClose} />
+                    <CloseWithTooltip label={t('hide')} onClose={onClose} />
                     : null}
             </Flex>
             <MultiSelect

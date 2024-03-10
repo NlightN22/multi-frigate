@@ -62,6 +62,7 @@ function App() {
     urlParams.delete('state');
     urlParams.delete('session_state');
     urlParams.delete('code');
+    urlParams.delete('iss');
     navigate(`${location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`, { replace: true })
   }
 

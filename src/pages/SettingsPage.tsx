@@ -1,25 +1,26 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import {
-    useQuery,
-    useMutation,
-    useQueryClient,
-} from '@tanstack/react-query'
-import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
-import RetryErrorPage from './RetryErrorPage';
 import { Button, Flex, Space } from '@mantine/core';
-import { FloatingLabelInput } from '../shared/components/inputs/FloatingLabelInput';
-import { strings } from '../shared/strings/strings';
-import { dimensions } from '../shared/dimensions/dimensions';
 import { useMediaQuery } from '@mantine/hooks';
-import { GetConfig } from '../services/frigate.proxy/frigate.schema';
+import {
+    useMutation,
+    useQuery,
+    useQueryClient,
+} from '@tanstack/react-query';
+import { observer } from 'mobx-react-lite';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
-import Forbidden from './403';
-import { observer } from 'mobx-react-lite';
+import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
+import { GetConfig } from '../services/frigate.proxy/frigate.schema';
+import { FloatingLabelInput } from '../shared/components/inputs/FloatingLabelInput';
+import CenterLoader from '../shared/components/loaders/CenterLoader';
+import { dimensions } from '../shared/dimensions/dimensions';
 import { isProduction } from '../shared/env.const';
+import Forbidden from './403';
+import RetryErrorPage from './RetryErrorPage';
 
 const SettingsPage = () => {
+    const { t } = useTranslation()
     const executed = useRef(false)
     const queryClient = useQueryClient()
     const { isPending: configPending, error: configError, data, refetch } = useQuery({
@@ -126,8 +127,8 @@ const SettingsPage = () => {
                         ))}
                     <Space h='2%' />
                     <Flex w='100%' justify='stretch' wrap='nowrap' align='center'>
-                        <Button w='100%' onClick={handleDiscard} m='0.5rem'>{strings.discard}</Button>
-                        <Button w='100%' type="submit" m='0.5rem'>{strings.confirm}</Button>
+                        <Button w='100%' onClick={handleDiscard} m='0.5rem'>{t('discard')}</Button>
+                        <Button w='100%' type="submit" m='0.5rem'>{t('confirm')}</Button>
                     </Flex>
                 </form>
             </Flex>

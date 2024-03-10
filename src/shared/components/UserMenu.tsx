@@ -1,17 +1,25 @@
-import React from 'react';
-import { Avatar,  Group, Menu,  Text, Button, Flex } from "@mantine/core";
-import { useAuth } from 'react-oidc-context';
-import { strings } from '../strings/strings';
+import { Avatar, Button, Flex, Group, Menu, Text } from "@mantine/core";
 import { useMediaQuery } from '@mantine/hooks';
+import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from 'react-oidc-context';
+import { keycloakConfig } from '../..';
 import { dimensions } from '../dimensions/dimensions';
 import ColorSchemeToggle from './buttons/ColorSchemeToggle';
-import { keycloakConfig } from '../..';
 
 interface UserMenuProps {
     user: { name: string; image: string }
 }
 
 const UserMenu = ({ user }: UserMenuProps) => {
+
+    const { t, i18n } = useTranslation()
+
+    const languages = [
+        { lng: 'en', name: 'Eng' },
+        { lng: 'ru', name: 'Rus' },
+    ]
+
     const auth = useAuth()
     const isMiddleScreen = useMediaQuery(dimensions.middleScreenSize)
 
@@ -22,6 +30,24 @@ const UserMenu = ({ user }: UserMenuProps) => {
         const id_token_hint = auth.user?.id_token
         await auth.signoutRedirect({ post_logout_redirect_uri: keycloakConfig.redirect_uri, id_token_hint: id_token_hint })
     }
+
+    const handleChangeLanguage = async (lng: string) => {
+        await i18n.changeLanguage(lng)
+    }
+
+    const languageSelector = useCallback(() => {
+        return languages.map(lang => (
+            <Button
+                key={lang.lng}
+                size='xs'
+                component="a"
+                variant="outline"
+                disabled={i18n.resolvedLanguage === lang.lng}
+                onClick={() => handleChangeLanguage(lang.lng)}>
+                {lang.name}
+            </Button>
+        ))
+    }, [i18n.resolvedLanguage])
 
     return (
         <Menu
@@ -43,20 +69,17 @@ const UserMenu = ({ user }: UserMenuProps) => {
                 {
                     isMiddleScreen ?
                         <Flex w='100%' justify='space-between' align='center'>
-                            <Text fz='sm' ml='0.7rem'>{strings.changeTheme}</Text>
+                            <Text fz='sm' ml='0.7rem'>{t('changeTheme')}</Text>
                             <ColorSchemeToggle />
                         </Flex>
                         :
                         <></>
                 }
-                {/* <Menu.Item>
-                    {strings.settings}
-                </Menu.Item>
-                <Menu.Item onClick={handleAboutMe}>
-                    {strings.aboutMe}
-                </Menu.Item> */}
+                {
+                    languageSelector()
+                }
                 <Menu.Item onClick={handleLogout}>
-                    {strings.logout}
+                    {t('logout')}
                 </Menu.Item>
             </Menu.Dropdown>
         </Menu>

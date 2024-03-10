@@ -10,6 +10,7 @@ import RecordingsFiltersRightSide from '../widgets/RecordingsFiltersRightSide';
 import SelectedCameraList from '../widgets/SelectedCameraList';
 import SelectedDayList from '../widgets/SelectedDayList';
 import SelectedHostList from '../widgets/SelectedHostList';
+import { useTranslation } from 'react-i18next';
 
 
 export const recordingsPageQuery = {
@@ -21,6 +22,7 @@ export const recordingsPageQuery = {
 }
 
 const RecordingsPage = () => {
+  const { t } = useTranslation()
   const executed = useRef(false)
   const { sideBarsStore, recordingsStore: recStore } = useContext(Context)
 
@@ -116,10 +118,10 @@ const RecordingsPage = () => {
   return (
     <Flex w='100%' h='100%' direction='column' justify='center' align='center'>
       {!hostId ?
-        <Text size='xl'>Please select host</Text>
+        <Text size='xl'>{t('pleaseSelectHost')}</Text>
         : <></>}
       {hostId && !(startDay && endDay) ?
-        <Text size='xl'>Please select date</Text>
+        <Text size='xl'>{t('pleaseSelectDate')}</Text>
         : <></>
       }
     </Flex>

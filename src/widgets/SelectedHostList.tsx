@@ -5,8 +5,8 @@ import { frigateQueryKeys, frigateApi } from '../services/frigate.proxy/frigate.
 import { Context } from '..';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import RetryErrorPage from '../pages/RetryErrorPage';
-import { strings } from '../shared/strings/strings';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 const CameraAccordion = lazy(() => import('../shared/components/accordion/CameraAccordion'));
 
 interface SelectedHostListProps {
@@ -16,7 +16,7 @@ interface SelectedHostListProps {
 const SelectedHostList = ({
     hostId
 }: SelectedHostListProps) => {
-
+    const { t } = useTranslation()
     const { recordingsStore: recStore } = useContext(Context)
     const [openCameraId, setOpenCameraId] = useState<string | null>(null)
 
@@ -47,7 +47,7 @@ const SelectedHostList = ({
     const camerasItems = camerasQuery.map(camera => {
         return (
             <Accordion.Item key={camera.id + 'Item'} value={camera.id}>
-                <Accordion.Control key={camera.id + 'Control'}>{strings.camera}: {camera.name}</Accordion.Control>
+                <Accordion.Control key={camera.id + 'Control'}>{t('camera')}: {camera.name}</Accordion.Control>
                 <Accordion.Panel key={camera.id + 'Panel'}>
                     {openCameraId === camera.id && (
                         <Suspense>
@@ -61,7 +61,7 @@ const SelectedHostList = ({
 
     return (
         <Flex w='100%' h='100%' direction='column' align='center'>
-            <Text>{strings.host}: {camerasQuery[0].frigateHost?.name}</Text>
+            <Text>{t('hostArr.host')}: {camerasQuery[0].frigateHost?.name}</Text>
             <Accordion
                 mt='1rem'
                 variant='separated'

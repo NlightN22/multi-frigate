@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
 import { frigateQueryKeys, frigateApi } from '../../../services/frigate.proxy/frigate.api';
-import { strings } from '../../strings/strings';
 import RetryError from '../RetryError';
 import CogwheelLoader from '../loaders/CogwheelLoader';
 import OneSelectFilter, { OneSelectItem } from './OneSelectFilter';

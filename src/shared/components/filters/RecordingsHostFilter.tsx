@@ -3,10 +3,11 @@ import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { Context } from '../../..';
 import { frigateApi, frigateQueryKeys } from '../../../services/frigate.proxy/frigate.api';
-import { strings } from '../../strings/strings';
 import HostSelect from './HostSelect';
+import { useTranslation } from 'react-i18next';
 
 const RecordingsHostFilter = () => {
+    const { t } = useTranslation()
     const { recordingsStore: recStore } = useContext(Context)
 
     const { data: hosts } = useQuery({
@@ -38,7 +39,7 @@ const RecordingsHostFilter = () => {
 
     return (
         <HostSelect
-        label={strings.selectHost}
+        label={t('selectHost')}
         valueId={recStore.filteredHost?.id}
         defaultId={recStore.filteredHost?.id}
         onChange={handleSelect}

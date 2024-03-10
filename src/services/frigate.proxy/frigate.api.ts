@@ -21,7 +21,7 @@ export const getToken = (): string | undefined => {
 
 const instanceApi = axios.create({
     baseURL: proxyURL.toString(),
-    timeout: 60 * 1000,
+    timeout: 20 * 1000,
 })
 
 instanceApi.interceptors.request.use(

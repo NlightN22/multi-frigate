@@ -1,14 +1,24 @@
-import React, { useContext, useState } from 'react';
-import { AppShell, useMantineTheme, } from "@mantine/core"
-import { HeaderAction } from './widgets/header/HeaderAction';
-import { headerLinks } from './widgets/header/header.links';
-import AppRouter from './router/AppRouter';
-import { Context } from '.';
-import SideBar from './shared/components/SideBar';
+import { AppShell, useMantineTheme, } from "@mantine/core";
 import { observer } from 'mobx-react-lite';
+import { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Context } from '.';
+import AppRouter from './router/AppRouter';
+import { routesPath } from './router/routes.path';
+import SideBar from './shared/components/SideBar';
 import { isProduction } from './shared/env.const';
+import { HeaderAction } from './widgets/header/HeaderAction';
 
 const AppBody = () => {
+    const { t } = useTranslation()
+
+    const headerLinks = [
+        { link: routesPath.MAIN_PATH, label: t('header.home') },
+        { link: routesPath.SETTINGS_PATH, label: t('header.settings'), admin: true },
+        { link: routesPath.RECORDINGS_PATH, label: t('header.recordings') },
+        { link: routesPath.HOSTS_PATH, label: t('header.hostsConfig'), admin: true },
+        { link: routesPath.ACCESS_PATH, label: t('header.acessSettings'), admin: true },
+    ]
 
     const { sideBarsStore } = useContext(Context)
 
