@@ -63,7 +63,7 @@ const DrawerMenu = ({
 
     return (
         <>
-            <Burger opened={drawerOpened} onClick={toggleDrawer} className={classes.burger} size="sm" />
+            <Burger opened={drawerOpened} onClick={toggleDrawer} className={classes.burger} size='md' ml='1rem' />
             <Drawer
                 opened={drawerOpened}
                 onClose={closeDrawer}
