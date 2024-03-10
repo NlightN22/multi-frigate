@@ -40,12 +40,6 @@ const useStyles = createStyles((theme) => ({
         },
 
     },
-    // TODO delete
-    burger: {
-        [theme.fn.largerThan('sm')]: {
-            display: 'none',
-        },
-    },
 
     colorToggle: {
         [theme.fn.smallerThan('md')]: { display: 'none' }
@@ -89,7 +83,6 @@ export const HeaderAction = ({ links }: HeaderActionProps) => {
             <Container className={classes.inner} fluid>
                 <Flex wrap='nowrap' >
                     <Logo onClick={() => handleNavigate(routesPath.MAIN_PATH)} />
-                    {/* <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" /> */}
                     <DrawerMenu links={links} />
                     <Flex className={classes.leftLinksMenu}>
                         {items}
