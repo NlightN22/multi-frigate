@@ -1,4 +1,5 @@
 import { Card, Flex, Group, Text } from '@mantine/core';
+import { IconZoomCheck, IconZoomQuestion } from '@tabler/icons-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +8,8 @@ interface GpuStatProps {
     decoder?: string,
     encoder?: string,
     gpu?: string,
-    mem?: string
+    mem?: string,
+    onVaInfoClick?: () => void
 }
 
 const GpuStat: React.FC<GpuStatProps> = ({
@@ -15,13 +17,19 @@ const GpuStat: React.FC<GpuStatProps> = ({
     decoder,
     encoder,
     gpu,
-    mem
+    mem,
+    onVaInfoClick
 }) => {
     const { t } = useTranslation()
     return (
         <Card withBorder radius="md" p='0.7rem'>
             <Flex align='center'>
-                <Text c="dimmed" size="xs" tt="uppercase" fw={700} mr='0.5rem'>
+                <IconZoomQuestion
+                    size='2rem'
+                    color='cyan'
+                    cursor='pointer'
+                    onClick={onVaInfoClick} />
+                <Text ml='0.5rem' c="dimmed" size="xs" tt="uppercase" fw={700} mr='0.5rem'>
                     {name}
                 </Text>
                 <Flex w='100%' direction='column' align='center'>

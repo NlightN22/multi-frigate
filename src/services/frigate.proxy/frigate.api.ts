@@ -10,7 +10,9 @@ import { RecordSummary } from "../../types/record";
 import { EventFrigate } from "../../types/event";
 import { keycloakConfig } from "../..";
 import { getResolvedTimeZone } from "../../shared/utils/dateUtil";
-import { FrigateStats } from "../../types/frigateStats";
+import { FrigateStats, GetFfprobe, GetVaInfo } from "../../types/frigateStats";
+import { hostname } from "os";
+import { PostSaveConfig, SaveOption } from "../../types/saveConfig";
 
 
 export const getToken = (): string | undefined => {
@@ -176,7 +178,19 @@ export const proxyApi = {
     getVideoUrl: (hostName: string, fileName: string) => `${proxyPrefix}${hostName}/exports/${fileName}`,
     // filename example Home_1_Backyard_2024_02_26_16_25__2024_02_26_16_26.mp4
     deleteExportedVideo: (hostName: string, videoName: string) => instanceApi.delete(`proxy/${hostName}/api/export/${videoName}`).then(res => res.data),
-    getHostStats: (hostName: string) => instanceApi.get<FrigateStats>(`proxy/${hostName}/api/stats`).then( res => res.data),
+    getHostStats: (hostName: string) => instanceApi.get<FrigateStats>(`proxy/${hostName}/api/stats`).then(res => res.data),
+    getCameraFfprobe: (hostName: string, cameraName: string) =>
+        instanceApi.get<GetFfprobe[]>(`proxy/${hostName}/api/ffprobe`, { params: { paths: `camera:${cameraName}` } }).then(res => res.data),
+    getHostVaInfo: (hostName: string) => instanceApi.get<GetVaInfo>(`proxy/${hostName}/api/vainfo`).then(res => res.data),
+    postHostConfig: (hostName: string, saveOption: SaveOption, config: string) =>
+        instanceApi.post<PostSaveConfig>(`proxy/${hostName}/api/config/save`, config, {
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            params: {
+                save_option: saveOption
+            }
+        }).then(res => res.data),
 }
 
 export const mapCamerasFromConfig = (config: FrigateConfig): string[] => {
@@ -199,7 +213,10 @@ export const frigateQueryKeys = {
     getCameraWHost: 'camera-frigate-host',
     getCameraByHostId: 'camera-by-hostId',
     getHostConfig: 'host-config',
+    postHostConfig: 'host-config-save',
     getHostStats: 'host-stats',
+    getCameraFfprobe: 'camera-ffprobe',
+    getHostVaInfo: 'host-vainfo',
     getRecordingsSummary: 'recordings-frigate-summary',
     getRecordings: 'recordings-frigate',
     getEvents: 'events-frigate',

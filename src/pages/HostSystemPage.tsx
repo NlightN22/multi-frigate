@@ -1,21 +1,24 @@
-import React, { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import { Flex, Grid, Text } from '@mantine/core';
+import { useQuery } from '@tanstack/react-query';
+import { observer } from 'mobx-react-lite';
+import { useCallback, useContext, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
-import Forbidden from './403';
-import { observer } from 'mobx-react-lite';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import { frigateApi, frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
+import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
-import RetryErrorPage from './RetryErrorPage';
-import { Flex, Grid, Text } from '@mantine/core';
-import FrigateCamerasStateTable, { CameraItem, ProcessType } from '../widgets/camera.stat.table/FrigateCameraStateTable';
-import StorageRingStat from '../shared/components/stats/StorageRingStat';
-import { useTranslation } from 'react-i18next';
-import { formatUptime } from '../shared/utils/dateUtil';
-import GpuStat from '../shared/components/stats/GpuStat';
-import { v4 } from 'uuid';
 import DetectorsStat from '../shared/components/stats/DetectorsStat';
+import GpuStat from '../shared/components/stats/GpuStat';
+import StorageRingStat from '../shared/components/stats/StorageRingStat';
+import { isProduction } from '../shared/env.const';
+import { formatUptime } from '../shared/utils/dateUtil';
+import FrigateCamerasStateTable, { CameraItem, ProcessType } from '../widgets/camera.stat.table/FrigateCameraStateTable';
+import Forbidden from './403';
+import RetryErrorPage from './RetryErrorPage';
+import { openContextModal } from '@mantine/modals';
+import { FfprobeModalProps } from '../shared/components/modal.windows/FfprobeModal';
 
 export const hostSystemPageQuery = {
     hostId: 'hostId',
@@ -26,6 +29,7 @@ const HostSystemPage = () => {
     const executed = useRef(false)
     const { sideBarsStore } = useContext(Context)
     const { isAdmin } = useAdminRole()
+    const host = useRef<GetFrigateHost | undefined>()
 
     useEffect(() => {
         if (!executed.current) {
@@ -42,11 +46,13 @@ const HostSystemPage = () => {
         queryKey: [frigateQueryKeys.getHostStats, paramHostId],
         queryFn: async () => {
             if (!paramHostId) return null
-            const host = await frigateApi.getHost(paramHostId)
-            const hostName = mapHostToHostname(host)
+            host.current = await frigateApi.getHost(paramHostId)
+            const hostName = mapHostToHostname(host.current)
             if (!hostName) return null
             return proxyApi.getHostStats(hostName)
-        }
+        },
+        staleTime: 2 * 60 * 1000,
+        refetchInterval: 60 * 1000,
     })
 
     const mapCameraData = useCallback(() => {
@@ -72,9 +78,9 @@ const HostSystemPage = () => {
         });
     }, [data]);
 
-    if (!isAdmin) return <Forbidden />
     if (isPending) return <CenterLoader />
     if (isError) return <RetryErrorPage onRetry={refetch} />
+    if (!isAdmin) return <Forbidden />
     if (!paramHostId || !data) return null
 
     const mappedCameraStat: CameraItem[] = mapCameraData()
@@ -97,6 +103,14 @@ const HostSystemPage = () => {
         return `${time.value.toFixed(1)} ${translatedUnit}`
     }
 
+    const handleVaInfoClick = () => openContextModal({
+        modal: 'vaInfoModal',
+        title: 'VaInfo',
+        innerProps: {
+            hostName: mapHostToHostname(host.current)
+        }
+    })
+
     const gpuStats = Object.entries(data.gpu_usages).map(([name, stats]) => {
         return (
             <Grid.Col key={name + stats.gpu} xs={7} sm={6} md={5} lg={4} p='0.2rem'>
@@ -105,7 +119,9 @@ const HostSystemPage = () => {
                     decoder={stats.dec}
                     encoder={stats.enc}
                     gpu={stats.gpu}
-                    mem={stats.mem} />
+                    mem={stats.mem} 
+                    onVaInfoClick={() => handleVaInfoClick()}
+                    />
             </Grid.Col>
         )
     })
@@ -127,10 +143,22 @@ const HostSystemPage = () => {
         )
     })
 
+    const handleFfprobeClick = (cameraName: string) => openContextModal({
+        modal: 'ffprobeModal',
+        title: 'Ffprobe',
+        innerProps: {
+            hostName: mapHostToHostname(host.current),
+            cameraName: cameraName
+        }
+    })
+
+    if (!isProduction) console.log('HostSystemPage rendered')
+
     return (
         <Flex w='100%' h='100%' direction='column'>
-            <Flex w='100%' justify='space-around'>
+            <Flex w='100%' justify='space-around' align='baseline'>
                 <Text>{t('version')} : {data.service.version}</Text>
+                <Text size='xl' w='900'>{host.current?.name}</Text>
                 <Text>{t('uptime')} : {formattedUptime()}</Text>
             </Flex>
             <Grid mt='sm' justify="center" mb='sm' align='stretch'>
@@ -140,7 +168,7 @@ const HostSystemPage = () => {
                 {gpuStats}
                 {detectorsStats}
             </Grid>
-            <FrigateCamerasStateTable data={mappedCameraStat} />
+            <FrigateCamerasStateTable data={mappedCameraStat} onFfprobeClick={handleFfprobeClick} />
         </Flex>
     );
 };

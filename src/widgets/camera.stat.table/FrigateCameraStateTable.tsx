@@ -1,4 +1,5 @@
-import { Table, Text } from '@mantine/core';
+import { Flex, Table, Text } from '@mantine/core';
+import { IconZoomQuestion } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
@@ -30,10 +31,12 @@ interface TableHead {
 
 interface TableProps<T> {
     data: T[],
+    onFfprobeClick?: (cameraName: string) => void
 }
 
 const FrigateCamerasStateTable = ({
-    data
+    data,
+    onFfprobeClick
 }: TableProps<CameraItem>) => {
 
     const { t } = useTranslation()
@@ -74,13 +77,26 @@ const FrigateCamerasStateTable = ({
         )
     })
 
-    if (!isProduction) console.log('FrigateHostsTable rendered')
+    if (!isProduction) console.log('FrigateCamerasStateTable rendered')
+
+    const handleFfprobe = (cameraName: string) => {
+        onFfprobeClick?.(cameraName)
+    }
 
     const rows = tableData.map(item => {
         return (
             <tr key={item.cameraName + item.process}>
                 <td><Text align='center'>{item.cameraName}</Text></td>
-                <td><Text align='center'>{item.process}</Text></td>
+                <td>
+                    <Flex justify='center'>
+                        <Text align='center' mr='0.2rem'>{item.process}</Text>
+                        {item.process !== ProcessType.Ffmpeg ? null :
+                            <IconZoomQuestion
+                                color='cyan'
+                                cursor='pointer'
+                                onClick={() => handleFfprobe(item.cameraName)} />}
+                    </Flex>
+                </td>
                 <td><Text align='center'>{item.pid}</Text></td>
                 <td><Text align='center'>{item.fps}</Text></td>
                 <td><Text align='center'>{item.cpu}</Text></td>

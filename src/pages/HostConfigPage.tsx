@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Context } from '..';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { frigateApi, frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
-import { Button, Flex, useMantineTheme } from '@mantine/core';
+import { Button, Flex, useMantineTheme, Text } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 import Editor, { Monaco } from '@monaco-editor/react'
 import * as monaco from "monaco-editor";
@@ -13,11 +13,16 @@ import { useAdminRole } from '../hooks/useAdminRole';
 import Forbidden from './403';
 import { observer } from 'mobx-react-lite';
 import { isProduction } from '../shared/env.const';
+import { SaveOption } from '../types/saveConfig';
+import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
+import { error } from 'console';
 
 
 const HostConfigPage = () => {
   const executed = useRef(false)
+  const host = useRef<GetFrigateHost | undefined>()
   const { sideBarsStore } = useContext(Context)
+  const [saveMessage, setSaveMessage] = useState<string>()
 
   let { id } = useParams<'id'>()
   const { isAdmin, isLoading: adminLoading } = useAdminRole()
@@ -25,22 +30,42 @@ const HostConfigPage = () => {
   const { isPending: configPending, error: configError, data: config, refetch } = useQuery({
     queryKey: [frigateQueryKeys.getFrigateHost, id],
     queryFn: async () => {
-      const host = await frigateApi.getHost(id || '')
-      const hostName = mapHostToHostname(host)
-      if (hostName)
-        return proxyApi.getHostConfigRaw(hostName)
-      return null
+      host.current = await frigateApi.getHost(id || '')
+      const hostName = mapHostToHostname(host.current)
+      if (!hostName) return null
+      return proxyApi.getHostConfigRaw(hostName)
     },
+  })
+
+  const { mutate: saveConfig } = useMutation({
+    mutationKey: [frigateQueryKeys.postHostConfig],
+    mutationFn: ({ saveOption, config }: { saveOption: SaveOption, config: string }) => {
+      const hostName = mapHostToHostname(host.current)
+      if (!hostName || !editorRef.current) return Promise.resolve(null)
+      return proxyApi.postHostConfig(hostName, saveOption, config)
+        .catch(error => {
+          if (error.response && error.response.data) {
+            return Promise.reject(error.response.data)
+          }
+          return Promise.reject(error)
+        })
+    },
+    onSuccess: (data) => {
+      setSaveMessage(data?.message)
+    },
+    onError: (error) => {
+      setSaveMessage(error.message)
+    }
   })
 
   useEffect(() => {
     if (!executed.current) {
-        sideBarsStore.rightVisible = false
-        sideBarsStore.setLeftChildren(null)
-        sideBarsStore.setRightChildren(null)
-        executed.current = true
+      sideBarsStore.rightVisible = false
+      sideBarsStore.setLeftChildren(null)
+      sideBarsStore.setRightChildren(null)
+      executed.current = true
     }
-}, [sideBarsStore])
+  }, [sideBarsStore])
 
   const clipboard = useClipboard({ timeout: 500 })
 
@@ -81,11 +106,13 @@ const HostConfigPage = () => {
   }, [editorRef, clipboard]);
 
   const onHandleSaveConfig = useCallback(
-    async (save_option: string) => {
+    async (saveOption: SaveOption) => {
       if (!editorRef.current) {
-        return;
+        throw Error('Editor does not exists')
       }
-      if (!isProduction) console.log('save config', save_option)
+      if (!isProduction) console.log('saveOption', saveOption)
+      if (!isProduction) console.log('editorRef.current', editorRef.current.getValue().slice(0, 50))
+      saveConfig({ saveOption: saveOption, config: editorRef.current.getValue() })
     }, [editorRef])
 
   if (configPending || adminLoading) return <CenterLoader />
@@ -99,14 +126,19 @@ const HostConfigPage = () => {
         <Button size="sm" onClick={handleCopyConfig}>
           Copy Config
         </Button>
-        <Button ml='1rem' size="sm" onClick={(_) => onHandleSaveConfig("restart")}>
+        <Button ml='1rem' size="sm" onClick={(_) => onHandleSaveConfig(SaveOption.SaveRestart)}>
           Save & Restart
         </Button>
-        <Button ml='1rem' size="sm" onClick={(_) => onHandleSaveConfig("saveonly")}>
+        <Button ml='1rem' size="sm" onClick={(_) => onHandleSaveConfig(SaveOption.SaveOnly)}>
           Save Only
         </Button>
       </Flex>
-      <Flex h='100%'>
+      {!saveMessage ? null :
+        <Flex w='100%' justify='center' wrap='nowrap' mt='1rem'>
+          <Text>{saveMessage}</Text>
+        </Flex>
+      }
+      <Flex h='100%' mt='1rem'>
         <Editor
           defaultLanguage='yaml'
           value={config}

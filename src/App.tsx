@@ -11,6 +11,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import RetryErrorPage from './pages/RetryErrorPage';
 import { keycloakConfig } from '.';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ModalsProvider } from '@mantine/modals';
+import { FfprobeModal } from './shared/components/modal.windows/FfprobeModal';
+import { VaInfoModal } from './shared/components/modal.windows/VaInfoModal';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +22,17 @@ const queryClient = new QueryClient({
     }
   }
 })
+
+const modals = {
+  ffprobeModal: FfprobeModal,
+  vaInfoModal: VaInfoModal,
+}
+
+declare module '@mantine/modals' {
+  export interface MantineModalsOverride {
+    modals: typeof modals;
+  }
+}
 
 function App() {
   const maxErrorAuthCounts = 2
@@ -104,8 +118,10 @@ function App() {
               }
             }}
           >
-            <Notifications />
-            <AppBody />
+            <ModalsProvider modals={modals}>
+              <Notifications />
+              <AppBody />
+            </ModalsProvider>
           </MantineProvider >
         </ColorSchemeProvider>
       </div>

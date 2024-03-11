@@ -96,7 +96,6 @@ const RecordingsPage = () => {
     navigate({ pathname: location.pathname, search: queryParams.toString() });
   }, [recStore.selectedRange, location.pathname, navigate, queryParams])
 
-  if (!isProduction) console.log('RecordingsPage rendered')
 
   const [startDay, endDay] = period
   if (startDay && endDay) {
@@ -114,6 +113,8 @@ const RecordingsPage = () => {
   if (hostId && paramHostId && !cameraId) {
     return <SelectedHostList hostId={hostId} />
   }
+  
+  if (!isProduction) console.log('RecordingsPage rendered')
 
   return (
     <Flex w='100%' h='100%' direction='column' justify='center' align='center'>

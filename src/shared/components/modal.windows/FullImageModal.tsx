@@ -47,7 +47,7 @@ interface FullImageModalProps {
     close?(): void
 }
 
-const FullImageModal = observer(({ images, opened, open, close }: FullImageModalProps) => {
+const FullImageModal = ({ images, opened, open, close }: FullImageModalProps) => {
     const { modalStore } = useContext(Context)
     const { isFullImageOpened, fullImageData, closeFullImage } = modalStore
     const { classes } = useStyles();
@@ -105,6 +105,6 @@ const FullImageModal = observer(({ images, opened, open, close }: FullImageModal
         </Modal>
 
     );
-})
+}
 
-export default FullImageModal;
+export default observer(FullImageModal)

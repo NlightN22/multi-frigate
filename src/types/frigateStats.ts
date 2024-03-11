@@ -1,3 +1,27 @@
+export interface GetVaInfo {
+  return_code: number
+  stderr: string
+  stdout: string
+}
+
+export interface GetFfprobe {
+  return_code: number
+  stderr: string
+  stdout: Stdout
+}
+
+export interface Stdout {
+  programs: any[]
+  streams: Stream[]
+}
+
+export interface Stream {
+  avg_frame_rate: string // FPS
+  codec_long_name: string // Codec
+  height: number
+  width: number
+}
+
 export interface FrigateStats {
   cameras: {
     [cameraName: string]: CameraStat
@@ -10,7 +34,7 @@ export interface FrigateStats {
     [detectorName: string]: DetectorStat
   }
   gpu_usages: {
-    [gpuName: string] : GpuStat
+    [gpuName: string]: GpuStat
   }
   processes: Processes
   service: Service
@@ -71,7 +95,7 @@ export interface Service {
   last_updated: number
   latest_version: string
   storage: {
-    [storagePath: string] : StorageStat
+    [storagePath: string]: StorageStat
   }
   temperatures: Temperatures
   uptime: number

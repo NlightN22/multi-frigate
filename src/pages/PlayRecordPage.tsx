@@ -8,7 +8,6 @@ import { observer } from 'mobx-react-lite';
 
 export const playRecordPageQuery = {
     link: 'link',
-    // hostName: 'hostName',
 }
 
 const PlayRecordPage = () => {
@@ -26,7 +25,6 @@ const PlayRecordPage = () => {
     const location = useLocation()
     const queryParams = new URLSearchParams(location.search)
     const paramLink = queryParams.get(playRecordPageQuery.link)
-    // const paramHostName = queryParams.get(playRecordPageQuery.hostName);
 
     if (!paramLink) return (<NotFound />)
     return (
