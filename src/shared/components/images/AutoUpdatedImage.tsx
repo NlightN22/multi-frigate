@@ -26,7 +26,7 @@ const AutoUpdatedImage = ({
 
   const { data: imageBlob, refetch, isPending, isError } = useQuery({
     queryKey: [imageUrl],
-    queryFn: () => proxyApi.getImageFrigate(imageUrl),
+    queryFn: () => proxyApi.getImageFrigate(imageUrl, 522),
     staleTime: 60 * 1000,
     gcTime: Infinity,
     refetchInterval: isVisible ? 30 * 1000 : undefined,

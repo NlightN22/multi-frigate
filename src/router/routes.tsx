@@ -9,7 +9,6 @@ import SettingsPage from "../pages/SettingsPage";
 import FrigateHostsPage from "../pages/FrigateHostsPage";
 import HostConfigPage from "../pages/HostConfigPage";
 import HostSystemPage from "../pages/HostSystemPage";
-import HostStoragePage from "../pages/HostStoragePage";
 import LiveCameraPage from "../pages/LiveCameraPage";
 import RecordingsPage from "../pages/RecordingsPage";
 import AccessSettings from "../pages/AccessSettingsPage";
@@ -44,10 +43,6 @@ export const routes: IRoute[] = [
     {
         path: routesPath.HOST_SYSTEM_PATH,
         component: <HostSystemPage />,
-    },
-    {
-        path: routesPath.HOST_STORAGE_PATH,
-        component: <HostStoragePage />,
     },
     {
         path: routesPath.ACCESS_PATH,

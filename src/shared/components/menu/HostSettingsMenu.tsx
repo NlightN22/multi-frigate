@@ -22,10 +22,7 @@ const HostSettingsMenu = ({ host }: HostSettingsMenuProps) => {
         const url = routesPath.HOST_CONFIG_PATH.replace(':id', host.id)
         navigate(url)
     }
-    const handleStorage = () => {
-        const url = routesPath.HOST_STORAGE_PATH.replace(':id', host.id)
-        navigate(url)
-    }
+
     const handleSystem = () => {
         const url = routesPath.HOST_SYSTEM_PATH.replace(':id', host.id)
         navigate(url)
@@ -56,12 +53,6 @@ const HostSettingsMenu = ({ host }: HostSettingsMenuProps) => {
                     onClick={handleSystem}
                     icon={<IconGraph style={{ width: rem(14), height: rem(14) }} />}>
                     {t('hostMenu.system')}
-                </Menu.Item>
-                <Menu.Item
-                    onClick={handleStorage}
-                    icon={<IconServer
-                        style={{ width: rem(14), height: rem(14) }} />}>
-                    {t('hostMenu.storage')}
                 </Menu.Item>
             </Menu.Dropdown>
         </Menu>

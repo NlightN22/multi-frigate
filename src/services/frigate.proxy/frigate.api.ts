@@ -67,8 +67,11 @@ export const proxyPrefix = `${proxyURL.protocol}//${proxyURL.host}/proxy/`
 export const proxyApi = {
     getHostConfigRaw: (hostName: string) => instanceApi.get(`proxy/${hostName}/api/config/raw`).then(res => res.data),
     getHostConfig: (hostName: string) => instanceApi.get(`proxy/${hostName}/api/config`).then(res => res.data),
-    getImageFrigate: async (imageUrl: string) => {
+    getImageFrigate: async (imageUrl: string, height?: number) => {
         const response = await instanceApi.get<Blob>(imageUrl, {
+            params: {
+                h: height
+            },
             responseType: 'blob',
             timeout: 10 * 1000
         })
