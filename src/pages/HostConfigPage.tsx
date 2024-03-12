@@ -1,28 +1,61 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { Button, Flex, Text, useMantineTheme } from '@mantine/core';
+import { useClipboard } from '@mantine/hooks';
+import Editor, { Monaco } from '@monaco-editor/react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { observer } from 'mobx-react-lite';
+import * as monaco from "monaco-editor";
+import { SchemasSettings, configureMonacoYaml } from 'monaco-yaml';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Context } from '..';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { frigateApi, frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
-import { Button, Flex, useMantineTheme, Text } from '@mantine/core';
-import { useClipboard } from '@mantine/hooks';
-import Editor, { Monaco } from '@monaco-editor/react'
-import * as monaco from "monaco-editor";
-import CenterLoader from '../shared/components/loaders/CenterLoader';
-import RetryErrorPage from './RetryErrorPage';
 import { useAdminRole } from '../hooks/useAdminRole';
-import Forbidden from './403';
-import { observer } from 'mobx-react-lite';
+import { frigateApi, frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
+import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
+import CenterLoader from '../shared/components/loaders/CenterLoader';
 import { isProduction } from '../shared/env.const';
 import { SaveOption } from '../types/saveConfig';
-import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
-import { error } from 'console';
+import Forbidden from './403';
+import RetryErrorPage from './RetryErrorPage';
+import { notifications } from '@mantine/notifications';
+import { IconAlertCircle, IconCircleCheck } from '@tabler/icons-react';
 
+
+window.MonacoEnvironment = {
+  getWorker(moduleId, label) {
+    switch (label) {
+      case 'editorWorkerService':
+        return new Worker(new URL('monaco-editor/esm/vs/editor/editor.worker', import.meta.url))
+      case 'css':
+      case 'less':
+      case 'scss':
+        return new Worker(new URL('monaco-editor/esm/vs/language/css/css.worker', import.meta.url))
+      case 'handlebars':
+      case 'html':
+      case 'razor':
+        return new Worker(
+          new URL('monaco-editor/esm/vs/language/html/html.worker', import.meta.url)
+        )
+      case 'json':
+        return new Worker(
+          new URL('monaco-editor/esm/vs/language/json/json.worker', import.meta.url)
+        )
+      case 'javascript':
+      case 'typescript':
+        return new Worker(
+          new URL('monaco-editor/esm/vs/language/typescript/ts.worker', import.meta.url)
+        )
+      case 'yaml':
+        return new Worker(new URL('monaco-yaml/yaml.worker', import.meta.url))
+      default:
+        throw new Error(`Unknown label ${label}`)
+    }
+  }
+}
 
 const HostConfigPage = () => {
   const executed = useRef(false)
   const host = useRef<GetFrigateHost | undefined>()
   const { sideBarsStore } = useContext(Context)
-  const [saveMessage, setSaveMessage] = useState<string>()
 
   let { id } = useParams<'id'>()
   const { isAdmin, isLoading: adminLoading } = useAdminRole()
@@ -51,10 +84,26 @@ const HostConfigPage = () => {
         })
     },
     onSuccess: (data) => {
-      setSaveMessage(data?.message)
+      notifications.show({
+        id: data?.message,
+        withCloseButton: true,
+        autoClose: 5000,
+        title: `Sucess: ${data?.success}`,
+        message: data?.message,
+        color: 'green',
+        icon: <IconCircleCheck />
+      })
     },
-    onError: (error) => {
-      setSaveMessage(error.message)
+    onError: (e) => {
+      notifications.show({
+        id: e.message,
+        withCloseButton: true,
+        autoClose: false,
+        title: "Error",
+        message: e.message,
+        color: 'red',
+        icon: <IconAlertCircle />,
+    })
     }
   })
 
@@ -72,28 +121,24 @@ const HostConfigPage = () => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
 
   function handleEditorWillMount(monaco: Monaco) {
-    monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
-
-    // TODO add yaml schema
-    // const modelUri = monaco.Uri.parse("http://localhost:4000/proxy/api/config/schema.json?hostName=localhost:5001")
-    // configureMonacoYaml(monaco, {
-    //   enableSchemaRequest: true,
-    //   hover: true,
-    //   completion: true,
-    //   validate: true,
-    //   format: true,
-    //   schemas: [
-    //     {
-    //       uri: `http://localhost:4000/proxy/api/config/schema.json?hostName=localhost:5001`,
-    //       fileMatch: ['**/.schema.*'],
-    //     },
-    //   ],
-    // })
+    const hostName = mapHostToHostname(host.current)
+    if (!hostName) return
+    const schemaURL = proxyApi.configSchemaURL(hostName)
+    const defaultSchema: SchemasSettings = {
+      uri: schemaURL,
+      fileMatch: ['monaco-yaml.yaml']
+    }
+    configureMonacoYaml(monaco, {
+      enableSchemaRequest: true,
+      schemas: [defaultSchema]
+    })
   }
 
   function handleEditorDidMount(editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) {
     // here is another way to get monaco instance
     // you can also store it in `useRef` for further usage
+    const model = monaco.editor.createModel(config, 'yaml', monaco.Uri.parse('monaco-yaml.yaml'))
+    editor.setModel(model)
     editorRef.current = editor;
   }
 
@@ -115,7 +160,7 @@ const HostConfigPage = () => {
       saveConfig({ saveOption: saveOption, config: editorRef.current.getValue() })
     }, [editorRef])
 
-  if (configPending || adminLoading) return <CenterLoader />
+  if (configPending || adminLoading ) return <CenterLoader />
 
   if (configError) return <RetryErrorPage onRetry={refetch} />
   if (!isAdmin) return <Forbidden />
@@ -133,11 +178,6 @@ const HostConfigPage = () => {
           Save Only
         </Button>
       </Flex>
-      {!saveMessage ? null :
-        <Flex w='100%' justify='center' wrap='nowrap' mt='1rem'>
-          <Text>{saveMessage}</Text>
-        </Flex>
-      }
       <Flex h='100%' mt='1rem'>
         <Editor
           defaultLanguage='yaml'

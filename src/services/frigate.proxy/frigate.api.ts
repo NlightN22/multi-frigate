@@ -143,6 +143,7 @@ export const proxyApi = {
 
     getEventsSummary: (hostName: string, cameraName: string) =>
         instanceApi.get(`proxy/${hostName}/api/${cameraName}/events/summary`).then(res => res.data),
+    configSchemaURL: (hostName: string) => `${proxyPrefix}${hostName}/api/config/schema.json`,
     cameraWsURL: (hostName: string, cameraName: string) => {
         const protocol = proxyURL.protocol === 'https:' ? 'wss' : 'ws';
         return `${protocol}://${proxyURL.host}/proxy-ws/${hostName}/live/jsmpeg/${cameraName}`
