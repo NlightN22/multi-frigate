@@ -11,7 +11,7 @@ const Logo = ({
     ...imageProps
 }: LogoProps) => {
     const theme = useMantineTheme();
-    const src = theme.colorScheme === 'dark' ? "../logo-white.svg" : "../logo.svg"
+    const src = theme.colorScheme === 'dark' ? "logo-white.svg" : "logo.svg"
 
     return (
         <Image

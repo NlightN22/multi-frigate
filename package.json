@@ -25,9 +25,12 @@
     "axios": "^1.4.0",
     "bson-objectid": "^2.0.4",
     "cookies-next": "^4.1.1",
+    "cpr": "^3.0.1",
     "date-fns": "^3.3.1",
     "dayjs": "^1.11.9",
+    "degit": "^2.8.4",
     "embla-carousel-react": "^8.0.0-rc10",
+    "global": "^4.4.0",
     "i18next": "^23.10.1",
     "i18next-browser-languagedetector": "^7.2.0",
     "idb-keyval": "^6.2.1",
@@ -58,7 +61,8 @@
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "postinstall": "degit redhat-developer/yaml-language-server/src node_modules/monaco-yaml/node_modules/yaml-language-server/src"
   },
   "eslintConfig": {
     "extends": [
