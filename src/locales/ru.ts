@@ -1,4 +1,8 @@
 const ru = {
+    systemPage: {
+        cameraStats: 'Статистика Камер',
+        storageStats: 'Статистика Хранения',
+    },
     detectorCard: {
         pid: 'PID',
         inferenceSpeed: 'Скорость вывода',
@@ -9,6 +13,18 @@ const ru = {
         memory: 'Память',
         decoder: 'Декодер',
         encoder: 'Кодер',
+    },
+    cameraStorageTable: {
+        usage: 'Занято',
+        usagePercent: 'Занято %',
+        sreamBandwidth: 'Скорость потока',
+    },
+    cameraStatTable: {
+        process: 'Процесс',
+        pid: 'PID',
+        fps: 'FPS',
+        cpu: 'CPU %',
+        memory: 'Память %'
     },
     hostMenu: {
         editConfig: 'Редакт. конфиг.',

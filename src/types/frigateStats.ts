@@ -1,3 +1,13 @@
+export interface GetHostStorage {
+  [cameraName: string]: CameraStorage
+}
+
+export interface CameraStorage {
+  bandwidth: number // MiB/hr
+  usage: number // MB
+  usage_percent: number // Usage / 1024 / Total storage size * 100
+}
+
 export interface GetVaInfo {
   return_code: number
   stderr: string

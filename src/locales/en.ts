@@ -1,4 +1,8 @@
 const en = {
+    systemPage: {
+        cameraStats: 'Cameras stats',
+        storageStats: 'Storages stats',
+    },
     detectorCard: {
         pid: 'PID',
         inferenceSpeed: 'Inference Speed',
@@ -9,6 +13,11 @@ const en = {
         memory: 'Memory',
         decoder: 'Decoder',
         encoder: 'Encoder',
+    },
+    cameraStorageTable: {
+        usage: 'Usage',
+        usagePercent: 'Usage %',
+        sreamBandwidth: 'Stream Bandwidth',
     },
     cameraStatTable: {
         process: 'Process',

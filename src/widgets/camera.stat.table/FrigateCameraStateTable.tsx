@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import SortedTh from '../../shared/components/table.aps/SortedTh';
 import { isProduction } from '../../shared/env.const';
 import { sortByKey } from '../../shared/utils/sort.array';
+import { TableHead } from '../../types/table';
 
 
 export interface CameraItem {
@@ -21,12 +22,6 @@ export enum ProcessType {
     Ffmpeg = "Ffmpeg",
     Capture = "Capture",
     Detect = "Detect",
-}
-
-interface TableHead {
-    propertyName: string,
-    title: string,
-    sorting?: boolean,
 }
 
 interface TableProps<T> {

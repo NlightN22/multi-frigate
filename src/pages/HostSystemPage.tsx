@@ -1,7 +1,8 @@
-import { Flex, Grid, Text } from '@mantine/core';
+import { Flex, Grid, SegmentedControl, Text } from '@mantine/core';
+import { openContextModal } from '@mantine/modals';
 import { useQuery } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
-import { useCallback, useContext, useEffect, useRef } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { Context } from '..';
@@ -17,11 +18,15 @@ import { formatUptime } from '../shared/utils/dateUtil';
 import FrigateCamerasStateTable, { CameraItem, ProcessType } from '../widgets/camera.stat.table/FrigateCameraStateTable';
 import Forbidden from './403';
 import RetryErrorPage from './RetryErrorPage';
-import { openContextModal } from '@mantine/modals';
-import { FfprobeModalProps } from '../shared/components/modal.windows/FfprobeModal';
+import FrigateStorageStateTable from '../widgets/camera.stat.table/FrigateStorageStateTable';
 
 export const hostSystemPageQuery = {
     hostId: 'hostId',
+}
+
+enum SelectorItems {
+    Cameras = 'cameras',
+    Storage = 'storage'
 }
 
 const HostSystemPage = () => {
@@ -30,6 +35,7 @@ const HostSystemPage = () => {
     const { sideBarsStore } = useContext(Context)
     const { isAdmin } = useAdminRole()
     const host = useRef<GetFrigateHost | undefined>()
+    const [selector, setSelector] = useState(SelectorItems.Cameras)
 
     useEffect(() => {
         if (!executed.current) {
@@ -119,9 +125,9 @@ const HostSystemPage = () => {
                     decoder={stats.dec}
                     encoder={stats.enc}
                     gpu={stats.gpu}
-                    mem={stats.mem} 
+                    mem={stats.mem}
                     onVaInfoClick={() => handleVaInfoClick()}
-                    />
+                />
             </Grid.Col>
         )
     })
@@ -152,6 +158,11 @@ const HostSystemPage = () => {
         }
     })
 
+    const handleSelectView = (value: string) => {
+        if (value === SelectorItems.Cameras) setSelector(SelectorItems.Cameras)
+        else setSelector(SelectorItems.Storage)
+    }
+
     if (!isProduction) console.log('HostSystemPage rendered')
 
     return (
@@ -168,7 +179,19 @@ const HostSystemPage = () => {
                 {gpuStats}
                 {detectorsStats}
             </Grid>
-            <FrigateCamerasStateTable data={mappedCameraStat} onFfprobeClick={handleFfprobeClick} />
+            <SegmentedControl
+                value={selector}
+                onChange={handleSelectView}
+                data={[
+                    { label: t('systemPage.cameraStats'), value: SelectorItems.Cameras },
+                    { label: t('systemPage.storageStats'), value: SelectorItems.Storage },
+                ]}
+            />
+            {selector === SelectorItems.Cameras ?
+                <FrigateCamerasStateTable data={mappedCameraStat} onFfprobeClick={handleFfprobeClick} />
+                :
+                <FrigateStorageStateTable host={host.current} />
+            }
         </Flex>
     );
 };

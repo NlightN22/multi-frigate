@@ -10,7 +10,7 @@ import { RecordSummary } from "../../types/record";
 import { EventFrigate } from "../../types/event";
 import { keycloakConfig } from "../..";
 import { getResolvedTimeZone } from "../../shared/utils/dateUtil";
-import { FrigateStats, GetFfprobe, GetVaInfo } from "../../types/frigateStats";
+import { FrigateStats, GetFfprobe, GetHostStorage, GetVaInfo } from "../../types/frigateStats";
 import { hostname } from "os";
 import { PostSaveConfig, SaveOption } from "../../types/saveConfig";
 
@@ -192,6 +192,7 @@ export const proxyApi = {
                 save_option: saveOption
             }
         }).then(res => res.data),
+    getHostStorage: (hostName: string) => instanceApi.get<GetHostStorage>(`proxy/${hostName}/api/recordings/storage`).then(res => res.data),
 }
 
 export const mapCamerasFromConfig = (config: FrigateConfig): string[] => {
@@ -218,6 +219,7 @@ export const frigateQueryKeys = {
     getHostStats: 'host-stats',
     getCameraFfprobe: 'camera-ffprobe',
     getHostVaInfo: 'host-vainfo',
+    getHostStorage: 'host-storage',
     getRecordingsSummary: 'recordings-frigate-summary',
     getRecordings: 'recordings-frigate',
     getEvents: 'events-frigate',
