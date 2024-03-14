@@ -9,7 +9,6 @@ interface FloatingLabelInputProps extends TextInputProps {
     onChangeValue?: (key: string, value: string) => void
 }
 
-
 export const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
     value: propVal,
     onChangeValue,
@@ -48,7 +47,7 @@ export const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
             autoComplete="nope"
             data-floating={floating}
             labelProps={{ 'data-floating': floating }}
-            {...rest}          
+            {...rest}
             />
         )
     }
