@@ -18,3 +18,22 @@ services:
 ```bash
 docker compose up -d
 ```
+For https connections you can use reverse proxy
+# Example
+![Main Page](example/screens/MainPage_1.png)
+![Main Page](example/screens/MainPage_2.png)
+![Main Page](example/screens/RecordingsPage_1.png)
+![Main Page](example/screens/RecordingsPage_2.png)
+![Main Page](example/screens/RecordingsPage_3.png)
+![Main Page](example/screens/RecordingsPage_4.png)
+![Main Page](example/screens/RecordingsPage_5.png)
+![Main Page](example/screens/LiveCameraPage.png)
+![Main Page](example/screens/SettingsPage.png)
+![Main Page](example/screens/VideoPlayerPage.png)
+![Main Page](example/screens/FrigateConfigPage.png)
+![Main Page](example/screens/FrigateServersPage_1.png)
+![Main Page](example/screens/FrigateServersPage_2.png)
+![Main Page](example/screens/FrigateStatsPage_1.png)
+![Main Page](example/screens/FrigateStatsPage_2.png)
+![Main Page](example/screens/FrigateStatsPage_3.png)
+![Main Page](example/screens/AccessSettingsPage_1.png)
