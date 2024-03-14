@@ -18,6 +18,7 @@ const ru = {
         usage: 'Занято',
         usagePercent: 'Занято %',
         sreamBandwidth: 'Скорость потока',
+        total: 'Итого',
     },
     cameraStatTable: {
         process: 'Процесс',
@@ -92,6 +93,7 @@ const ru = {
     retry: "Повторить",
     youCanRetryOrGoToMain: "Вы можете повторить или вернуться на главную",
     errors: {
+        emptyResponse: 'Пустой ответ',
         somthingGoesWrong: "Что-то пошло не так",
         403: "Извините, у вас нет доступа",
         404: "Извините, мы не можем найти такую страницу",

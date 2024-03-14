@@ -18,6 +18,7 @@ const en = {
         usage: 'Usage',
         usagePercent: 'Usage %',
         sreamBandwidth: 'Stream Bandwidth',
+        total: 'Total',
     },
     cameraStatTable: {
         process: 'Process',
@@ -55,6 +56,7 @@ const en = {
         doubleClickToFullHint: 'Double click for fullscreen',
         rating: 'Rating',
     },
+    
     version: 'Version',
     uptime: 'Uptime',
     pleaseSelectRole: 'Please select Role',
@@ -92,6 +94,7 @@ const en = {
     retry: "Retry",
     youCanRetryOrGoToMain: "You can retry or return to the main page",
     errors: {
+        emptyResponse: 'Empty response',
         somthingGoesWrong: "Something went wrong",
         403: "Sorry, you do not have access",
         404: "Sorry, we cannot find that page",

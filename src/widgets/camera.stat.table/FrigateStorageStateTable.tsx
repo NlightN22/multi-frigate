@@ -46,9 +46,9 @@ const FrigateStorageStateTable: React.FC<TableProps> = ({
         return Object.entries(data).map<StorageItem>(([name, storage]) => {
             return {
                 cameraName: name,
-                usage: storage.usage,
-                usagePercent: storage.usage_percent,
-                sreamBandwidth: storage.bandwidth,
+                usage: storage.usage || 0,
+                usagePercent: storage.usage_percent || 0,
+                sreamBandwidth: storage.bandwidth || 0,
             }
         })
     }, [data])
@@ -71,8 +71,7 @@ const FrigateStorageStateTable: React.FC<TableProps> = ({
 
     if (isPending) return <CogwheelLoader />
     if (isError) return <RetryError onRetry={refetch} />
-    // if (!tableData || tableData.length < 1) return <Center><Text>Empty response</Text></Center>
-
+    if (!tableData ) return <Center><Text>{t('errors.emptyResponse')}</Text></Center>
 
     const headTitle: TableHead[] = [
         { propertyName: 'cameraName', title: t('camera') },
@@ -93,17 +92,30 @@ const FrigateStorageStateTable: React.FC<TableProps> = ({
         )
     })
 
-
     const rows = tableData.map(item => {
         return (
             <tr key={item.cameraName}>
                 <td><Text align='center'>{item.cameraName}</Text></td>
                 <td><Text align='center'>{formatMBytes(item.usage)}</Text></td>
                 <td><Text align='center'>{item.usagePercent.toFixed(4)} %</Text></td>
-                <td><Text align='center'>{item.sreamBandwidth} MiB/hr</Text></td>
+                <td><Text align='center'>{item.sreamBandwidth.toFixed(2) } MiB/hr</Text></td>
             </tr>
         )
     })
+
+    const totalRow = () => {
+        const totalUsage = tableData.reduce((acc, curr) => acc + curr.usage, 0)
+        const totalStreamBandwidth = tableData.reduce((acc, curr) => acc + curr.sreamBandwidth, 0)
+        const totalUsagePercent = tableData.reduce((acc, curr) => acc + curr.usagePercent, 0)
+        return (
+            <tr key={totalUsage}>
+                <td><Text align='center'>{t('cameraStorageTable.total')}</Text></td>
+                <td><Text align='center'>{formatMBytes(totalUsage)}</Text></td>
+                <td><Text align='center'>{totalUsagePercent.toFixed(4)} %</Text></td>
+                <td><Text align='center'>{totalStreamBandwidth.toFixed(2)} MiB/hr</Text></td>
+            </tr>
+        )        
+    }
 
     return (
         <Table >
@@ -114,6 +126,7 @@ const FrigateStorageStateTable: React.FC<TableProps> = ({
             </thead>
             <tbody>
                 {rows}
+                {totalRow()}
             </tbody>
         </Table>
     );

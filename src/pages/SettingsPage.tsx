@@ -11,13 +11,16 @@ import { useTranslation } from 'react-i18next';
 import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
-import { GetConfig } from '../services/frigate.proxy/frigate.schema';
+import { GetConfig, PutConfig } from '../services/frigate.proxy/frigate.schema';
 import { FloatingLabelInput } from '../shared/components/inputs/FloatingLabelInput';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import { dimensions } from '../shared/dimensions/dimensions';
 import { isProduction } from '../shared/env.const';
 import Forbidden from './403';
 import RetryErrorPage from './RetryErrorPage';
+import { notifications } from '@mantine/notifications';
+import { v4 } from 'uuid';
+import { IconAlertCircle, IconCircleCheck } from '@tabler/icons-react';
 
 const SettingsPage = () => {
     const { t } = useTranslation()
@@ -41,7 +44,7 @@ const SettingsPage = () => {
     const { isAdmin, isLoading: adminLoading } = useAdminRole()
 
 
-    const ecryptedTemplate = '**********'
+    const ecryptedTemplate = 'encrypted value is exist'
     const mapEncryptedToView = (data: GetConfig[] | undefined): GetConfig[] | undefined => {
         return data?.map(item => {
             const { value, encrypted, ...rest } = item
@@ -54,10 +57,35 @@ const SettingsPage = () => {
     const isMobile = useMediaQuery(dimensions.mobileSize)
 
     const mutation = useMutation({
-        mutationFn: frigateApi.putConfig,
+        mutationFn: (config: PutConfig[]) => frigateApi.putConfig(config).catch(error => {
+            if (error.response && error.response.data) {
+                return Promise.reject(error.response.data)
+            }
+            return Promise.reject(error)
+        }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [frigateQueryKeys.getConfig] })
+            notifications.show({
+                id: v4(),
+                withCloseButton: true,
+                autoClose: 5000,
+                title: `Sucessfully`,
+                message: `Sucessfully saved`,
+                color: 'green',
+                icon: <IconCircleCheck />
+              })
         },
+        onError: (e) => {
+            notifications.show({
+                id: e.message,
+                withCloseButton: true,
+                autoClose: false,
+                title: "Error",
+                message: e.message,
+                color: 'red',
+                icon: <IconAlertCircle />,
+            })
+        }
     })
 
     const handleDiscard = () => {
@@ -122,6 +150,7 @@ const SettingsPage = () => {
                                 label={config.description}
                                 value={config.value}
                                 placeholder={config.description}
+                                encrypted={config.encrypted}
                                 ecryptedValue={ecryptedTemplate}
                             />
                         ))}

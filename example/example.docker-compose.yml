@@ -3,6 +3,9 @@ version: '3.0'
 services:
   front:
     image: oncharterliz/multi-frigate:latest
+    volumes:
+      - /etc/timezone:/etc/timezone:ro # for Unix TZ
+      - /etc/localtime:/etc/localtime:ro # for Unix Time
     environment:
       FRIGATE_PROXY: http://localhost:4000
       OPENID_SERVER: https://server:port/realms/your-realm

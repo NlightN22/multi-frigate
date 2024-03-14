@@ -28,7 +28,7 @@ const AutoUpdatedImage = ({
     queryKey: [imageUrl],
     queryFn: () => proxyApi.getImageFrigate(imageUrl, 522),
     staleTime: 60 * 1000,
-    gcTime: Infinity,
+    gcTime: 5 * 60 * 1000,
     refetchInterval: isVisible ? 30 * 1000 : undefined,
     retry: 1,
   });

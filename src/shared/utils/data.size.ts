@@ -7,7 +7,8 @@ export const formatBytes = (bytes: number, decimals = 2): string => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
-export const formatMBytes = (mb: number, decimals?: number): string => {
+export const formatMBytes = (mb?: number | null, decimals?: number): string => {
+    if (!mb) return '0'
     const bytes = mb * 1024 * 1024;
     return formatBytes(bytes, decimals);
 }
