@@ -8,7 +8,8 @@ services:
       - /etc/localtime:/etc/localtime:ro # for Unix Time
     environment:
       FRIGATE_PROXY: http://localhost:4000
-      OPENID_SERVER: https://server:port/realms/your-realm
+      OPENID_SERVER: https://server:port
       CLIENT_ID: frontend-client
+      REALM: frigate-realm
     ports:
       - 80:80 # set your port here

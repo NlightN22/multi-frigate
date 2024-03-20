@@ -8,19 +8,10 @@ import {
 import { FrigateConfig } from "../../types/frigateConfig";
 import { RecordSummary } from "../../types/record";
 import { EventFrigate } from "../../types/event";
-import { keycloakConfig } from "../..";
 import { getResolvedTimeZone } from "../../shared/utils/dateUtil";
 import { FrigateStats, GetFfprobe, GetHostStorage, GetVaInfo } from "../../types/frigateStats";
-import { hostname } from "os";
 import { PostSaveConfig, SaveOption } from "../../types/saveConfig";
-
-
-export const getToken = (): string | undefined => {
-    const key = `oidc.user:${keycloakConfig.authority}:${keycloakConfig.client_id}`;
-    const stored = sessionStorage.getItem(key);
-    const storedObject = stored ? JSON.parse(stored) : null;
-    return storedObject?.access_token;
-}
+import keycloak from "../keycloak-config";
 
 const instanceApi = axios.create({
     baseURL: proxyURL.toString(),
@@ -29,9 +20,9 @@ const instanceApi = axios.create({
 
 instanceApi.interceptors.request.use(
     config => {
-        const token = getToken();
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`
+        const accessToken = keycloak.token;
+        if (accessToken) {
+            config.headers.Authorization = `Bearer ${accessToken}`
         }
         return config;
     },

@@ -2,14 +2,15 @@ import React, { useRef, useEffect } from 'react';
 import videojs from 'video.js';
 import Player from 'video.js/dist/types/player';
 import 'video.js/dist/video-js.css'
-import { getToken } from '../../../services/frigate.proxy/frigate.api';
 import { isProduction } from '../../env.const';
+import { useKeycloak } from '@react-keycloak/web';
 
 interface VideoPlayerProps {
   videoUrl: string
 }
 
 const VideoPlayer = ({ videoUrl }: VideoPlayerProps) => {
+  const { keycloak } = useKeycloak()
   const executed = useRef(false)
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<Player | null>(null);
@@ -20,7 +21,7 @@ const VideoPlayer = ({ videoUrl }: VideoPlayerProps) => {
       videojs.Vhs.xhr.beforeRequest = function (options: any) {
         options.headers = {
           ...options.headers,
-          Authorization: `Bearer ${getToken()}`,
+          Authorization: `Bearer ${keycloak.token}`,
         };
         return options;
       };

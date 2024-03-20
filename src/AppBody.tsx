@@ -8,6 +8,8 @@ import { routesPath } from './router/routes.path';
 import SideBar from './shared/components/SideBar';
 import { isProduction } from './shared/env.const';
 import { HeaderAction } from './widgets/header/HeaderAction';
+import { useAdminRole } from "./hooks/useAdminRole";
+import { useRealmAccessRoles } from "./hooks/useRealmAccessRoles";
 
 const AppBody = () => {
     const { t } = useTranslation()

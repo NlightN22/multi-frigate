@@ -1,30 +1,36 @@
-import { jwtDecode } from "jwt-decode";
 import { useState, useEffect } from "react";
-import { useAuth } from "react-oidc-context";
-
-interface CustomJwtPayload {
-    realm_access?: {
-        roles: string[];
-    };
-}
+import { isProduction } from "../shared/env.const";
+import { useKeycloak } from "@react-keycloak/web";
 
 export const useRealmAccessRoles = () => {
-    const { user } = useAuth();
     const [roles, setRoles] = useState<string[]>([]);
+    const { keycloak } = useKeycloak()
 
     useEffect(() => {
-        if (user) {
-            try {
-                const decoded = jwtDecode<CustomJwtPayload>(user.access_token);
-                const realmAccess = decoded.realm_access;
-                if (realmAccess && realmAccess.roles) {
-                    setRoles(realmAccess.roles);
-                }
-            } catch (error) {
-                console.error("Error decoding token:", error);
+        const updateRoles = () => {
+            const tokenRoles = keycloak.tokenParsed?.realm_access?.roles;
+            if (!isProduction) console.log(`tokenRoles:`, tokenRoles);
+            if (tokenRoles) {
+                setRoles(tokenRoles);
+            } else {
+                setRoles([])
             }
         }
-    }, [user]);
+        
+        updateRoles()
 
-    return roles;
-};
+        keycloak.onAuthSuccess = () => {
+            updateRoles()
+        }
+        keycloak.onAuthRefreshSuccess = () => {
+            updateRoles()
+        }
+
+        return () => {
+            keycloak.onAuthSuccess = undefined
+            keycloak.onAuthRefreshSuccess = undefined
+        }
+    }, [keycloak, keycloak.onAuthSuccess, keycloak.onAuthRefreshSuccess ])
+
+    return roles
+}

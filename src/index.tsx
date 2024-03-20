@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import RootStore from './shared/stores/root.store';
-import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
-import { isProduction, oidpSettings } from './shared/env.const';
 import { BrowserRouter } from 'react-router-dom';
 import './services/i18n';
+import { ReactKeycloakProvider } from '@react-keycloak/web';
+import keycloak from './services/keycloak-config';
+import CenterLoader from './shared/components/loaders/CenterLoader';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -14,39 +15,35 @@ const root = ReactDOM.createRoot(
 
 export const hostURL = new URL(window.location.href)
 
-export const keycloakConfig: AuthProviderProps = {
-  authority: oidpSettings.server,
-  client_id: oidpSettings.clientId,
-  redirect_uri: hostURL.toString(),
-  onSigninCallback: () => {
-    const currentUrl = new URL(window.location.href);
-    const params = currentUrl.searchParams;
-    params.delete('state');
-    params.delete('session_state');
-    params.delete('code');
-    params.delete('iss');
-    const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`
-    window.history.replaceState({}, document.title, newUrl)
-  }
-}
 
 const rootStore = new RootStore()
 export const Context = createContext<RootStore>(rootStore)
 
-if (!isProduction) {
-  console.log('keycloakConfig.authority', keycloakConfig.authority)
-  console.log('keycloakConfig.client_id', keycloakConfig.client_id)
-  console.log('keycloakConfig.redirect_uri', keycloakConfig.redirect_uri)
-}
+const eventLogger = (event: string, error?: any) => {
+  console.log('onKeycloakEvent', event, error);
+};
+
+const tokenLogger = (tokens: any) => {
+  console.log('onKeycloakTokens', tokens);
+};
 
 root.render(
-  <Context.Provider value={rootStore}>
-    <AuthProvider {...keycloakConfig}>
+  <ReactKeycloakProvider
+    authClient={keycloak}
+    LoadingComponent={<CenterLoader />}
+    onEvent={eventLogger}
+    onTokens={tokenLogger}
+    initOptions={{
+      onLoad: 'login-required',
+      checkLoginIframe: false
+    }}
+  >
+    <Context.Provider value={rootStore}>
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </AuthProvider>
-  </Context.Provider>
+    </Context.Provider>
+  </ReactKeycloakProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

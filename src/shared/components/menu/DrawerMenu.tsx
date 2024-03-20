@@ -39,7 +39,7 @@ const DrawerMenu = ({
     links
 }: DrawerMenuProps) => {
     const navigate = useNavigate()
-    const { isAdmin } = useAdminRole()
+    const isAdmin = useAdminRole()
 
 
     const { classes } = useStyles();

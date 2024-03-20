@@ -5,9 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { Context } from '..';
 import { routesPath } from '../router/routes.path';
 import CogWheelWithText from '../shared/components/loaders/CogWheelWithText';
+import { useNavigate } from 'react-router-dom';
 
 const Forbidden = () => {
     const { t } = useTranslation()
+    const navigate = useNavigate()
     const executed = useRef(false)
     const { sideBarsStore } = useContext(Context)
 
@@ -21,7 +23,7 @@ const Forbidden = () => {
     }, [sideBarsStore])
 
     const handleGoToMain = () => {
-        window.location.replace(routesPath.MAIN_PATH)
+        navigate(routesPath.MAIN_PATH)
     }
 
     return (

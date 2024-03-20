@@ -2,10 +2,9 @@ import { Avatar, Button, Flex, Group, Menu, Text } from "@mantine/core";
 import { useMediaQuery } from '@mantine/hooks';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from 'react-oidc-context';
-import { keycloakConfig } from '../..';
 import { dimensions } from '../dimensions/dimensions';
 import ColorSchemeToggle from './buttons/ColorSchemeToggle';
+import keycloak from "../../services/keycloak-config";
 
 interface UserMenuProps {
     user: { name: string; image: string }
@@ -20,15 +19,10 @@ const UserMenu = ({ user }: UserMenuProps) => {
         { lng: 'ru', name: 'Rus' },
     ]
 
-    const auth = useAuth()
     const isMiddleScreen = useMediaQuery(dimensions.middleScreenSize)
 
-
-
     const handleLogout = async () => {
-        await auth.removeUser()
-        const id_token_hint = auth.user?.id_token
-        await auth.signoutRedirect({ post_logout_redirect_uri: keycloakConfig.redirect_uri, id_token_hint: id_token_hint })
+        keycloak.logout({ redirectUri: window.location.origin })
     }
 
     const handleChangeLanguage = async (lng: string) => {

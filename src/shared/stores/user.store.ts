@@ -1,9 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx"
-import { User } from "oidc-client-ts";
 import { Resource } from "../utils/resource"
 import { sleep } from "../utils/async.sleep";
 import { z } from 'zod'
-import { keycloakConfig } from "../..";
 
 
 export interface UserServer {
@@ -71,20 +69,20 @@ export class UserStore {
     }
 
     getSessionStorage() {
-        const oidcStorage = sessionStorage.getItem(`oidc.user:${keycloakConfig.authority}:${keycloakConfig.client_id}`)
-        if (!oidcStorage) {
-            return undefined;
-        }
+        // const oidcStorage = sessionStorage.getItem(`oidc.user:${keycloakConfig.authority}:${keycloakConfig.client_id}`)
+        // if (!oidcStorage) {
+        //     return undefined;
+        // }
 
-        return User.fromStorageString(oidcStorage)
+        // return User.fromStorageString(oidcStorage)
     }
 
     getUser() {
-        return this.getSessionStorage()?.profile
+        // return this.getSessionStorage()?.profile
     }
 
     getAccessToken() {
-        return this.getSessionStorage()?.access_token
+        // return this.getSessionStorage()?.access_token
     }
 
 }

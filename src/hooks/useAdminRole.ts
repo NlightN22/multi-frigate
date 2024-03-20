@@ -3,29 +3,30 @@ import { frigateQueryKeys, frigateApi } from "../services/frigate.proxy/frigate.
 import { useRealmAccessRoles } from "./useRealmAccessRoles";
 import { useEffect, useState } from "react";
 
+export interface AdminRole {
+    isLoading: boolean
+    isAdmin: boolean
+}
 
-export const useAdminRole = () => {
-    const { data: adminConfig, isError, isFetching } = useQuery({
+export const useAdminRole = (): AdminRole => {
+    const { data: adminConfig, isError, isLoading } = useQuery({
         queryKey: [frigateQueryKeys.getAdminRole],
         queryFn: frigateApi.getAdminRole,
-        staleTime: 1000 * 60 * 60, 
-        gcTime: 1000 * 60 * 60 * 24, 
+        staleTime: 1000 * 60 * 60,
+        gcTime: 1000 * 60 * 60 * 24,
     })
 
     const roles = useRealmAccessRoles()
-    const [initialized, setInitialized] = useState(false)
-    const isLoading = isFetching || roles === undefined
+    const [isAdmin, setIsAdmin] = useState(false)
 
     useEffect(() => {
-        if (!isLoading) {
-            setInitialized(true);
+        if (adminConfig) {
+            const checkAdmin = roles.some(role => role === adminConfig.value)
+            setIsAdmin(checkAdmin)
+        } else {
+            setIsAdmin(false)
         }
-    }, [isLoading]);
+    }, [roles, adminConfig, isLoading])
 
-    if (!initialized || isLoading) return { isAdmin: undefined, isLoading: true }
-    if (isError) return { isAdmin: false, isError: true, isLoading: false }
-    if (!adminConfig) return { isAdmin: true, isLoading: false }
-    if (adminConfig && !adminConfig.value) return { isAdmin: true, isLoading: false }
-    const isAdmin = roles.some(role => role === adminConfig.value)
-    return { isAdmin, isLoading: false }
+    return { isLoading, isAdmin }
 }

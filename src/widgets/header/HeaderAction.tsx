@@ -1,5 +1,4 @@
 import { Button, Container, Flex, Group, Header, Menu, createStyles, rem } from "@mantine/core";
-import { useAuth } from 'react-oidc-context';
 import { useNavigate } from 'react-router-dom';
 import { useAdminRole } from "../../hooks/useAdminRole";
 import { routesPath } from "../../router/routes.path";
@@ -7,6 +6,7 @@ import UserMenu from '../../shared/components/UserMenu';
 import ColorSchemeToggle from "../../shared/components/buttons/ColorSchemeToggle";
 import Logo from "../../shared/components/images/LogoImage";
 import DrawerMenu from "../../shared/components/menu/DrawerMenu";
+import keycloak from "../../services/keycloak-config";
 
 const HEADER_HEIGHT = rem(60)
 
@@ -61,7 +61,6 @@ export interface HeaderActionProps {
 export const HeaderAction = ({ links }: HeaderActionProps) => {
     const { classes } = useStyles();
     const navigate = useNavigate()
-    const auth = useAuth()
     const { isAdmin } = useAdminRole()
 
     const handleNavigate = (link: string) => {
@@ -78,6 +77,8 @@ export const HeaderAction = ({ links }: HeaderActionProps) => {
         </Menu>
     )
 
+    const userName = keycloak.tokenParsed?.preferred_username + (isAdmin ? ' (admin)' : '')
+
     return (
         <Header height={HEADER_HEIGHT} sx={{ borderBottom: 0 }}>
             <Container className={classes.inner} fluid>
@@ -93,7 +94,7 @@ export const HeaderAction = ({ links }: HeaderActionProps) => {
                 </Container>
                 <Group position="right">
                     <ColorSchemeToggle className={classes.colorToggle} />
-                    <UserMenu user={{ name: auth.user?.profile.preferred_username || "", image: "" }} />
+                    <UserMenu user={{ name: userName, image: "" }} />
                 </Group>
             </Container>
         </Header >
