@@ -4,7 +4,6 @@ import { IconMinus, IconPlus } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
 import Konva from 'konva'
 import React, { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { Circle, Image, Layer, Line, Stage } from 'react-konva'
 import { proxyApi } from '../services/frigate.proxy/frigate.api'
 import RetryError from '../shared/components/RetryError'
@@ -27,7 +26,7 @@ const CameraMaskDrawer: React.FC<CameraMaskDrawerProps> = ({
   onChange
 }) => {
 
-  const { height, width } = useViewportSize()
+  const { width } = useViewportSize()
   const scaleStep = 0.1
   const [stageScale, setStageScale] = useState<number>(1)
 

@@ -33,7 +33,7 @@ window.MonacoEnvironment = {
 }
 
 export const hostConfigPageQuery = {
-  searchWord: 'searchWord ',
+  searchWord: 'searchWord',
 }
 
 const HostConfigPage = () => {

@@ -11,7 +11,7 @@
 - Frigate config editor page: Save and restart configuration using JSON schema from the host.
 - Frigate system page: Display camera capture, ffmpeg, and decode stats. Show camera recordings storage stats.
 - Admin pages access control: Restrict access to certain pages for administrators only.
-- OpenID provider authorization using JWT tokens.
+- Keycloak OpenID provider authorization using JWT tokens.
 # Instruction
 Frontend for [Proxy Frigate](https://github.com/NlightN22/frigate-proxy)
  - create file: `docker-compose.yml`
@@ -23,8 +23,9 @@ services:
     image: oncharterliz/multi-frigate:latest
     environment:
       FRIGATE_PROXY: http://localhost:4000
-      OPENID_SERVER: https://server:port/realms/your-realm
+      OPENID_SERVER: https://server:port
       CLIENT_ID: frontend-client
+      REALM: frigate-realm
     ports:
       - 80:80 # set your port here
 ```
