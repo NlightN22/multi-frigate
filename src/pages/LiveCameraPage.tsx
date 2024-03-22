@@ -1,21 +1,19 @@
-import React, { useContext, useEffect, useRef } from 'react';
-import { Context } from '..';
-import { observer } from 'mobx-react-lite';
-import { useNavigate, useParams } from 'react-router-dom';
-import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
+import { Flex } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
-import RetryErrorPage from './RetryErrorPage';
-import Player from '../widgets/Player';
-import { Button, Flex, Text } from '@mantine/core';
-import { routesPath } from '../router/routes.path';
-import { recordingsPageQuery } from './RecordingsPage';
+import { observer } from 'mobx-react-lite';
+import { useContext, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+import { Context } from '..';
+import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
+import CenterLoader from '../shared/components/loaders/CenterLoader';
+import Player from '../widgets/Player';
+import CameraPageHeader from '../widgets/header/CameraPageHeader';
+import RetryErrorPage from './RetryErrorPage';
 
 const LiveCameraPage = () => {
     const { t } = useTranslation()
     const executed = useRef(false)
-    const navigate = useNavigate()
     let { id: cameraId } = useParams<'id'>()
     if (!cameraId) throw Error('Camera id does not exist')
 
@@ -39,21 +37,10 @@ const LiveCameraPage = () => {
 
     if (isError) return <RetryErrorPage onRetry={refetch} />
 
-    const handleOpenRecordings = () => {
-        if (camera.frigateHost) {
-            const url = `${routesPath.RECORDINGS_PATH}?${recordingsPageQuery.hostId}=${camera.frigateHost.id}&${recordingsPageQuery.cameraId}=${camera.id}`
-            navigate(url)
-        }
-    }
 
     return (
         <Flex w='100%' h='100%' justify='center' align='center' direction='column'>
-            <Flex w='100%' justify='center' align='baseline' mb='1rem'>
-                <Text mr='1rem'>{t('camera')}: {camera.name} {camera.frigateHost ? `/ ${camera.frigateHost.name}` : ''}</Text>
-                {!camera.frigateHost ? <></> :
-                    <Button onClick={handleOpenRecordings}>{t('recordings')}</Button>
-                }
-            </Flex>
+            <CameraPageHeader camera={camera} editButton />
             <Player camera={camera} />
         </Flex>
     );

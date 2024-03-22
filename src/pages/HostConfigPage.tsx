@@ -5,8 +5,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
 import * as monaco from "monaco-editor";
 import { SchemasSettings, configureMonacoYaml } from 'monaco-yaml';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
@@ -18,6 +18,7 @@ import Forbidden from './403';
 import RetryErrorPage from './RetryErrorPage';
 import { notifications } from '@mantine/notifications';
 import { IconAlertCircle, IconCircleCheck } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 
 
 window.MonacoEnvironment = {
@@ -31,7 +32,16 @@ window.MonacoEnvironment = {
   }
 }
 
+export const hostConfigPageQuery = {
+  searchWord: 'searchWord ',
+}
+
 const HostConfigPage = () => {
+  const { t } = useTranslation()
+  const location = useLocation()
+  const queryParams = useMemo(() => {
+    return new URLSearchParams(location.search);
+  }, [location.search])
   const executed = useRef(false)
   const host = useRef<GetFrigateHost | undefined>()
   const { sideBarsStore } = useContext(Context)
@@ -82,7 +92,7 @@ const HostConfigPage = () => {
         message: e.message,
         color: 'red',
         icon: <IconAlertCircle />,
-    })
+      })
     }
   })
 
@@ -119,6 +129,17 @@ const HostConfigPage = () => {
     const model = monaco.editor.createModel(config, 'yaml', monaco.Uri.parse('monaco-yaml.yaml'))
     editor.setModel(model)
     editorRef.current = editor;
+    const paramSearchWord = queryParams.get(hostConfigPageQuery.searchWord)
+
+    if (paramSearchWord && model) {
+      const matches = model.findMatches(paramSearchWord, true, false, true, null, true);
+
+      if (matches.length > 0) {
+        const firstMatch = matches[0].range;
+        editor.revealPositionInCenter({ lineNumber: firstMatch.startLineNumber, column: firstMatch.startColumn });
+        editor.setPosition({ lineNumber: firstMatch.startLineNumber, column: firstMatch.startColumn });
+      }
+    }
   }
 
   const handleCopyConfig = useCallback(async () => {
@@ -132,14 +153,14 @@ const HostConfigPage = () => {
   const onHandleSaveConfig = useCallback(
     async (saveOption: SaveOption) => {
       if (!editorRef.current) {
-        throw Error('Editor does not exists')
+        throw Error(t('frigateConfigPage.editorNotExist'))
       }
       if (!isProduction) console.log('saveOption', saveOption)
       if (!isProduction) console.log('editorRef.current', editorRef.current.getValue().slice(0, 50))
       saveConfig({ saveOption: saveOption, config: editorRef.current.getValue() })
     }, [editorRef])
 
-  if (configPending || adminLoading ) return <CenterLoader />
+  if (configPending || adminLoading) return <CenterLoader />
 
   if (configError) return <RetryErrorPage onRetry={refetch} />
   if (!isAdmin) return <Forbidden />
@@ -148,13 +169,13 @@ const HostConfigPage = () => {
     <Flex direction='column' h='100%' w='100%' justify='stretch'>
       <Flex w='100%' justify='center' wrap='nowrap'>
         <Button size="sm" onClick={handleCopyConfig}>
-          Copy Config
+          {t('frigateConfigPage.copyConfig')}
         </Button>
         <Button ml='1rem' size="sm" onClick={(_) => onHandleSaveConfig(SaveOption.SaveRestart)}>
-          Save & Restart
+          {t('frigateConfigPage.saveAndRestart')}
         </Button>
         <Button ml='1rem' size="sm" onClick={(_) => onHandleSaveConfig(SaveOption.SaveOnly)}>
-          Save Only
+          {t('frigateConfigPage.saveOnly')}
         </Button>
       </Flex>
       <Flex h='100%' mt='1rem'>

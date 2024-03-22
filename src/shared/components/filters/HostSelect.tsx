@@ -1,10 +1,9 @@
+import { Center, Loader, MantineStyleSystemProps, SpacingValue, SystemProp } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import React, { useEffect } from 'react';
-import { frigateQueryKeys, frigateApi } from '../../../services/frigate.proxy/frigate.api';
+import { useEffect } from 'react';
+import { frigateApi, frigateQueryKeys } from '../../../services/frigate.proxy/frigate.api';
 import RetryError from '../RetryError';
-import CogwheelLoader from '../loaders/CogwheelLoader';
 import OneSelectFilter, { OneSelectItem } from './OneSelectFilter';
-import { SystemProp, SpacingValue, MantineStyleSystemProps, Loader, Center } from '@mantine/core';
 
 interface HostSelectProps extends MantineStyleSystemProps {
     label?: string

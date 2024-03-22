@@ -12,6 +12,7 @@ import { getResolvedTimeZone } from "../../shared/utils/dateUtil";
 import { FrigateStats, GetFfprobe, GetHostStorage, GetVaInfo } from "../../types/frigateStats";
 import { PostSaveConfig, SaveOption } from "../../types/saveConfig";
 import keycloak from "../keycloak-config";
+import { PutMask } from "../../types/mask";
 
 const instanceApi = axios.create({
     baseURL: proxyURL.toString(),
@@ -184,6 +185,18 @@ export const proxyApi = {
             }
         }).then(res => res.data),
     getHostStorage: (hostName: string) => instanceApi.get<GetHostStorage>(`proxy/${hostName}/api/recordings/storage`).then(res => res.data),
+    putMotionMask: (hostName: string, cameraName: string, index: number, points: string) =>
+        instanceApi
+            .put<PutMask>(`proxy/${hostName}/api/config/set?cameras.${cameraName}.motion.mask.${index}=${points}`) // points format: 257,21,255,43,21,48,21,25
+            .then(res => res.data),
+    putZoneMask: (hostName: string, cameraName: string, zoneName: string, points: string) =>
+        instanceApi
+            .put<PutMask>(`proxy/${hostName}/api/config/set?cameras.${cameraName}.zones.${zoneName}.coordinates=${points}`) // points format: 257,21,255,43,21,48,21,25
+            .then(res => res.data),
+    putObjectMask: (hostName: string, cameraName: string, filterName: string, index: number, points: string) =>
+        instanceApi
+            .put<PutMask>(`proxy/${hostName}/api/config/set?cameras.${cameraName}.objects.filters.${filterName}.mask.${index}=${points}`) // points format: 257,21,255,43,21,48,21,25
+            .then(res => res.data),
 }
 
 export const mapCamerasFromConfig = (config: FrigateConfig): string[] => {

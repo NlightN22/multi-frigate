@@ -9,6 +9,7 @@ export const routesPath = {
     HOST_STORAGE_PATH: '/hosts/:id/storage',
     ACCESS_PATH: '/access',
     LIVE_PATH: '/cameras/:id/',
+    EDIT_PATH: '/cameras/:id/edit',
     PLAYER_PATH: '/player',
     THANKS_PATH: '/thanks',
     USER_DETAILED_PATH: '/user',

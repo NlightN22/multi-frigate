@@ -8,6 +8,7 @@ import { mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.a
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
 import AutoUpdatedImage from '../shared/components/images/AutoUpdatedImage';
 import { useTranslation } from 'react-i18next';
+import { useAdminRole } from '../hooks/useAdminRole';
 
 const useStyles = createStyles((theme) => ({
     mainCard: {
@@ -48,6 +49,8 @@ const CameraCard = ({
     const navigate = useNavigate()
     const hostName = mapHostToHostname(camera.frigateHost)
     const imageUrl = hostName ? proxyApi.cameraImageURL(hostName, camera.name) : '' //todo implement get URL from live cameras
+    const { isAdmin } = useAdminRole()
+
 
     useEffect(() => {
         if (entry?.isIntersecting)
@@ -62,6 +65,14 @@ const CameraCard = ({
         const url = `${routesPath.RECORDINGS_PATH}?${recordingsPageQuery.hostId}=${camera.frigateHost?.id}&${recordingsPageQuery.cameraId}=${camera.id}`
         navigate(url)
     }
+
+    const handleOpenEditCamera = () => {
+        if (camera.frigateHost) {
+            const url = routesPath.EDIT_PATH.replace(':id', camera.id)
+            navigate(url)
+        }
+    }
+
     return (
         <Grid.Col md={6} lg={3} p='0.2rem'>
             <Card ref={ref} h='100%' radius="lg" padding='0.5rem' className={classes.mainCard}>
@@ -73,6 +84,7 @@ const CameraCard = ({
                     className={classes.bottomGroup}>
                     <Flex justify='space-evenly' mt='0.5rem' w='100%'>
                         <Button size='sm' onClick={handleOpenRecordings}>{t('recordings')}</Button>
+                        {!isAdmin ? null : <Button size='sm' onClick={handleOpenEditCamera}>{t('edit')}</Button>}
                     </Flex>
                 </Group>
             </Card>

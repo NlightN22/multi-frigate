@@ -1,4 +1,19 @@
 const ru = {
+    editCameraPage: {
+        notFrigateCamera: 'Не камера Фригата',
+        errorAtPut: 'Ошибка при отправке маски',
+        cameraIdNotExist: 'ID камеры не найдено',
+        cameraConfigNotExist: 'Конфиг. камеры не найден',
+        width: 'Ширина',
+        height: 'Высота',
+        points: 'Точки',   
+    },
+    frigateConfigPage: {
+        copyConfig: 'Копировать Конфиг.',
+        saveOnly: 'Только Сохранить',
+        saveAndRestart: 'Сохранить & Перезагрузить',
+        editorNotExist: 'Редактор не найден',
+    },
     systemPage: {
         cameraStats: 'Статистика Камер',
         storageStats: 'Статистика Хранения',
@@ -56,6 +71,9 @@ const ru = {
         doubleClickToFullHint: 'Двойное нажатие мышью для полноэкранного просмотра',
         rating: 'Рейтинг',
     },
+    config: 'Конфиг.',
+    clear: 'Очистить',
+    edit: 'Изменить',
     version: 'Версия',
     uptime: 'Время работы',
     pleaseSelectRole: 'Пожалуйста выберите роль',

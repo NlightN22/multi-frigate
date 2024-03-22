@@ -1,4 +1,19 @@
 const en = {
+    editCameraPage: {
+        notFrigateCamera: 'Not frigate camera',
+        errorAtPut: 'Error at sending mask',
+        cameraIdNotExist: 'Camera id does not exist',
+        cameraConfigNotExist: 'Camera config does not exist',
+        width: 'Width',
+        height: 'Height',
+        points: 'Points',
+    },
+    frigateConfigPage: {
+        copyConfig: 'Copy Config',
+        saveOnly: 'Save Only',
+        saveAndRestart: 'Save & Restart',
+        editorNotExist: 'Editor does not exists',
+    },
     systemPage: {
         cameraStats: 'Cameras stats',
         storageStats: 'Storages stats',
@@ -56,7 +71,9 @@ const en = {
         doubleClickToFullHint: 'Double click for fullscreen',
         rating: 'Rating',
     },
-    
+    config: 'Config',
+    clear: 'Clear',
+    edit: 'Edit',
     version: 'Version',
     uptime: 'Uptime',
     pleaseSelectRole: 'Please select Role',

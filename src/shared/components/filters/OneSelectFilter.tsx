@@ -4,10 +4,11 @@ import CloseWithTooltip from '../buttons/CloseWithTooltip';
 
 
 export interface OneSelectItem {
-    value: string;
-    label: string;
-    selected?: boolean;
-    disabled?: boolean;
+    value: string
+    label: string
+    group?: string
+    selected?: boolean
+    disabled?: boolean
 }
 
 export interface OneSelectFilterProps extends SelectProps {

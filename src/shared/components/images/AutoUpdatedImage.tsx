@@ -55,15 +55,7 @@ const AutoUpdatedImage = ({
     }
   }, [imageBlob])
 
-  if (isPending) return <CogwheelLoader />
-
-  if (isError) return (
-    <Flex direction="column" justify="center" h="100%">
-      <RetryError onRetry={refetch}/>
-    </Flex>
-  )
-
-  if (!imageSrc) return null
+  if (isPending || !imageSrc) return <CogwheelLoader />
 
   return (
     <Flex direction="column" justify="center" h="100%">

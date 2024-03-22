@@ -86,9 +86,7 @@ const MainPage = () => {
         <Flex direction='column' h='100%' w='100%' >
             <Flex justify='space-between' align='center' w='100%'>
                 <Flex w='100%'
-                    style={{
-                        justifyContent: 'center',
-                    }}
+                    justify='center'
                 >
                     <ClearableTextInput
                         clerable

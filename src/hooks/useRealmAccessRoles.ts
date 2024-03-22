@@ -9,7 +9,6 @@ export const useRealmAccessRoles = () => {
     useEffect(() => {
         const updateRoles = () => {
             const tokenRoles = keycloak.tokenParsed?.realm_access?.roles;
-            if (!isProduction) console.log(`tokenRoles:`, tokenRoles);
             if (tokenRoles) {
                 setRoles(tokenRoles);
             } else {
