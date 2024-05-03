@@ -54,6 +54,7 @@ const RecordingsPage = () => {
         recStore.selectedRange = [parsedStartDay, parsedEndDay]
       }
       executed.current = true
+      if (!isProduction) console.log('RecordingsPage rendered first time')
       return () => {
         sideBarsStore.setRightChildren(null)
         sideBarsStore.rightVisible = false

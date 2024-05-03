@@ -37,7 +37,7 @@ const EventsAccordion = ({
 
     const host = recStore.filteredHost
     const hostName = mapHostToHostname(host)
-    const camera = recStore.openedCamera || recStore.filteredCamera
+    const camera = recStore.filteredCamera
     const isRequiredParams = host && camera
 
     const { data, isPending, isError, refetch } = useQuery({

@@ -32,7 +32,6 @@ const SelectedHostList = ({
 
     const handleOnChange = (cameraId: string | null) => {
         setOpenCameraId(openCameraId === cameraId ? null : cameraId)
-        recStore.openedCamera = camerasQuery?.find( camera => camera.id === cameraId)
     }
 
     const handleRetry = () => {
@@ -51,7 +50,7 @@ const SelectedHostList = ({
                 <Accordion.Panel key={camera.id + 'Panel'}>
                     {openCameraId === camera.id && (
                         <Suspense>
-                            <CameraAccordion />
+                            <CameraAccordion camera={camera} />
                         </Suspense>
                     )}
                 </Accordion.Panel>

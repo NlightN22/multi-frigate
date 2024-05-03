@@ -1,4 +1,4 @@
-import { Accordion, Center, Loader } from '@mantine/core';
+import { Accordion, Center, Loader, Text } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
 import { useContext, useMemo } from 'react';
@@ -10,16 +10,22 @@ import { isProduction } from '../../env.const';
 import { getResolvedTimeZone, parseQueryDateToDate } from '../../utils/dateUtil';
 import RetryError from '../RetryError';
 import DayAccordion from './DayAccordion';
+import { GetCameraWHostWConfig } from '../../../services/frigate.proxy/frigate.schema';
 
-const CameraAccordion = () => {
+interface CameraAccordionProps {
+    camera: GetCameraWHostWConfig
+}
+
+const CameraAccordion = ({
+    camera
+} : CameraAccordionProps ) => {
     const { t } = useTranslation()
     const { recordingsStore: recStore } = useContext(Context)
 
-    const camera = recStore.openedCamera || recStore.filteredCamera
     const host = recStore.filteredHost
     const hostName = mapHostToHostname(host)
 
-    const { data, isPending, isError, refetch } = useQuery({
+    const { data: recordings, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getRecordingsSummary, camera?.id],
         queryFn: () => {
             if (camera && hostName) {
@@ -39,10 +45,10 @@ const CameraAccordion = () => {
     )
 
     const days = useMemo(() => {
-        if (data && camera) {
+        if (recordings && camera) {
             const [startDate, endDate] = recStore.selectedRange
             if (startDate && endDate) {
-                return data
+                return recordings
                     .filter(rec => {
                         const parsedRecDate = parseQueryDateToDate(rec.day)
                         if (parsedRecDate) {
@@ -53,21 +59,22 @@ const CameraAccordion = () => {
                     .map(rec => recodItem(rec))
             }
             if ((startDate && endDate) || (!startDate && !endDate)) {
-                return data.map(rec => recodItem(rec))
+                return recordings.map(rec => recodItem(rec))
             }
         }
         return []
-    }, [data, recStore.selectedRange])
+    }, [recordings, recStore.selectedRange])
 
     if (isPending) return <Center><Loader /></Center>
     if (isError) return <RetryError onRetry={refetch} />
 
-    if (!data || !camera) return null
+    if (!recordings || !camera) return null
 
     if (!isProduction) console.log('camera', camera)
-    if (!isProduction) console.log('data', data)
+    if (!isProduction) console.log('data', recordings)
     if (!isProduction) console.log('hostName', hostName)
     if (!isProduction) console.log('CameraAccordion rendered')
+
 
     return (
         <Accordion variant='separated' radius="md" w='100%'>

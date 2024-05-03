@@ -19,7 +19,7 @@ const DayAccordion = ({
   const { recordingsStore: recStore } = useContext(Context)
   const [openedValue, setOpenedValue] = useState<string>()
 
-  const camera = recStore.openedCamera || recStore.filteredCamera
+  const camera = recStore.filteredCamera
   const hostName = mapHostToHostname(recStore.filteredHost)
 
   const handleOpenPlayer = useCallback((value?: string) => {

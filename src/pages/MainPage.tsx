@@ -16,9 +16,9 @@ import { useTranslation } from 'react-i18next';
 const MainPage = () => {
     const { t } = useTranslation()
     const executed = useRef(false)
-    const { sideBarsStore } = useContext(Context)
+    const { sideBarsStore, mainStore } = useContext(Context)
+    const { selectedHostId } = mainStore
     const [searchQuery, setSearchQuery] = useState<string>()
-    const [selectedHostId, setSelectedHostId] = useState<string>()
     const [filteredCameras, setFilteredCameras] = useState<GetCameraWHostWConfig[]>()
 
     const { data: cameras, isPending, isError, refetch } = useQuery({
@@ -79,7 +79,7 @@ const MainPage = () => {
     if (isError) return <RetryErrorPage onRetry={refetch} />
 
     const handleSelectHost = (hostId: string) => {
-        setSelectedHostId(hostId)
+        mainStore.selectedHostId = hostId
     }
 
     return (

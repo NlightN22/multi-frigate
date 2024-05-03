@@ -32,13 +32,11 @@ const SelectedCameraList = () => {
 
     if (!camera || !camera?.frigateHost) return null
 
-    recStore.openedCamera = camera
-
     return (
         <Flex w='100%' h='100%' direction='column' align='center'>
             <Text>{camera.frigateHost.name} / {camera.name}</Text>
             <Suspense>
-                <CameraAccordion />
+                <CameraAccordion camera={camera} />
             </Suspense>
         </Flex>
     )
