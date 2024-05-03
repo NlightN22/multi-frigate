@@ -1,4 +1,4 @@
-import { Button, Flex, Text } from '@mantine/core';
+import { Button, Flex, Group, Text } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons-react';
 import { proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { EventFrigate } from '../../../types/event';
@@ -26,12 +26,23 @@ const EventPanel = ({
         <>
             {playedURL && playedURL === videoURL ? <VideoPlayer videoUrl={playedURL} /> : <></>}
             <Flex w='100%' justify='space-between'>
-                {!hostName ? <></> :
-                    <BlobImage
-                        maw={200}
-                        fit="contain"
-                        withPlaceholder
-                        src={proxyApi.eventThumbnailUrl(hostName, event.id)} />
+                <Group spacing='xs'>
+                    <Text fw={700}>{t('camera')}:</Text>
+                    <Text>{event.camera}</Text>
+                </Group>
+                <Group>
+                    <Text fw={700}>{t('player.startTime')}:</Text>
+                    <Text>{unixTimeToDate(event.start_time)}</Text>
+                </Group>
+                <Group>
+                    <Text fw={700}>{t('player.duration')}:</Text>
+                    <Text>{getDurationFromTimestamps(event.start_time, event.end_time)}</Text>
+                </Group>
+                {!event.data?.score ? <></> :
+                    <Group>
+                        <Text fw={700}>{t('player.rating')}:</Text>
+                        <Text>{(event.data.score * 100).toFixed(2)}%</Text>
+                    </Group>
                 }
                 <Flex direction='column' align='end' justify='center'>
                     {!hostName ? '' :
@@ -45,13 +56,6 @@ const EventPanel = ({
                                 Download event
                             </Button>
                         </Flex>
-                    }
-                    <Text mt='1rem'>{t('camera')}: {event.camera}</Text>
-                    <Text>{t('player.object')}: {event.label}</Text>
-                    <Text>{t('player.startTime')}: {unixTimeToDate(event.start_time)}</Text>
-                    <Text>{t('player.duration')}: {getDurationFromTimestamps(event.start_time, event.end_time)}</Text>
-                    {!event.data?.score? <></> :
-                        <Text>{t('player.rating')}: {(event.data.score * 100).toFixed(2)}%</Text>
                     }
                 </Flex>
             </Flex>

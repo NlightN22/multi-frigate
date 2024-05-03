@@ -3,6 +3,7 @@ import VideoDownloader from '../../../widgets/VideoDownloader';
 import VideoPlayer from '../players/VideoPlayer';
 import DayEventsAccordion from './DayEventsAccordion';
 import { useTranslation } from 'react-i18next';
+import { GetCameraWHostWConfig, GetFrigateHost } from '../../../services/frigate.proxy/frigate.schema';
 
 interface DayPanelProps {
     day: string,
@@ -14,6 +15,8 @@ interface DayPanelProps {
     playedURL?: string,
     startUnixTime: number,
     endUnixTime: number,
+    camera: GetCameraWHostWConfig
+    host: GetFrigateHost
 }
 
 const DayPanel = ({
@@ -26,6 +29,8 @@ const DayPanel = ({
     playedURL,
     startUnixTime,
     endUnixTime,
+    camera,
+    host
 }: DayPanelProps) => {
     const { t } = useTranslation()
     return (
@@ -42,7 +47,12 @@ const DayPanel = ({
                 </Flex>
                 : ''}
             {events > 0 ?
-                <DayEventsAccordion day={day} hour={hour} qty={events} />
+                <DayEventsAccordion
+                    camera={camera}
+                    host={host}
+                    day={day}
+                    hour={hour}
+                    qty={events} />
                 :
                 <Center><Text>{t('notHaveEvents')}</Text></Center>
             }

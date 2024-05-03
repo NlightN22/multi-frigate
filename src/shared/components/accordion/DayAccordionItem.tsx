@@ -12,14 +12,17 @@ import AccordionControlButton from '../buttons/AccordionControlButton';
 import AccordionShareButton from '../buttons/AccordionShareButton';
 import PlayControl from '../buttons/PlayControl';
 import DayPanel from './DayPanel';
+import { GetCameraWHostWConfig, GetFrigateHost } from '../../../services/frigate.proxy/frigate.schema';
 
 interface DayAccordionItemProps {
     recordSummary: RecordSummary,
     recordHour: RecordHour,
-    hostName?: string,
-    cameraName?: string,
+    hostName: string,
+    cameraName: string,
     played?: boolean,
     openPlayer?: (value?: string) => void,
+    camera: GetCameraWHostWConfig
+    host: GetFrigateHost
 }
 
 const DayAccordionItem = ({
@@ -28,7 +31,9 @@ const DayAccordionItem = ({
     hostName,
     cameraName,
     played,
-    openPlayer
+    openPlayer,
+    camera,
+    host
 }: DayAccordionItemProps) => {
     const { t } = useTranslation()
     const navigate = useNavigate()
@@ -92,6 +97,8 @@ const DayAccordionItem = ({
                 </Flex>
             </Accordion.Control>
             <DayPanel
+                camera={camera}
+                host={host}
                 day={recordSummary.day}
                 hour={hour}
                 events={recordHour.events}

@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { useContext, useState } from 'react';
 import { Context } from '../../..';
 import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../../../services/frigate.proxy/frigate.api';
-import { getEventsQuerySchema } from '../../../services/frigate.proxy/frigate.schema';
+import { GetCameraWHostWConfig, GetFrigateHost, getEventsQuerySchema } from '../../../services/frigate.proxy/frigate.schema';
 import { getUnixTime } from '../../utils/dateUtil';
 import RetryError from '../RetryError';
 import EventsAccordionItem from './EventsAccordionItem';
@@ -16,10 +16,10 @@ import EventsAccordionItem from './EventsAccordionItem';
  * @param hostName proxy format, e.g hostName: localhost:4000
  */
 interface EventsAccordionProps {
-    day?: string,
-    hour?: string,
-    cameraName?: string
-    hostName?: string
+    day: string,
+    hour: string,
+    camera: GetCameraWHostWConfig
+    host: GetFrigateHost
 }
 
 /**
@@ -31,13 +31,13 @@ interface EventsAccordionProps {
 const EventsAccordion = ({
     day,
     hour,
+    camera,
+    host,
 }: EventsAccordionProps) => {
     const { recordingsStore: recStore } = useContext(Context)
     const [openedItem, setOpenedItem] = useState<string>()
 
-    const host = recStore.filteredHost
     const hostName = mapHostToHostname(host)
-    const camera = recStore.filteredCamera
     const isRequiredParams = host && camera
 
     const { data, isPending, isError, refetch } = useQuery({

@@ -101,7 +101,7 @@ export const proxyApi = {
     ) =>
         instanceApi.get<RecordSummary[]>(`proxy/${hostName}/api/${cameraName}/recordings/summary`, {
             params: { timezone },
-            timeout: 5 * 60 * 1000
+            timeout: 5 * 60 * 1000,
         }).then(res => res.data),
 
     // E.g. http://127.0.0.1:5000/api/events?before=1708534799&after=1708448400&camera=CameraName&has_clip=1&include_thumbnails=0&limit=5000
@@ -130,7 +130,8 @@ export const proxyApi = {
                 limit: limit,
                 min_score: minScore,
                 max_score: maxScore,
-            }
+            },
+            timeout: 5 * 60 * 1000,
         }).then(res => res.data),
 
     getEventsSummary: (hostName: string, cameraName: string) =>

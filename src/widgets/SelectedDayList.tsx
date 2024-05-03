@@ -26,7 +26,7 @@ const SelectedDayList = ({
         queryFn: async () => {
             if (camera && host) {
                 const hostName = mapHostToHostname(host)
-                if (hostName){
+                if (hostName) {
                     return proxyApi.getRecordingsSummary(hostName, camera.name, getResolvedTimeZone())
                 }
             }
@@ -44,14 +44,17 @@ const SelectedDayList = ({
     if (!data) return <Text>Not have response from server</Text>
 
     const stringDay = dateToQueryString(day)
-    const recordingsDay =  data.find(record => record.day === stringDay)
+    const recordingsDay = data.find(record => record.day === stringDay)
     if (!recordingsDay) return <Center><Text>Not have record at {stringDay}</Text></Center>
 
     if (!isProduction) console.log('SelectedDayList rendered')
     return (
         <Flex w='100%' h='100%' direction='column' align='center'>
             <Text>{host.name} / {camera.name} / {stringDay}</Text>
-            <DayAccordion recordSummary={recordingsDay} />
+            <DayAccordion
+                host={host}
+                camera={camera}
+                recordSummary={recordingsDay} />
         </Flex>
     );
 };

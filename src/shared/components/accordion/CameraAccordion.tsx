@@ -18,7 +18,7 @@ interface CameraAccordionProps {
 
 const CameraAccordion = ({
     camera
-} : CameraAccordionProps ) => {
+}: CameraAccordionProps) => {
     const { t } = useTranslation()
     const { recordingsStore: recStore } = useContext(Context)
 
@@ -35,14 +35,22 @@ const CameraAccordion = ({
         }
     })
 
-    const recodItem = (record: RecordSummary) => (
-        <Accordion.Item key={record.day} value={record.day}>
-            <Accordion.Control key={record.day + 'control'}>{t('day')}: {record.day}</Accordion.Control>
-            <Accordion.Panel key={record.day + 'panel'}>
-                <DayAccordion key={record.day + 'day'} recordSummary={record} />
-            </Accordion.Panel>
-        </Accordion.Item>
-    )
+    const recodItem = (record: RecordSummary) => {
+        if (host) {
+            return (
+                <Accordion.Item key={record.day} value={record.day}>
+                    <Accordion.Control key={record.day + 'control'}>{t('day')}: {record.day}</Accordion.Control>
+                    <Accordion.Panel key={record.day + 'panel'}>
+                        <DayAccordion
+                            host={host}
+                            camera={camera}
+                            key={record.day + 'day'}
+                            recordSummary={record} />
+                    </Accordion.Panel>
+                </Accordion.Item>
+            )
+        }
+    }
 
     const days = useMemo(() => {
         if (recordings && camera) {

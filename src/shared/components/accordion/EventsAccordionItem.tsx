@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { routesPath } from '../../../router/routes.path';
 import { proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { useTranslation } from 'react-i18next';
+import BlobImage from '../images/BlobImage';
 
 
 interface EventsAccordionItemProps {
@@ -44,7 +45,8 @@ const EventsAccordionItem = ({
         const duration = getDurationFromTimestamps(event.start_time, event.end_time)
         return (
             <Group>
-                <Text>{t('player.object')}: {event.label}</Text>
+                <Text fw={700}>{t('player.object')}:</Text>
+                <Text >{event.label}</Text>
                 <Text>{time}</Text>
                 {duration ?
                     <Text>{duration}</Text>
@@ -77,6 +79,14 @@ const EventsAccordionItem = ({
         <Accordion.Item key={event.id + 'Item'} value={event.id}>
             <Accordion.Control key={event.id + 'Control'}>
                 <Flex justify='space-between'>
+                    {!hostName ? <></> :
+                        <BlobImage
+                            maw={200}
+                            mr='1rem'
+                            fit="contain"
+                            withPlaceholder
+                            src={proxyApi.eventThumbnailUrl(hostName, event.id)} />
+                    }
                     {eventLabel(event)}
                     <Group>
                         <AccordionShareButton recordUrl={eventVideoURL} />

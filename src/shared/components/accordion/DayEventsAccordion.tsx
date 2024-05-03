@@ -1,18 +1,23 @@
 import { Accordion, Text } from '@mantine/core';
 import { Suspense, lazy, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { GetCameraWHostWConfig, GetFrigateHost } from '../../../services/frigate.proxy/frigate.schema';
 const EventsAccordion = lazy(() => import('./EventsAccordion'))
 
 interface DayEventsAccordionProps {
     day: string,
     hour: string,
     qty?: number,
+    camera: GetCameraWHostWConfig
+    host: GetFrigateHost
 }
 
 const DayEventsAccordion = ({
     day,
     hour,
     qty,
+    camera,
+    host,
 }: DayEventsAccordionProps) => {
     const { t } = useTranslation()
     const [openedItem, setOpenedItem] = useState<string>()
@@ -27,7 +32,11 @@ const DayEventsAccordion = ({
                 <Accordion.Panel>
                     {openedItem === hour ?
                         <Suspense>
-                            <EventsAccordion day={day} hour={hour} />
+                            <EventsAccordion
+                                camera={camera}
+                                host={host}
+                                day={day}
+                                hour={hour} />
                         </Suspense>
                         : <></>
                     }

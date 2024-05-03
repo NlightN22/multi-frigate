@@ -6,21 +6,25 @@ import { mapHostToHostname } from '../../../services/frigate.proxy/frigate.api';
 import { RecordSummary } from '../../../types/record';
 import { isProduction } from '../../env.const';
 import DayAccordionItem from './DayAccordionItem';
+import { GetCameraWHostWConfig, GetFrigateHost } from '../../../services/frigate.proxy/frigate.schema';
 
 interface RecordingAccordionProps {
-  recordSummary?: RecordSummary,
+  recordSummary?: RecordSummary
+  host: GetFrigateHost
+  camera: GetCameraWHostWConfig
 }
 
 const DayAccordionItemMemo = React.memo(DayAccordionItem)
 
 const DayAccordion = ({
   recordSummary,
+  host,
+  camera
 }: RecordingAccordionProps) => {
   const { recordingsStore: recStore } = useContext(Context)
   const [openedValue, setOpenedValue] = useState<string>()
 
-  const camera = recStore.filteredCamera
-  const hostName = mapHostToHostname(recStore.filteredHost)
+  const hostName = mapHostToHostname(host)
 
   const handleOpenPlayer = useCallback((value?: string) => {
     if (recStore.playedItem !== value) {
@@ -32,11 +36,13 @@ const DayAccordion = ({
   }, [openedValue, recStore]);
 
   const dayItems = useMemo(() => {
-    if (recordSummary && recordSummary.hours.length > 0) {
+    if (recordSummary && recordSummary.hours.length > 0 && hostName && host) {
       return recordSummary.hours.map(hour => {
         const played = recordSummary.day + hour.hour === recStore.playedItem;
         return (
           <DayAccordionItemMemo
+            camera={camera}
+            host={host}
             key={recordSummary.day + hour.hour}
             recordSummary={recordSummary}
             recordHour={hour}
