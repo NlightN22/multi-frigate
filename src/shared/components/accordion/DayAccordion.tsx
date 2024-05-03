@@ -33,12 +33,13 @@ const DayAccordion = ({
     } else if (openedValue === value && recStore.playedItem === value) {
       recStore.playedItem = undefined;
     }
-  }, [openedValue, recStore]);
+  }, [openedValue, recStore.playedItem]);
 
   const dayItems = useMemo(() => {
     if (recordSummary && recordSummary.hours.length > 0 && hostName && host) {
       return recordSummary.hours.map(hour => {
-        const played = recordSummary.day + hour.hour === recStore.playedItem;
+        const item = hostName + camera.name +  recordSummary.day + hour.hour
+        const played = item === recStore.playedItem;
         return (
           <DayAccordionItemMemo
             camera={camera}

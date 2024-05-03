@@ -41,7 +41,7 @@ const DayAccordionItem = ({
 
     const hour = recordHour.hour
     const day = recordSummary.day
-    const item = day + hour
+    const item = hostName + cameraName +  day + hour
     const recordURL = proxyApi.recordingURL(
         hostName,
         cameraName,

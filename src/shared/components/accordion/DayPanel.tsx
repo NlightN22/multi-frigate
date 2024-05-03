@@ -37,7 +37,7 @@ const DayPanel = ({
         <Accordion.Panel key={hour + 'Panel'}>
             {playedURL && playedURL === videoURL ? <VideoPlayer videoUrl={playedURL} /> : <></>}
             {cameraName && hostName ?
-                <Flex w='100%' justify='center' mb='0.5rem'>
+                <Flex w='100%' justify='center' mb='0.5rem' mt='1rem'>
                     <VideoDownloader
                         cameraName={cameraName}
                         hostName={hostName}
