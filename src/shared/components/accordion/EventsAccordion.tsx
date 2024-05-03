@@ -105,6 +105,7 @@ const EventsAccordion = ({
         >
             {data.map(event => (
                 <EventsAccordionItem 
+                key={event.id}
                 event={event} 
                 hostName={hostName}
                 played={recStore.playedItem === event.id}
