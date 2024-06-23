@@ -1,4 +1,4 @@
-import { Flex, Group, Select, Text } from '@mantine/core';
+import { Flex, Group, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
@@ -8,13 +8,12 @@ import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import CamerasTransferList from '../shared/components/CamerasTransferList';
-import { OneSelectItem } from '../shared/components/filters/OneSelectFilter';
+import RoleSelectFilter from '../shared/components/filters/RoleSelectFilter';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import { dimensions } from '../shared/dimensions/dimensions';
 import { isProduction } from '../shared/env.const';
 import Forbidden from './403';
 import RetryErrorPage from './RetryErrorPage';
-import RoleSelectFilter from '../shared/components/filters/RoleSelectFilter';
 
 const AccessSettings = () => {
     const { t } = useTranslation()
@@ -42,7 +41,6 @@ const AccessSettings = () => {
     if (isPending || adminLoading) return <CenterLoader />
     if (isError || !data) return <RetryErrorPage onRetry={refetch} />
     if (!isAdmin) return <Forbidden />
-    const rolesSelect: OneSelectItem[] = data.map(role => ({ value: role.id, label: role.name }))
 
     const handleSelectRole = (value: string) => {
         setRoleId(value)

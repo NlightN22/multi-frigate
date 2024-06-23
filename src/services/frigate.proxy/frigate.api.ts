@@ -3,7 +3,9 @@ import { proxyURL } from "../../shared/env.const"
 import {
     GetConfig, DeleteFrigateHost, GetFrigateHost, PutConfig, PutFrigateHost,
     GetCameraWHostWConfig, GetRole,
-    GetRoleWCameras, GetExportedFile, recordingSchema
+    GetRoleWCameras, GetExportedFile, recordingSchema,
+    oidpConfig,
+    OIDPConfig
 } from "./frigate.schema";
 import { FrigateConfig } from "../../types/frigateConfig";
 import { RecordSummary } from "../../types/record";
@@ -31,8 +33,12 @@ instanceApi.interceptors.request.use(
 );
 
 export const frigateApi = {
-    getConfig: () => instanceApi.get<GetConfig[]>('apiv1/config').then(res => res.data),
-    putConfig: (config: PutConfig[]) => instanceApi.put('apiv1/config', config).then(res => res.data),
+    getAllConfig: () => instanceApi.get<GetConfig[]>('apiv1/config').then(res => res.data),
+    getConfig: (key: string) => instanceApi.get<GetConfig>(`apiv1/config/${key}`).then(res => res.data),
+    getOIDPConfig: () => instanceApi.get<OIDPConfig>('apiv1/config/oidp').then(res => res.data),
+    putConfigs: (config: PutConfig[]) => instanceApi.put('apiv1/config', config).then(res => res.data),
+    putOIDPConfig: (config: OIDPConfig) => instanceApi.put('apiv1/config/oidp', config).then(res => res.data),
+    putOIDPConfigTest: (config: OIDPConfig) => instanceApi.put('apiv1/config/oidp/test', config).then(res => res.data),
     getHosts: () => instanceApi.get<GetFrigateHost[]>('apiv1/frigate-hosts').then(res => {
         return res.data
     }),
@@ -212,7 +218,9 @@ export const mapHostToHostname = (host?: GetFrigateHost): string | undefined => 
 }
 
 export const frigateQueryKeys = {
-    getConfig: 'config',
+    getAllConfig: 'getAllConfig',
+    getConfig: 'getConfig',
+    getOIDPConfig: 'OIDPconfig',
     getFrigateHosts: 'frigate-hosts',
     getFrigateHostsConfigs: 'frigate-hosts-configs',
     getFrigateHost: 'frigate-host',

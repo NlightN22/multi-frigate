@@ -33,9 +33,9 @@ const RoleSelectFilter: React.FC<RoleSelectFilterProps> = ({
 
     return (
         <Select
+            value={roleId}
             {...selectProps}
             data={rolesSelect}
-            value={roleId}
             onChange={handleSelectRole}
         />
     );

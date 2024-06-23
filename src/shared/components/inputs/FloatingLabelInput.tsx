@@ -5,7 +5,6 @@ import classes from './FloatingLabelInput.module.css';
 interface FloatingLabelInputProps extends TextInputProps {
     value?: string
     encrypted?: boolean
-    ecryptedValue?: string
     onChangeValue?: (key: string, value: string) => void
 }
 
@@ -13,7 +12,6 @@ export const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
     value: propVal,
     onChangeValue,
     encrypted,
-    ecryptedValue,
     ...rest
 }) => {
     const [focused, setFocused] = useState(false);

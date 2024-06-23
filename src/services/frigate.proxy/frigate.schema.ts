@@ -6,6 +6,14 @@ export const putConfigSchema = z.object({
     value: z.string(),
 })
 
+export const oidpConfig = z.object({
+    clientId: z.string(),
+    clientSecret: z.string(),
+    clientUsername: z.string(),
+    clientPassword: z.string(),
+    clientURL: z.string(),
+})
+
 export const getConfigSchema = z.object({
     key: z.string(),
     value: z.string(),
@@ -115,6 +123,7 @@ export const recordingSchema = z.object({
 
 export type GetConfig = z.infer<typeof getConfigSchema>
 export type PutConfig = z.infer<typeof putConfigSchema>
+export type OIDPConfig = z.infer<typeof oidpConfig>
 export type GetFrigateHost = z.infer<typeof getFrigateHostSchema>
 // export type GetFrigateHostWithCameras = z.infer<typeof getFrigateHostWithCamerasSchema>
 export type GetFrigateHostWConfig = GetFrigateHost & { config: FrigateConfig }

@@ -1,3 +1,5 @@
+import { error } from "console"
+
 const en = {
     editCameraPage: {
         notFrigateCamera: 'Not frigate camera',
@@ -13,6 +15,20 @@ const en = {
         saveOnly: 'Save Only',
         saveAndRestart: 'Save & Restart',
         editorNotExist: 'Editor does not exists',
+    },
+    settingsPage: {
+        oidpClientId: 'OIDP Client ID',
+        oidpClientIdPH: 'frigate-cli',
+        clientSecret: 'OIDP Client secret',
+        clientSecretPH: 'super secret from OIDP server client',
+        clientUsername: 'OIDP Client username',
+        clientUsernamePH: 'frigate-admin@yourmail.com',
+        clientPassword: 'OIDP Client password',
+        clientPasswordPH: 'User password on OIDP server',
+        realmUrl: 'OIDP realm URL path',
+        realmUrlPH: 'https://your.oidp.server.com/realms/frigate-realm',
+        adminRole: 'Select admin role',
+        birdseyeRole: 'Select birds eye role user',
     },
     systemPage: {
         cameraStats: 'Cameras stats',
@@ -110,6 +126,9 @@ const en = {
     goToMainPage: "Return to main page",
     retry: "Retry",
     youCanRetryOrGoToMain: "You can retry or return to the main page",
+    successfully: "Sucessfully",
+    successfullySaved: "Sucessfully saved",
+    error: "Error",
     errors: {
         emptyResponse: 'Empty response',
         somthingGoesWrong: "Something went wrong",
