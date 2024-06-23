@@ -14,6 +14,7 @@ import { dimensions } from '../shared/dimensions/dimensions';
 import { isProduction } from '../shared/env.const';
 import Forbidden from './403';
 import RetryErrorPage from './RetryErrorPage';
+import RoleSelectFilter from '../shared/components/filters/RoleSelectFilter';
 
 const AccessSettings = () => {
     const { t } = useTranslation()
@@ -53,11 +54,9 @@ const AccessSettings = () => {
             <Text align='center' size='xl'>{t('pleaseSelectRole')}</Text>
             <Flex justify='space-between' align='center' w='100%'>
                 {!isMobile ? <Group w='40%' /> : <></>}
-                <Select
+                <RoleSelectFilter
                     w='100%'
                     mt='1rem'
-                    data={rolesSelect}
-                    value={roleId}
                     onChange={handleSelectRole}
                     searchable
                     clearable
