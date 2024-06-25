@@ -55,6 +55,7 @@ export const frigateApi = {
         return res.data
     }),
     getRoles: () => instanceApi.get<GetRole[]>('apiv1/roles').then(res => res.data),
+    putRoles: () => instanceApi.put<GetRole[]>('apiv1/roles').then(res => res.data),
     putRoleWCameras: (roleId: string, cameraIDs: string[]) => instanceApi.put<GetRoleWCameras>(`apiv1/roles/${roleId}/cameras`,
         {
             cameraIDs: cameraIDs
@@ -237,6 +238,7 @@ export const frigateQueryKeys = {
     getRecordings: 'recordings-frigate',
     getEvents: 'events-frigate',
     getRoles: 'roles',
+    putRoles: 'putRoles',
     getRoleWCameras: 'roles-cameras',
     getUsersByRole: 'users-role',
     getAdminRole: 'admin-role',

@@ -7,7 +7,7 @@ import RoleSelectFilter from '../shared/components/filters/RoleSelectFilter';
 import CogwheelLoader from '../shared/components/loaders/CogwheelLoader';
 import { GetRole } from '../services/frigate.proxy/frigate.schema';
 import { isProduction } from '../shared/env.const';
-import { Flex, Button } from '@mantine/core';
+import { Flex, Button, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconCircleCheck, IconAlertCircle } from '@tabler/icons-react';
 import { v4 } from 'uuid';
@@ -24,11 +24,13 @@ interface Roles {
 }
 
 interface RolesSettingsFormProps {
-    allRoles: GetRole[]
+    allRoles: GetRole[],
+    refetchRoles?: () => void,
 }
 
 const RolesSettingsForm: React.FC<RolesSettingsFormProps> = ({
-    allRoles
+    allRoles,
+    refetchRoles
 }) => {
     const [roles, setRoles] = useState<Roles>()
     const { t } = useTranslation()
@@ -54,6 +56,39 @@ const RolesSettingsForm: React.FC<RolesSettingsFormProps> = ({
                 },
             }
         },
+    })
+
+    const updateRoles = useMutation({
+        mutationFn: async () => frigateApi.putRoles().catch(error => {
+            if (error.response && error.response.data) {
+                return Promise.reject(error.response.data)
+            }
+            return Promise.reject(error)
+        }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [frigateQueryKeys.getRoles] })
+            notifications.show({
+                id: v4(),
+                withCloseButton: true,
+                autoClose: 5000,
+                title: t('successfully'),
+                message: t('successfullyUpdated'),
+                color: 'green',
+                icon: <IconCircleCheck />
+            })
+            if (refetchRoles) refetchRoles()
+        },
+        onError: (e) => {
+            notifications.show({
+                id: e.message,
+                withCloseButton: true,
+                autoClose: false,
+                title: t('error'),
+                message: e.message,
+                color: 'red',
+                icon: <IconAlertCircle />,
+            })
+        }
     })
 
     const save = useMutation({
@@ -141,6 +176,12 @@ const RolesSettingsForm: React.FC<RolesSettingsFormProps> = ({
 
     if (isPending) return <CogwheelLoader />
     if (isError) return <RetryError onRetry={refetch} />
+    if (allRoles.length < 1) return (
+        <>
+            <Text align='center' mt='lg'>{t('settingsPage.emptyRolesNotify')}</Text>
+            <Button mt='md' onClick={() => updateRoles.mutate()}>{t('settingsPage.updateRoles')}</Button>
+        </>
+    )
 
     return (
         <>

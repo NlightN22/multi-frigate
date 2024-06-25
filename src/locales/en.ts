@@ -29,6 +29,8 @@ const en = {
         realmUrlPH: 'https://your.oidp.server.com/realms/frigate-realm',
         adminRole: 'Select admin role',
         birdseyeRole: 'Select birds eye role user',
+        emptyRolesNotify: 'List of roles are empty. You can manually start updating on server:',
+        updateRoles: 'Update Roles',
     },
     systemPage: {
         cameraStats: 'Cameras stats',
@@ -128,6 +130,7 @@ const en = {
     youCanRetryOrGoToMain: "You can retry or return to the main page",
     successfully: "Sucessfully",
     successfullySaved: "Sucessfully saved",
+    successfullyUpdated: "Sucessfully updated",
     error: "Error",
     errors: {
         emptyResponse: 'Empty response',

@@ -6,7 +6,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
-import { frigateApi } from '../services/frigate.proxy/frigate.api';
+import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { GetRole } from '../services/frigate.proxy/frigate.schema';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import { dimensions } from '../shared/dimensions/dimensions';
@@ -35,7 +35,8 @@ const SettingsPage = () => {
 
     const isMobile = useMediaQuery(dimensions.mobileSize)
 
-    const mutation = useMutation({
+    const getRoles = useMutation({
+        mutationKey: [frigateQueryKeys.getRoles],
         mutationFn: frigateApi.getRoles,
         onSuccess: (data) => {
             setAllRoles(data)
@@ -44,7 +45,7 @@ const SettingsPage = () => {
 
     const handleOIDPConfigValid = (valid: boolean) => {
         setShowRoles(valid)
-        mutation.mutate()
+        getRoles.mutate()
     }
 
     if (!isAdmin) return <Forbidden />
@@ -59,8 +60,11 @@ const SettingsPage = () => {
             <Flex direction='column' h='100%' w='100%' justify='stretch'>
                 <OIDPSettingsForm isConfigValid={handleOIDPConfigValid} />
                 {
-                    showRoles && allRoles && allRoles.length > 0 ?
-                        <RolesSettingsForm allRoles={allRoles} />
+                    showRoles && allRoles ?
+                        <RolesSettingsForm
+                            allRoles={allRoles}
+                            refetchRoles={() => getRoles.mutate()}
+                        />
                         : null
                 }
             </Flex>

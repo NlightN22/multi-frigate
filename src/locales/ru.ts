@@ -6,7 +6,7 @@ const ru = {
         cameraConfigNotExist: 'Конфиг. камеры не найден',
         width: 'Ширина',
         height: 'Высота',
-        points: 'Точки',   
+        points: 'Точки',
     },
     frigateConfigPage: {
         copyConfig: 'Копировать Конфиг.',
@@ -26,7 +26,10 @@ const ru = {
         realmUrl: 'OIDP realm URL путь',
         realmUrlPH: 'https://your.oidp.server.com/realms/frigate-realm',
         adminRole: 'Выбери роль администратора',
-        birdseyeRole: 'Выбери роль birdseye пользователя',},
+        birdseyeRole: 'Выбери роль birdseye пользователя',
+        emptyRolesNotify: 'Список ролей пуст. Вы можете вручную запустить обновление на сервере:',
+        updateRoles: 'Обновить роли',
+    },
     systemPage: {
         cameraStats: 'Статистика Камер',
         storageStats: 'Статистика Хранения',
@@ -60,7 +63,7 @@ const ru = {
         restart: 'Перезагрузка',
         system: 'Система',
         storage: 'Хранилище',
-    }, 
+    },
     header: {
         home: 'Главная',
         settings: 'Настройки',
@@ -106,7 +109,7 @@ const ru = {
     second: 'Час',
     events: 'События',
     notHaveEvents: 'Событий нет',
-    selectHost:'Выбери хост',
+    selectHost: 'Выбери хост',
     selectCamera: 'Выбери камеру',
     selectRange: 'Выбери период',
     changeTheme: "Изменить тему",
@@ -125,6 +128,7 @@ const ru = {
     youCanRetryOrGoToMain: "Вы можете повторить или вернуться на главную",
     successfully: "Успешно",
     successfullySaved: "Успешно сохранено",
+    successfullyUpdated: "Успешно обновлено",
     error: "Ошибка",
     errors: {
         emptyResponse: 'Пустой ответ',
