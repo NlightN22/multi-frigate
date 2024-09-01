@@ -4,12 +4,11 @@ import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getCookie, setCookie } from 'cookies-next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AppBody from './AppBody';
 import { FfprobeModal } from './shared/components/modal.windows/FfprobeModal';
 import { VaInfoModal } from './shared/components/modal.windows/VaInfoModal';
-import { useRealmAccessRoles } from './hooks/useRealmAccessRoles';
-import { useAdminRole } from './hooks/useAdminRole';
+import { isProduction } from './shared/env.const';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,12 +31,22 @@ declare module '@mantine/modals' {
 
 function App() {
   const systemColorScheme = useColorScheme()
-  const [colorScheme, setColorScheme] = useState<ColorScheme>(getCookie('mantine-color-scheme') as ColorScheme || systemColorScheme)
+
+  const cookieColorScheme = getCookie('mantine-color-scheme') as ColorScheme | null
+
+  const selectedColorScheme = cookieColorScheme || systemColorScheme
+
+  const [colorScheme, setColorScheme] = useState<ColorScheme>(selectedColorScheme)
   const toggleColorScheme = (value?: ColorScheme) => {
     const nextColorScheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
     setColorScheme(nextColorScheme)
     setCookie('mantine-color-scheme', nextColorScheme, { maxAge: 60 * 60 * 24 * 30 });
   }
+
+
+  useEffect(() => {
+    setColorScheme(selectedColorScheme);
+  }, [selectedColorScheme]);
 
   return (
     <QueryClientProvider client={queryClient}>
