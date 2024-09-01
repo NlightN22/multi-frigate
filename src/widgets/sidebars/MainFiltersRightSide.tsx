@@ -1,10 +1,9 @@
-import React, { useContext } from 'react';
-import HostSelect from '../../shared/components/filters/HostSelect';
 import { observer } from 'mobx-react-lite';
-import { Context } from '../..';
-import { isProduction } from '../../shared/env.const';
-import CreatableMultiSelect from '../../shared/components/filters/CreatableMultiSelect';
+import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Context } from '../..';
+import HostSelect from '../../shared/components/filters/HostSelect';
+import { isProduction } from '../../shared/env.const';
 
 
 
