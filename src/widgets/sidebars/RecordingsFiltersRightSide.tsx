@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Context } from '..';
-import CameraSelectFilter from '../shared/components/filters/CameraSelectFilter';
-import DateRangeSelectFilter from '../shared/components/filters/DateRangeSelectFilter';
-import RecordingsHostFilter from '../shared/components/filters/RecordingsHostFilter';
-import { isProduction } from '../shared/env.const';
+import { Context } from '../..';
+import CameraSelectFilter from '../../shared/components/filters/CameraSelectFilter';
+import DateRangeSelectFilter from '../../shared/components/filters/DateRangeSelectFilter';
+import RecordingsHostFilter from '../../shared/components/filters/RecordingsHostFilter';
+import { isProduction } from '../../shared/env.const';
 
 const RecordingsFiltersRightSide = () => {
     const { recordingsStore: recStore } = useContext(Context)

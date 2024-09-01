@@ -1,4 +1,7 @@
 const ru = {
+    mainPage: {
+        createSelectTags: 'Создать\\Выбрать тэги'
+    },
     editCameraPage: {
         notFrigateCamera: 'Не камера Фригата',
         errorAtPut: 'Ошибка при отправке маски',
@@ -88,6 +91,7 @@ const ru = {
         rating: 'Рейтинг',
     },
     config: 'Конфиг.',
+    create: 'Создать',
     clear: 'Очистить',
     edit: 'Изменить',
     version: 'Версия',

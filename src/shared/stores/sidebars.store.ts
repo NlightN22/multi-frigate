@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx"
+import { action, makeAutoObservable } from "mobx"
 
 export class SideBarsStore {
 
@@ -29,7 +29,10 @@ export class SideBarsStore {
     }
 
     constructor () {
-        makeAutoObservable(this)
+        makeAutoObservable(this, {
+            setRightChildren: action,
+            setLeftChildren: action,
+        })
     }
 
     setRightChildren = (value: React.ReactNode) => {

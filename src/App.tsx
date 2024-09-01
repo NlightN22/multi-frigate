@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 import AppBody from './AppBody';
 import { FfprobeModal } from './shared/components/modal.windows/FfprobeModal';
 import { VaInfoModal } from './shared/components/modal.windows/VaInfoModal';
-import { isProduction } from './shared/env.const';
 
 const queryClient = new QueryClient({
   defaultOptions: {

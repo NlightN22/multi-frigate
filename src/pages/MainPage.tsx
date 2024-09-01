@@ -6,12 +6,15 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Context } from '..';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
-import HostSelect from '../shared/components/filters/HostSelect';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import CameraCard from '../widgets/CameraCard';
 import RetryErrorPage from './RetryErrorPage';
 import ClearableTextInput from '../shared/components/inputs/ClearableTextInput';
 import { useTranslation } from 'react-i18next';
+import MainFiltersRightSide from '../widgets/sidebars/MainFiltersRightSide';
+import { isProduction } from '../shared/env.const';
+import { useKeycloak } from '@react-keycloak/web';
+import { useRealmUser } from '../hooks/useRealmUser';
 
 const MainPage = () => {
     const { t } = useTranslation()
@@ -20,6 +23,9 @@ const MainPage = () => {
     const { selectedHostId } = mainStore
     const [searchQuery, setSearchQuery] = useState<string>()
     const [filteredCameras, setFilteredCameras] = useState<GetCameraWHostWConfig[]>()
+
+    const realmUser = useRealmUser()
+    if (!isProduction) console.log('Realmuser:', realmUser)
 
     const { data: cameras, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getCamerasWHost],
@@ -41,14 +47,26 @@ const MainPage = () => {
         setFilteredCameras(cameras.filter(filterCameras))
     }, [searchQuery, cameras, selectedHostId])
 
+
+
     useEffect(() => {
-        if (!executed.current) {
-            sideBarsStore.rightVisible = false
-            sideBarsStore.setLeftChildren(null)
+        sideBarsStore.setLeftChildren(null)
+        sideBarsStore.leftVisible = false
+        executed.current = true
+        if (!isProduction) console.log('MainPage rendered first time')
+    }, [])
+
+    useEffect(() => {
+        sideBarsStore.setRightChildren(<MainFiltersRightSide />)
+        sideBarsStore.rightVisible = true
+
+        return () => {
             sideBarsStore.setRightChildren(null)
-            executed.current = true
+            sideBarsStore.rightVisible = false
         }
     }, [sideBarsStore])
+
+    //test change
 
     const cards = useMemo(() => {
         if (filteredCameras)
@@ -78,33 +96,22 @@ const MainPage = () => {
 
     if (isError) return <RetryErrorPage onRetry={refetch} />
 
-    const handleSelectHost = (hostId: string) => {
-        mainStore.selectedHostId = hostId
-    }
+    if (!isProduction) console.log('MainPage rendered')
 
     return (
         <Flex direction='column' h='100%' w='100%' >
-            <Flex justify='space-between' align='center' w='100%'>
-                <Flex w='100%'
-                    justify='center'
-                >
-                    <ClearableTextInput
-                        clerable
-                        maw={400}
-                        style={{ flexGrow: 1 }}
-                        placeholder={t('search')}
-                        icon={<IconSearch size="0.9rem" stroke={1.5} />}
-                        value={searchQuery}
-                        onChange={(event) => setSearchQuery(event.currentTarget.value)}
-                    />
-                    <HostSelect
-                        valueId={selectedHostId}
-                        onChange={handleSelectHost}
-                        ml='1rem'
-                        spaceBetween='0px'
-                        placeholder={t('selectHost')}
-                    />
-                </Flex>
+            <Flex w='100%'
+                justify='center'
+            >
+                <ClearableTextInput
+                    clerable
+                    maw={400}
+                    style={{ flexGrow: 1 }}
+                    placeholder={t('search')}
+                    icon={<IconSearch size="0.9rem" stroke={1.5} />}
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.currentTarget.value)}
+                />
             </Flex>
             <Flex justify='center' h='100%' direction='column' w='100%' >
                 <Grid mt='sm' justify="center" mb='sm' align='stretch'>

@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Context } from '..';
 import { isProduction } from '../shared/env.const';
 import { dateToQueryString, parseQueryDateToDate } from '../shared/utils/dateUtil';
-import RecordingsFiltersRightSide from '../widgets/RecordingsFiltersRightSide';
+import RecordingsFiltersRightSide from '../widgets/sidebars/RecordingsFiltersRightSide';
 import SelectedCameraList from '../widgets/SelectedCameraList';
 import SelectedDayList from '../widgets/SelectedDayList';
 import SelectedHostList from '../widgets/SelectedHostList';

@@ -1,6 +1,9 @@
 import { error } from "console"
 
 const en = {
+    mainPage: {
+        createSelectTags: 'Create\\Select tags'
+    },
     editCameraPage: {
         notFrigateCamera: 'Not frigate camera',
         errorAtPut: 'Error at sending mask',
@@ -90,6 +93,7 @@ const en = {
         rating: 'Rating',
     },
     config: 'Config',
+    create: 'Create',
     clear: 'Clear',
     edit: 'Edit',
     version: 'Version',
