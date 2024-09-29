@@ -3,10 +3,9 @@ import { notifications } from '@mantine/notifications';
 import { IconAlertCircle, IconCircleCheck } from '@tabler/icons-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
 import MaskSelect, { MaskItem, MaskType } from '../shared/components/filters/MaskSelect';
@@ -19,7 +18,6 @@ import RetryErrorPage from './RetryErrorPage';
 
 const EditCameraPage = () => {
     const { t } = useTranslation()
-    const executed = useRef(false)
     let { id: cameraId } = useParams<'id'>()
     if (!cameraId) throw Error(t('editCameraPage.cameraIdNotExist'))
     const [selectedMask, setSelectedMask] = useState<MaskItem>()
@@ -104,16 +102,6 @@ const EditCameraPage = () => {
     })
 
     const { isAdmin, isLoading: adminLoading } = useAdminRole()
-
-    const { sideBarsStore } = useContext(Context)
-    useEffect(() => {
-        if (!executed.current) {
-            sideBarsStore.rightVisible = false
-            sideBarsStore.setLeftChildren(null)
-            sideBarsStore.setRightChildren(null)
-            executed.current = true
-        }
-    }, [sideBarsStore])
 
     if (isPending || adminLoading) return <CenterLoader />
     if (!isAdmin) return <Forbidden />

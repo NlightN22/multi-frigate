@@ -2,10 +2,9 @@ import { Flex, Grid, SegmentedControl, Text } from '@mantine/core';
 import { openContextModal } from '@mantine/modals';
 import { useQuery } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
 import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
@@ -16,9 +15,9 @@ import StorageRingStat from '../shared/components/stats/StorageRingStat';
 import { isProduction } from '../shared/env.const';
 import { formatUptime } from '../shared/utils/dateUtil';
 import FrigateCamerasStateTable, { CameraItem, ProcessType } from '../widgets/camera.stat.table/FrigateCameraStateTable';
+import FrigateStorageStateTable from '../widgets/camera.stat.table/FrigateStorageStateTable';
 import Forbidden from './403';
 import RetryErrorPage from './RetryErrorPage';
-import FrigateStorageStateTable from '../widgets/camera.stat.table/FrigateStorageStateTable';
 
 export const hostSystemPageQuery = {
     hostId: 'hostId',
@@ -31,20 +30,9 @@ enum SelectorItems {
 
 const HostSystemPage = () => {
     const { t } = useTranslation()
-    const executed = useRef(false)
-    const { sideBarsStore } = useContext(Context)
     const { isAdmin } = useAdminRole()
     const host = useRef<GetFrigateHost | undefined>()
     const [selector, setSelector] = useState(SelectorItems.Cameras)
-
-    useEffect(() => {
-        if (!executed.current) {
-            sideBarsStore.rightVisible = false
-            sideBarsStore.setLeftChildren(null)
-            sideBarsStore.setRightChildren(null)
-            executed.current = true
-        }
-    }, [sideBarsStore])
 
     let { id: paramHostId } = useParams<'id'>()
 

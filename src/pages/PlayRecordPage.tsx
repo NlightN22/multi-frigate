@@ -1,26 +1,14 @@
 import { Flex } from '@mantine/core';
-import React, { useContext, useEffect, useRef } from 'react';
+import { observer } from 'mobx-react-lite';
 import { useLocation } from 'react-router-dom';
 import VideoPlayer from '../shared/components/players/VideoPlayer';
 import NotFound from './404';
-import { Context } from '..';
-import { observer } from 'mobx-react-lite';
 
 export const playRecordPageQuery = {
     link: 'link',
 }
 
 const PlayRecordPage = () => {
-    const executed = useRef(false)
-    const { sideBarsStore } = useContext(Context)
-    useEffect(() => {
-        if (!executed.current) {
-            sideBarsStore.rightVisible = false
-            sideBarsStore.setLeftChildren(null)
-            sideBarsStore.setRightChildren(null)
-            executed.current = true
-        }
-    }, [sideBarsStore])
 
     const location = useLocation()
     const queryParams = new URLSearchParams(location.search)

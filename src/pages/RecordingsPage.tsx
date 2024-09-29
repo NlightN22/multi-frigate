@@ -11,6 +11,7 @@ import SelectedCameraList from '../widgets/SelectedCameraList';
 import SelectedDayList from '../widgets/SelectedDayList';
 import SelectedHostList from '../widgets/SelectedHostList';
 import { useTranslation } from 'react-i18next';
+import { SideBarContext } from '../widgets/sidebars/SideBarContext';
 
 
 export const recordingsPageQuery = {
@@ -24,7 +25,7 @@ export const recordingsPageQuery = {
 const RecordingsPage = () => {
   const { t } = useTranslation()
   const executed = useRef(false)
-  const { sideBarsStore, recordingsStore: recStore } = useContext(Context)
+  const { recordingsStore: recStore } = useContext(Context)
 
   const location = useLocation()
   const navigate = useNavigate()
@@ -40,12 +41,17 @@ const RecordingsPage = () => {
   const [cameraId, setCameraId] = useState<string>('')
   const [period, setPeriod] = useState<[Date | null, Date | null]>([null, null])
 
+  const { setChildrenComponent } = useContext(SideBarContext)
+
+  useEffect(() => {
+    setChildrenComponent(<RecordingsFiltersRightSide />);
+
+    return () => setChildrenComponent(null);
+  }, []);
+
+
   useEffect(() => {
     if (!executed.current) {
-      sideBarsStore.rightVisible = true
-      sideBarsStore.setRightChildren(
-        <RecordingsFiltersRightSide />
-      )
       if (paramHostId) recStore.hostIdParam = paramHostId
       if (paramCameraId) recStore.cameraIdParam = paramCameraId
       if (paramStartDay && paramEndDay) {
@@ -55,10 +61,6 @@ const RecordingsPage = () => {
       }
       executed.current = true
       if (!isProduction) console.log('RecordingsPage rendered first time')
-      return () => {
-        sideBarsStore.setRightChildren(null)
-        sideBarsStore.rightVisible = false
-      }
     }
   }, [])
 
@@ -114,7 +116,7 @@ const RecordingsPage = () => {
   if (hostId && paramHostId && !cameraId) {
     return <SelectedHostList hostId={hostId} />
   }
-  
+
   if (!isProduction) console.log('RecordingsPage rendered')
 
   return (

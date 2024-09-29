@@ -1,6 +1,7 @@
 const ru = {
     mainPage: {
-        createSelectTags: 'Создать\\Выбрать тэги'
+        createSelectTags: 'Создай\\Выбери тэги',
+        tagsError: 'Не может быть более 10 символов',
     },
     editCameraPage: {
         notFrigateCamera: 'Не камера Фригата',

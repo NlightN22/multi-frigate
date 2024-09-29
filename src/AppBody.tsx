@@ -5,9 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { Context } from '.';
 import AppRouter from './router/AppRouter';
 import { routesPath } from './router/routes.path';
-import SideBar from './shared/components/SideBar';
 import { isProduction } from './shared/env.const';
 import { HeaderAction } from './widgets/header/HeaderAction';
+import RightSideBar from "./shared/components/RightSideBar";
+import { useLocation } from "react-router-dom";
 
 const AppBody = () => {
     const { t } = useTranslation()
@@ -20,19 +21,21 @@ const AppBody = () => {
         { link: routesPath.ACCESS_PATH, label: t('header.acessSettings'), admin: true },
     ]
 
-    const { sideBarsStore } = useContext(Context)
 
-    const [leftSideBar, setLeftSidebar] = useState(false)
-    const [rightSideBar, setRightSidebar] = useState(false)
+    const location = useLocation()
 
-    const leftSideBarIsHidden = (isHidden: boolean) => {
-        setLeftSidebar(!isHidden)
-    }
-    const rightSideBarIsHidden = (isHidden: boolean) => {
-        setRightSidebar(!isHidden)
-    }
+    const pathsWithLeftSidebar: string[] = []
+    const pathsWithRightSidebar: string[] = [routesPath.MAIN_PATH, routesPath.RECORDINGS_PATH]
+
+    const [leftSideBar, setLeftSidebar] = useState(pathsWithLeftSidebar.includes(location.pathname))
+    const [rightSideBar, setRightSidebar] = useState(pathsWithRightSidebar.includes(location.pathname))
+
+    const handleRightSidebarChange = (isVisible: boolean) => {
+        setRightSidebar(isVisible);
+    };
 
     const theme = useMantineTheme();
+
 
     if (!isProduction) console.log("render Main")
     return (
@@ -50,9 +53,10 @@ const AppBody = () => {
             header={
                 <HeaderAction links={headerLinks} />
             }
+
             aside={
-                !sideBarsStore.rightVisible ? <></> :
-                    <SideBar isHidden={rightSideBarIsHidden} side="right" />
+                !pathsWithRightSidebar.includes(location.pathname) ? <></> :
+                    <RightSideBar onChangeHidden={handleRightSidebarChange}/>
             }
         >
             <AppRouter />

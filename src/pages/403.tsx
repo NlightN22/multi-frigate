@@ -10,17 +10,7 @@ import { useNavigate } from 'react-router-dom';
 const Forbidden = () => {
     const { t } = useTranslation()
     const navigate = useNavigate()
-    const executed = useRef(false)
-    const { sideBarsStore } = useContext(Context)
 
-    useEffect(() => {
-        if (!executed.current) {
-            sideBarsStore.rightVisible = false
-            sideBarsStore.setLeftChildren(null)
-            sideBarsStore.setRightChildren(null)
-            executed.current = true
-        }
-    }, [sideBarsStore])
 
     const handleGoToMain = () => {
         navigate(routesPath.MAIN_PATH)

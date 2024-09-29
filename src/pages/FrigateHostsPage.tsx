@@ -3,9 +3,8 @@ import { notifications } from '@mantine/notifications';
 import { IconAlertCircle } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { GetFrigateHost, deleteFrigateHostSchema, putFrigateHostSchema } from '../services/frigate.proxy/frigate.schema';
@@ -19,22 +18,12 @@ import RetryErrorPage from './RetryErrorPage';
 const FrigateHostsPage = () => {
     const { t } = useTranslation()
 
-    const executed = useRef(false)
     const queryClient = useQueryClient()
     const { isPending: hostsPending, error: hostsError, data } = useQuery({
         queryKey: [frigateQueryKeys.getFrigateHosts],
         queryFn: frigateApi.getHosts,
     })
 
-    const { sideBarsStore } = useContext(Context)
-    useEffect(() => {
-        if (!executed.current) {
-            sideBarsStore.rightVisible = false
-            sideBarsStore.setLeftChildren(null)
-            sideBarsStore.setRightChildren(null)
-            executed.current = true
-        }
-    }, [sideBarsStore])
     const { isAdmin, isLoading: adminLoading } = useAdminRole()
     const [pageData, setPageData] = useState(data)
 

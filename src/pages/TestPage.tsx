@@ -3,28 +3,12 @@ import { Editor, Monaco } from '@monaco-editor/react';
 import { observer } from 'mobx-react-lite';
 import * as monaco from 'monaco-editor';
 import { SchemasSettings, configureMonacoYaml } from 'monaco-yaml';
-import { useContext, useEffect, useRef } from 'react';
-import { Context } from '..';
+import { useRef } from 'react';
 import HeadSearch from '../shared/components/inputs/HeadSearch';
 
 const Test = () => {
-  const executed = useRef(false)
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
   const theme = useMantineTheme();
-
-  const { sideBarsStore } = useContext(Context)
-  sideBarsStore.rightVisible = true
-
-  useEffect(() => {
-    if (!executed.current) {
-      sideBarsStore.rightVisible = false
-      sideBarsStore.setLeftChildren(null)
-      sideBarsStore.setRightChildren(null)
-      executed.current = true
-    }
-  }, [sideBarsStore])
-
-
 
 
   const value = `

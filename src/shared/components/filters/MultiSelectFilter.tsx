@@ -3,7 +3,7 @@ import { CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import CloseWithTooltip from '../buttons/CloseWithTooltip';
 
-interface MultiSelectFilterProps {
+interface MultiSelectFilterProps extends MultiSelectProps {
     id?: string
     data: SelectItem[]
     spaceBetween?: SystemProp<SpacingValue>

@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import AppBody from './AppBody';
 import { FfprobeModal } from './shared/components/modal.windows/FfprobeModal';
 import { VaInfoModal } from './shared/components/modal.windows/VaInfoModal';
+import { SideBarProvider } from './widgets/sidebars/SideBarContext';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,8 +68,10 @@ function App() {
             }}
           >
             <ModalsProvider modals={modals}>
-              <Notifications />
-              <AppBody />
+              <SideBarProvider>
+                <Notifications />
+                <AppBody />
+              </SideBarProvider>
             </ModalsProvider>
           </MantineProvider >
         </ColorSchemeProvider>

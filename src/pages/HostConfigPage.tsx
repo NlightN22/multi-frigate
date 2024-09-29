@@ -1,13 +1,15 @@
-import { Button, Flex, Text, useMantineTheme } from '@mantine/core';
+import { Button, Flex, useMantineTheme } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import Editor, { Monaco } from '@monaco-editor/react';
+import { IconAlertCircle, IconCircleCheck } from '@tabler/icons-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
 import * as monaco from "monaco-editor";
 import { SchemasSettings, configureMonacoYaml } from 'monaco-yaml';
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router-dom';
-import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
 import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
@@ -16,9 +18,6 @@ import { isProduction } from '../shared/env.const';
 import { SaveOption } from '../types/saveConfig';
 import Forbidden from './403';
 import RetryErrorPage from './RetryErrorPage';
-import { notifications } from '@mantine/notifications';
-import { IconAlertCircle, IconCircleCheck } from '@tabler/icons-react';
-import { useTranslation } from 'react-i18next';
 
 
 window.MonacoEnvironment = {
@@ -42,9 +41,7 @@ const HostConfigPage = () => {
   const queryParams = useMemo(() => {
     return new URLSearchParams(location.search);
   }, [location.search])
-  const executed = useRef(false)
   const host = useRef<GetFrigateHost | undefined>()
-  const { sideBarsStore } = useContext(Context)
 
   let { id } = useParams<'id'>()
   const { isAdmin, isLoading: adminLoading } = useAdminRole()
@@ -95,15 +92,6 @@ const HostConfigPage = () => {
       })
     }
   })
-
-  useEffect(() => {
-    if (!executed.current) {
-      sideBarsStore.rightVisible = false
-      sideBarsStore.setLeftChildren(null)
-      sideBarsStore.setRightChildren(null)
-      executed.current = true
-    }
-  }, [sideBarsStore])
 
   const clipboard = useClipboard({ timeout: 500 })
 

@@ -2,9 +2,8 @@ import { Flex, Group, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Context } from '..';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import CamerasTransferList from '../shared/components/CamerasTransferList';
@@ -17,22 +16,13 @@ import RetryErrorPage from './RetryErrorPage';
 
 const AccessSettings = () => {
     const { t } = useTranslation()
-    const executed = useRef(false)
     const { data, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getRoles],
         queryFn: frigateApi.getRoles
     })
-    const { sideBarsStore } = useContext(Context)
     const { isAdmin, isLoading: adminLoading } = useAdminRole()
 
-    useEffect(() => {
-        if (!executed.current) {
-            sideBarsStore.rightVisible = false
-            sideBarsStore.setLeftChildren(null)
-            sideBarsStore.setRightChildren(null)
-            executed.current = true
-        }
-    }, [sideBarsStore])
+
 
     const isMobile = useMediaQuery(dimensions.mobileSize)
     const [roleId, setRoleId] = useState<string>()

@@ -1,11 +1,10 @@
-import { Flex, Button, Text } from '@mantine/core';
-import React, { useContext, useEffect, useRef } from 'react';
-import { routesPath } from '../router/routes.path';
-import { useNavigate } from 'react-router-dom';
-import { ExclamationCogWheel } from '../shared/components/svg/ExclamationCogWheel';
-import { Context } from '..';
+import { Button, Flex, Text } from '@mantine/core';
 import { observer } from 'mobx-react-lite';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { routesPath } from '../router/routes.path';
+import { ExclamationCogWheel } from '../shared/components/svg/ExclamationCogWheel';
 
 interface RetryErrorPageProps {
     repeatVisible?: boolean
@@ -21,19 +20,8 @@ const RetryErrorPage = ({
     onRetry
 }: RetryErrorPageProps) => {
     const { t } = useTranslation()
-    const executed = useRef(false)
 
     const navigate = useNavigate()
-
-    const { sideBarsStore } = useContext(Context)
-    useEffect(() => {
-        if (!executed.current) {
-            sideBarsStore.rightVisible = false
-            sideBarsStore.setLeftChildren(null)
-            sideBarsStore.setRightChildren(null)
-            executed.current = true
-        }
-    }, [sideBarsStore])
 
     const handleGoToMain = () => {
         navigate(routesPath.MAIN_PATH)

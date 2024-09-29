@@ -1,53 +1,78 @@
-import { Box, Flex, MultiSelect, MultiSelectProps, SelectItem, SpacingValue, SystemProp, Text } from '@mantine/core';
-import { t } from 'i18next';
-import React, { CSSProperties, FC } from 'react';
-import CloseWithTooltip from '../buttons/CloseWithTooltip';
+import { Box, Flex, Group, MultiSelect, MultiSelectProps, SelectItem, SpacingValue, SystemProp, Text } from '@mantine/core';
+import React, { CSSProperties, forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import CloseWithTooltip from '../buttons/CloseWithTooltip';
+import { IconTrash } from '@tabler/icons-react';
 
 interface CreatableMultiSelectProps {
     id?: string
+    value?: string[]
     data: SelectItem[]
     spaceBetween?: SystemProp<SpacingValue>
     label?: string
     defaultValue?: string[]
     textClassName?: string
-    selectProps?: MultiSelectProps,
     display?: SystemProp<CSSProperties['display']>
     showClose?: boolean,
-    changedState?(value: string[], id?: string): void
+    onChange?(value: string[]): void
     onClose?(): void
-    onCreate?(value: string): void
+    onCreate?(query: string | SelectItem | null | undefined): SelectItem | string | null | undefined
+    error?: string
+    onTrashClick?(value: string): void
 }
+
+interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
+    label: string,
+    value: string,
+    onTrashClick?: (value: string) => void
+}
+
+const DeletableItem = forwardRef<HTMLDivElement, ItemProps>(
+    ({ label, value, onTrashClick, ...others }, ref) => (
+        <div {...others} ref={ref}>
+            <Flex justify='space-between'>
+                <Text>{label}</Text>
+                <IconTrash
+                    onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (onTrashClick) onTrashClick(value);
+                    }}
+                />
+            </Flex>
+        </div>
+    )
+);
 
 const CreatableMultiSelect: React.FC<CreatableMultiSelectProps> = ({
     id,
+    value,
     data,
     spaceBetween,
     label,
     defaultValue,
     textClassName,
-    selectProps,
     display,
     showClose,
-    changedState,
+    onChange,
     onClose,
-    onCreate
+    onCreate,
+    onTrashClick,
+    error,
 }) => {
 
     const { t } = useTranslation()
 
     const handleOnChange = (value: string[]) => {
-        if (changedState) {
-            changedState(value, id)
-        }
+        if (onChange) onChange(value)
     }
 
     const handleOnCreate = (query: string | SelectItem | null | undefined) => {
-        const item = { value: query, label: query } as SelectItem
-        if (onCreate && typeof query === 'string') {
-            onCreate(query)
-        }
-        return item 
+        if (onCreate) return onCreate(query)
+    }
+
+    const handleTrashClick = (value: string) => {
+        if (onTrashClick) onTrashClick(value)
     }
 
     return (
@@ -59,17 +84,25 @@ const CreatableMultiSelect: React.FC<CreatableMultiSelectProps> = ({
                     : null}
             </Flex>
             <MultiSelect
-                {...selectProps}
+                value={value}
                 mt={spaceBetween}
                 data={data}
+                disableSelectedItemFiltering
                 defaultValue={defaultValue}
+                itemComponent={forwardRef((itemProps, ref) => (
+                    <DeletableItem
+                        {...itemProps}
+                        ref={ref} // передаем ref в DeletableItem
+                        onTrashClick={handleTrashClick} // передаем коллбэк сюда напрямую
+                    />
+                ))}
                 onChange={handleOnChange}
                 searchable
                 clearable
                 creatable
                 getCreateLabel={(query) => `+ ${t('create') + ' ' + query}`}
                 onCreate={handleOnCreate}
-                {...selectProps}
+                error={error}
             />
         </Box>
     );

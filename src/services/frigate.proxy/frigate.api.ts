@@ -15,6 +15,7 @@ import { FrigateStats, GetFfprobe, GetHostStorage, GetVaInfo } from "../../types
 import { PostSaveConfig, SaveOption } from "../../types/saveConfig";
 import keycloak from "../keycloak-config";
 import { PutMask } from "../../types/mask";
+import { GetUserTag, PutUserTag } from "../../types/tags";
 
 const instanceApi = axios.create({
     baseURL: proxyURL.toString(),
@@ -61,6 +62,9 @@ export const frigateApi = {
             cameraIDs: cameraIDs
         }).then(res => res.data),
     getAdminRole: () => instanceApi.get<GetConfig>('apiv1/config/admin').then(res => res.data),
+    getUserTags: () => instanceApi.get<GetUserTag[]>('apiv1/tags').then(res => res.data),
+    putUserTag: (tag: PutUserTag) => instanceApi.put<GetUserTag>('apiv1/tags', tag).then(res => res.data),
+    delUserTag: (tagId: string) => instanceApi.delete<GetUserTag>(`apiv1/tags/${tagId}`).then(res => res.data)
 }
 
 export const proxyPrefix = `${proxyURL.protocol}//${proxyURL.host}/proxy/`
@@ -242,4 +246,6 @@ export const frigateQueryKeys = {
     getRoleWCameras: 'roles-cameras',
     getUsersByRole: 'users-role',
     getAdminRole: 'admin-role',
+    getUserTags: 'users-tags',
+    putUserTag: 'put-user-tag',
 }

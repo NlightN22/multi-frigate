@@ -21,10 +21,6 @@ interface IRoute {
 }
 
 export const routes: IRoute[] = [
-    { //todo delete
-        path: routesPath.TEST_PATH,
-        component: <Test />,
-    },
     {
         path: routesPath.SETTINGS_PATH,
         component: <SettingsPage />,

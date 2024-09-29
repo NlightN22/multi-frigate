@@ -2,7 +2,8 @@ import { error } from "console"
 
 const en = {
     mainPage: {
-        createSelectTags: 'Create\\Select tags'
+        createSelectTags: 'Create\\Select tags',
+        tagsError: 'Cannot be more than 10 symbols',
     },
     editCameraPage: {
         notFrigateCamera: 'Not frigate camera',

@@ -3,7 +3,10 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Context } from '../..';
 import HostSelect from '../../shared/components/filters/HostSelect';
+import UserTagsFilter from '../../shared/components/filters/UserTagsFilter';
 import { isProduction } from '../../shared/env.const';
+
+
 
 
 
@@ -26,16 +29,11 @@ const MainFiltersRightSide = () => {
                 defaultId={selectedHostId}
                 onChange={handleSelect}
             />
-            {/* TODO Add tags select */}
-            {/* <CreatableMultiSelect
-                label={t('mainPage.createSelectTags')}
-                spaceBetween='1rem'
-                data={[]}
-            /> */}
+
+            <UserTagsFilter />
+
         </>
     );
 };
-
-
 
 export default observer(MainFiltersRightSide);
