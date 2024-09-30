@@ -1,24 +1,23 @@
 import { Box, Flex, Indicator, Text } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { observer } from 'mobx-react-lite';
-import { useContext } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Context } from '../../..';
-import { isProduction } from '../../env.const';
 
-interface DateRangeSelectFilterProps {}
+interface DateRangeSelectFilterProps {
+    onChange?(value: [Date | null, Date | null]): void
+    value?: [Date | null, Date | null]
+}
 
-const DateRangeSelectFilter = ({
-
+const DateRangeSelectFilter: FC<DateRangeSelectFilterProps> = ({
+    onChange,
+    value,
 }: DateRangeSelectFilterProps) => {
     const { t } = useTranslation()
-    const { recordingsStore: recStore } = useContext(Context)
 
     const handlePick = (value: [Date | null, Date | null]) => {
-        recStore.selectedRange = value
+        if (onChange) onChange(value)
     }
 
-    if (!isProduction) console.log('DateRangeSelectFilter rendered')
     return (
         <Box>
             <Flex
@@ -35,7 +34,7 @@ const DateRangeSelectFilter = ({
                 type="range"
                 mx="auto"
                 maw={400}
-                value={recStore.selectedRange}
+                value={value}
                 onChange={handlePick}
                 renderDay={(date) => {
                     const day = date.getDate();
@@ -53,4 +52,4 @@ const DateRangeSelectFilter = ({
 
 
 
-export default observer(DateRangeSelectFilter);
+export default DateRangeSelectFilter;

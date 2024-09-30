@@ -32,8 +32,6 @@ const RightSideBar = ({ onChangeHidden, children }: RightSideBarProps) => {
 
     const side = 'right'
 
-    const hideSizePx = useMantineSize(dimensions.hideSidebarsSize)
-
     const [visible, { open, close }] = useDisclosure(true);
 
     const { classes } = useStyles({ visible })

@@ -1,20 +1,19 @@
-import React, { createContext } from 'react';
+import { ReactKeycloakProvider } from '@react-keycloak/web';
+import { createContext } from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import RootStore from './shared/stores/root.store';
-import { BrowserRouter } from 'react-router-dom';
 import './services/i18n';
-import { ReactKeycloakProvider } from '@react-keycloak/web';
-import keycloak from './services/keycloak-config';
+import keycloakInstance from './services/keycloak-config';
 import CenterLoader from './shared/components/loaders/CenterLoader';
+import RootStore from './shared/stores/root.store';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
 export const hostURL = new URL(window.location.href)
-
 
 const rootStore = new RootStore()
 export const Context = createContext<RootStore>(rootStore)
@@ -25,11 +24,11 @@ const eventLogger = (event: string, error?: any) => {
 
 const tokenLogger = (tokens: any) => {
   console.log('onKeycloakTokens', tokens);
-};
+}
 
 root.render(
   <ReactKeycloakProvider
-    authClient={keycloak}
+    authClient={keycloakInstance}
     LoadingComponent={<CenterLoader />}
     onEvent={eventLogger}
     onTokens={tokenLogger}

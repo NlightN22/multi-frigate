@@ -61,13 +61,4 @@ export class RecordingsStore {
     public set selectedRange(value: [Date | null, Date | null]) {
         this._selectedRange = value
     }
-
-    // TODO Delete
-    // private _openedCamera: GetCameraWHostWConfig | undefined
-    // public get openedCamera(): GetCameraWHostWConfig | undefined {
-    //     return this._openedCamera
-    // }
-    // public set openedCamera(value: GetCameraWHostWConfig | undefined) {
-    //     this._openedCamera = value
-    // }
 }

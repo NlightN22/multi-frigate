@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { dimensions } from '../dimensions/dimensions';
 import ColorSchemeToggle from './buttons/ColorSchemeToggle';
-import keycloak from "../../services/keycloak-config";
+import { useKeycloak } from "@react-keycloak/web";
 
 interface UserMenuProps {
     user: { name: string; image: string }
@@ -13,6 +13,8 @@ interface UserMenuProps {
 const UserMenu = ({ user }: UserMenuProps) => {
 
     const { t, i18n } = useTranslation()
+
+    const { keycloak, initialized } = useKeycloak()
 
     const languages = [
         { lng: 'en', name: 'Eng' },

@@ -13,7 +13,6 @@ import SelectedHostList from '../widgets/SelectedHostList';
 import { useTranslation } from 'react-i18next';
 import { SideBarContext } from '../widgets/sidebars/SideBarContext';
 
-
 export const recordingsPageQuery = {
   hostId: 'hostId',
   cameraId: 'cameraId',
@@ -41,12 +40,11 @@ const RecordingsPage = () => {
   const [cameraId, setCameraId] = useState<string>('')
   const [period, setPeriod] = useState<[Date | null, Date | null]>([null, null])
 
-  const { setChildrenComponent } = useContext(SideBarContext)
+  const { setRightChildren } = useContext(SideBarContext)
 
   useEffect(() => {
-    setChildrenComponent(<RecordingsFiltersRightSide />);
-
-    return () => setChildrenComponent(null);
+    setRightChildren(<RecordingsFiltersRightSide />);
+    return () => setRightChildren(null);
   }, []);
 
 

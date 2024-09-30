@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
 import { dateToQueryString, getResolvedTimeZone } from '../shared/utils/dateUtil';
 import { Context } from '..';
@@ -9,6 +9,7 @@ import CenterLoader from '../shared/components/loaders/CenterLoader';
 import { observer } from 'mobx-react-lite';
 import DayAccordion from '../shared/components/accordion/DayAccordion';
 import { isProduction } from '../shared/env.const';
+import { useTranslation } from 'react-i18next';
 
 interface SelectedDayListProps {
     day: Date
@@ -21,6 +22,12 @@ const SelectedDayList = ({
     const camera = recStore.filteredCamera
     const host = recStore.filteredHost
 
+    const { t } = useTranslation()
+
+
+    const [retryCount, setRetryCount] = useState(0)
+    const MAX_RETRY_COUNT = 3
+
     const { data, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getRecordingsSummary, recStore.filteredCamera?.id, day],
         queryFn: async () => {
@@ -31,6 +38,13 @@ const SelectedDayList = ({
                 }
             }
             return null
+        },
+        retry: (failureCount, error) => {
+            setRetryCount(failureCount);
+
+            if (failureCount >= MAX_RETRY_COUNT) return false;
+
+            return true;
         }
     })
 
@@ -39,6 +53,15 @@ const SelectedDayList = ({
     }
 
     if (isPending) return <CenterLoader />
+
+    if (isError && retryCount >= MAX_RETRY_COUNT) {
+        return (
+            <Center>
+                <Text>{t('maxRetries', { maxRetries: MAX_RETRY_COUNT })}</Text>
+            </Center>
+        );
+    }
+
     if (isError) return <RetryErrorPage onRetry={handleRetry} />
     if (!camera || !host) return <Center><Text>Please select host or camera</Text></Center>
     if (!data) return <Text>Not have response from server</Text>
@@ -56,7 +79,7 @@ const SelectedDayList = ({
                 camera={camera}
                 recordSummary={recordingsDay} />
         </Flex>
-    );
-};
+    )
+}
 
-export default observer(SelectedDayList);
+export default observer(SelectedDayList)

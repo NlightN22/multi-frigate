@@ -1,13 +1,13 @@
 import { Flex } from '@mantine/core';
-import { dataTagSymbol, useMutation, useQueryClient } from '@tanstack/react-query';
+import { notifications } from '@mantine/notifications';
+import { IconAlertCircle } from '@tabler/icons-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
 import AddBadge from '../shared/components/AddBadge';
 import TagBadge from '../shared/components/TagBadge';
-import { CameraTag, PutUserTag } from '../types/tags';
-import { notifications } from '@mantine/notifications';
-import { IconAlertCircle } from '@tabler/icons-react';
+import { CameraTag } from '../types/tags';
 
 
 interface CameraTagsListProps {

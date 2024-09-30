@@ -1,14 +1,13 @@
 import { AppShell, useMantineTheme, } from "@mantine/core";
 import { observer } from 'mobx-react-lite';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Context } from '.';
+import { useLocation } from "react-router-dom";
 import AppRouter from './router/AppRouter';
 import { routesPath } from './router/routes.path';
+import RightSideBar from "./shared/components/RightSideBar";
 import { isProduction } from './shared/env.const';
 import { HeaderAction } from './widgets/header/HeaderAction';
-import RightSideBar from "./shared/components/RightSideBar";
-import { useLocation } from "react-router-dom";
 
 const AppBody = () => {
     const { t } = useTranslation()
@@ -17,6 +16,7 @@ const AppBody = () => {
         { link: routesPath.MAIN_PATH, label: t('header.home') },
         { link: routesPath.SETTINGS_PATH, label: t('header.settings'), admin: true },
         { link: routesPath.RECORDINGS_PATH, label: t('header.recordings') },
+        { link: routesPath.EVENTS_PATH, label: t('header.events') },
         { link: routesPath.HOSTS_PATH, label: t('header.hostsConfig'), admin: true },
         { link: routesPath.ACCESS_PATH, label: t('header.acessSettings'), admin: true },
     ]
@@ -25,7 +25,7 @@ const AppBody = () => {
     const location = useLocation()
 
     const pathsWithLeftSidebar: string[] = []
-    const pathsWithRightSidebar: string[] = [routesPath.MAIN_PATH, routesPath.RECORDINGS_PATH]
+    const pathsWithRightSidebar: string[] = [routesPath.MAIN_PATH, routesPath.RECORDINGS_PATH, routesPath.EVENTS_PATH]
 
     const [leftSideBar, setLeftSidebar] = useState(pathsWithLeftSidebar.includes(location.pathname))
     const [rightSideBar, setRightSidebar] = useState(pathsWithRightSidebar.includes(location.pathname))

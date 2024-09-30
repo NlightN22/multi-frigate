@@ -134,6 +134,41 @@ export const getUnixTime = (day?: string, hour?: number | string) => {
 }
 
 /**
+ * @param date JS Date
+ * @returns unixTime
+ */
+
+export const dateToUnixTime = (date: Date) => {
+  return date.getTime() / 1000
+}
+
+/**
+ * @param period [start: begin of Day, end: end of Day]
+ * @returns [start: unixTimeStart, end: unixTimeEnd]
+ */
+
+export const dayRangeToUnixPeriod = (period: [Date, Date]) => {
+  const start = period[0]
+  const end = period[1]
+
+  start.setHours(0, 0, 0, 0)
+  end.setHours(23, 59, 59)
+
+  const startTime = dateToUnixTime(start)
+  const endTime = dateToUnixTime(end)
+  return [startTime, endTime]
+}
+
+export const dayTimeToUnixTime = (day: Date, time: string) => {
+  const [hours, minutes] = time.split(':').map(Number)
+  day.setHours(hours);
+  day.setMinutes(minutes);
+  day.setSeconds(0);
+  day.setMilliseconds(0);
+  return Math.floor(day.getTime() / 1000)
+}
+
+/**
  * This function takes in a Unix timestamp, configuration options for date/time display, and an optional strftime format string,
  * and returns a formatted date/time string.
  *

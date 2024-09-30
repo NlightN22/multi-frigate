@@ -20,7 +20,7 @@ import { CameraTag } from '../types/tags';
 const MainPage = () => {
     const { t } = useTranslation()
     const { mainStore } = useContext(Context)
-    const { setChildrenComponent } = useContext(SideBarContext)
+    const { setRightChildren } = useContext(SideBarContext)
     const { selectedHostId, selectedTags } = mainStore
     const [searchQuery, setSearchQuery] = useState<string>()
     const [filteredCameras, setFilteredCameras] = useState<GetCameraWHostWConfig[]>()
@@ -35,8 +35,8 @@ const MainPage = () => {
     })
 
     useEffect(() => {
-        setChildrenComponent(<MainFiltersRightSide />);
-        return () => setChildrenComponent(null);
+        setRightChildren(<MainFiltersRightSide />);
+        return () => setRightChildren(null);
     }, []);
 
     useEffect(() => {

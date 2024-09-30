@@ -15,7 +15,7 @@ import { EventFrigate } from "../../types/event";
 import { getResolvedTimeZone } from "../../shared/utils/dateUtil";
 import { FrigateStats, GetFfprobe, GetHostStorage, GetVaInfo } from "../../types/frigateStats";
 import { PostSaveConfig, SaveOption } from "../../types/saveConfig";
-import keycloak from "../keycloak-config";
+import keycloakInstance from "../keycloak-config";
 import { PutMask } from "../../types/mask";
 import { GetUserTag, PutUserTag } from "../../types/tags";
 
@@ -26,7 +26,7 @@ const instanceApi = axios.create({
 
 instanceApi.interceptors.request.use(
     config => {
-        const accessToken = keycloak.token;
+        const accessToken = keycloakInstance.token;
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`
         }
@@ -44,6 +44,7 @@ export const frigateApi = {
     putOIDPConfigTest: (config: OIDPConfig) => instanceApi.put('apiv1/config/oidp/test', config).then(res => res.data),
     getHosts: () => instanceApi.get<GetFrigateHost[]>('apiv1/frigate-hosts').then(res => res.data),
     getHost: (id: string) => instanceApi.get<GetFrigateHost>(`apiv1/frigate-hosts/${id}`).then(res => res.data),
+    getCameraById: (cameraId: string) => instanceApi.get<GetCameraWHostWConfig>(`apiv1/cameras/${cameraId}`).then(res => res.data),
     getCamerasByHostId: (hostId: string) => instanceApi.get<GetCameraWHostWConfig[]>(`apiv1/cameras/host/${hostId}`).then(res => res.data),
     getCamerasWHost: () => instanceApi.get<GetCameraWHostWConfig[]>(`apiv1/cameras`).then(res => res.data),
     getCameraWHost: (id: string) => instanceApi.get<GetCameraWHostWConfig>(`apiv1/cameras/${id}`).then(res => res.data),
@@ -227,6 +228,7 @@ export const frigateQueryKeys = {
     getFrigateHost: 'frigate-host',
     getCamerasWHost: 'cameras-frigate-host',
     getCameraWHost: 'camera-frigate-host',
+    getCameraById: 'camera-by-Id',
     getCameraByHostId: 'camera-by-hostId',
     getHostConfig: 'host-config',
     postHostConfig: 'host-config-save',

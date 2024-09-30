@@ -11,6 +11,11 @@ const ru = {
         width: 'Ширина',
         height: 'Высота',
         points: 'Точки',
+    },    
+    eventsPage: {
+        selectStartTime: 'Выбери время начала:',
+        selectEndTime: 'Выбери время окончания:',
+        maxEventsFetches: 'Ошибка: Невозможно получить события после {{maxRetries}} попыток. Пожалуйста попробуйте позже или установите меньший период.',
     },
     frigateConfigPage: {
         copyConfig: 'Копировать Конфиг.',
@@ -72,6 +77,7 @@ const ru = {
         home: 'Главная',
         settings: 'Настройки',
         recordings: 'Записи',
+        events: 'События',
         hostsConfig: 'Серверы Frigate',
         acessSettings: 'Настройка доступа',
     },
@@ -114,6 +120,7 @@ const ru = {
     second: 'Час',
     events: 'События',
     notHaveEvents: 'Событий нет',
+    notHaveEventsAtThatPeriod: 'Нет событий за этот период',
     selectHost: 'Выбери хост',
     selectCamera: 'Выбери камеру',
     selectRange: 'Выбери период',

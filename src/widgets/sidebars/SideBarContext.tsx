@@ -2,19 +2,19 @@ import React, { createContext, ReactNode, useState } from 'react';
 
 interface SideBarContextProps {
     childrenComponent: ReactNode;
-    setChildrenComponent: (component: ReactNode) => void;
+    setRightChildren: (component: ReactNode) => void;
 }
 
 export const SideBarContext = createContext<SideBarContextProps>({
     childrenComponent: null,
-    setChildrenComponent: () => {},
+    setRightChildren: () => {},
 });
 
 export const  SideBarProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [childrenComponent, setChildrenComponent] = useState<ReactNode>(null);
+    const [rightChildren, setRightChildren] = useState<ReactNode>(null);
 
     return (
-        <SideBarContext.Provider value={{ childrenComponent, setChildrenComponent }}>
+        <SideBarContext.Provider value={{ childrenComponent: rightChildren, setRightChildren }}>
             {children}
         </SideBarContext.Provider>
     );

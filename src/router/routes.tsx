@@ -14,6 +14,7 @@ import RecordingsPage from "../pages/RecordingsPage";
 import AccessSettings from "../pages/AccessSettingsPage";
 import PlayRecordPage from "../pages/PlayRecordPage";
 import EditCameraPage from "../pages/EditCameraPage";
+import EventsPage from "../pages/EventsPage";
 
 interface IRoute {
     path: string,
@@ -32,6 +33,10 @@ export const routes: IRoute[] = [
     {
         path: routesPath.RECORDINGS_PATH,
         component: <RecordingsPage />,
+    },
+    {
+        path: routesPath.EVENTS_PATH,
+        component: <EventsPage />,
     },
     {
         path: routesPath.HOST_CONFIG_PATH,
