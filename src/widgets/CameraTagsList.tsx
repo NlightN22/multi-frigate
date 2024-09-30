@@ -18,11 +18,13 @@ const CameraTagsList: React.FC<CameraTagsListProps> = ({
     camera
 }) => {
 
+    const queryClient = useQueryClient()
+
     const [tagsList, setTagsList] = useState<CameraTag[]>(camera.tags)
 
-    useEffect(()=>{
+    useEffect(() => {
         setTagsList(camera.tags)
-    },[camera])
+    }, [camera])
 
 
     const { mutate: addTagToCamera } = useMutation({
@@ -35,6 +37,7 @@ const CameraTagsList: React.FC<CameraTagsListProps> = ({
             }),
         onSuccess: (data) => {
             setTagsList(data.tags)
+            queryClient.invalidateQueries({ queryKey: [frigateQueryKeys.getCamerasWHost] })
         },
         onError: (e) => {
             if (e && e.message) {
@@ -51,7 +54,6 @@ const CameraTagsList: React.FC<CameraTagsListProps> = ({
         }
     })
 
-
     const { mutate: deleteTagFromCamera } = useMutation({
         mutationFn: (tagId: string) => frigateApi.deleteTagFromCamera(camera.id, tagId)
             .catch(error => {
@@ -60,7 +62,11 @@ const CameraTagsList: React.FC<CameraTagsListProps> = ({
                 }
                 return Promise.reject(error)
             }),
-        onSuccess: (data) => setTagsList(data.tags),
+        onSuccess: (data) => {
+            setTagsList(data.tags)
+            queryClient.invalidateQueries({ queryKey: [frigateQueryKeys.getCamerasWHost] })
+        }
+        ,
         onError: (e) => {
             if (e && e.message) {
                 notifications.show({
@@ -95,7 +101,7 @@ const CameraTagsList: React.FC<CameraTagsListProps> = ({
                         onClose={handleDeleteTagClick}
                     />
                 ))
-                : <></>
+                    : <></>
             }
             <AddBadge
                 onClick={handleAddTagClick}

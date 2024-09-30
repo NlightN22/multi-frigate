@@ -15,14 +15,16 @@ import { SideBarContext } from '../widgets/sidebars/SideBarContext';
 import RetryErrorPage from './RetryErrorPage';
 import { IconSearch } from '@tabler/icons-react';
 import ClearableTextInput from '../shared/components/inputs/ClearableTextInput';
+import { CameraTag } from '../types/tags';
 
 const MainPage = () => {
     const { t } = useTranslation()
     const { mainStore } = useContext(Context)
     const { setChildrenComponent } = useContext(SideBarContext)
-    const { selectedHostId } = mainStore
+    const { selectedHostId, selectedTags } = mainStore
     const [searchQuery, setSearchQuery] = useState<string>()
     const [filteredCameras, setFilteredCameras] = useState<GetCameraWHostWConfig[]>()
+    const [filteredTags, setFilteredTags] = useState<CameraTag[]>()
 
     const realmUser = useRealmUser()
     if (!isProduction) console.log('Realmuser:', realmUser)
@@ -46,11 +48,12 @@ const MainPage = () => {
         const filterCameras = (camera: GetCameraWHostWConfig) => {
             const matchesHostId = selectedHostId ? camera.frigateHost?.id === selectedHostId : true
             const matchesSearchQuery = searchQuery ? camera.name.toLowerCase().includes(searchQuery.toLowerCase()) : true
-            return matchesHostId && matchesSearchQuery
+            const matchesTags = selectedTags.length === 0 || camera.tags.some( tag => selectedTags.includes(tag.id))
+            return matchesHostId && matchesSearchQuery && matchesTags
         }
 
         setFilteredCameras(cameras.filter(filterCameras))
-    }, [searchQuery, cameras, selectedHostId])
+    }, [searchQuery, cameras, selectedHostId, selectedTags])
 
 
     const cards = useMemo(() => {
@@ -100,8 +103,7 @@ const MainPage = () => {
             </Flex>
             <Flex justify='center' h='100%' direction='column' w='100%' >
                 <Grid mt='sm' justify="center" mb='sm' align='stretch'>
-                    {/* TODO DELETE SLICE TO WORK */}
-                    {cards.slice(0, 5)}
+                    {cards}
                 </Grid>
             </Flex>
         </Flex>

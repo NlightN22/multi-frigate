@@ -16,9 +16,14 @@ const MainFiltersRightSide = () => {
     const { mainStore } = useContext(Context)
     const { selectedHostId } = mainStore
 
-    const handleSelect = (value: string) => {
-        if (!isProduction) console.log('handleSelect value', value)
+    const handleSelectHost = (value: string) => {
+        if (!isProduction) console.log('handleSelectHost value', value)
         mainStore.selectedHostId = value
+    }
+
+    const handleSelectTags = (tags: string[]) => {
+        if (!isProduction) console.log('handleSelectTags value', tags)
+            mainStore.selectedTags = tags
     }
 
     return (
@@ -27,10 +32,12 @@ const MainFiltersRightSide = () => {
                 label={t('selectHost')}
                 valueId={selectedHostId}
                 defaultId={selectedHostId}
-                onChange={handleSelect}
+                onChange={handleSelectHost}
             />
 
-            <UserTagsFilter />
+            <UserTagsFilter 
+                onChange={handleSelectTags}
+            />
 
         </>
     );

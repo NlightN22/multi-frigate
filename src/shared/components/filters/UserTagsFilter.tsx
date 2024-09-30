@@ -1,6 +1,6 @@
 import { SelectItem } from '@mantine/core';
 import { t } from 'i18next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import CreatableMultiSelect from './CreatableMultiSelect';
 import { useTranslation } from 'react-i18next';
@@ -13,12 +13,22 @@ import { notifications } from '@mantine/notifications';
 import { IconAlertCircle } from '@tabler/icons-react';
 
 
+interface UserTagsFilterProps {
+    onChange?(tagIds: string[]): void
+}
 
-const UserTagsFilter = () => {
+
+const UserTagsFilter: React.FC<UserTagsFilterProps> = ({
+    onChange
+}) => {
     const { t } = useTranslation()
     const queryClient = useQueryClient()
 
     const [selectedList, setSelectedList] = useState<string[]>([])
+
+    useEffect(() => { 
+        if (onChange) onChange(selectedList)
+    }, [selectedList])
 
     const { data, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getUserTags],
