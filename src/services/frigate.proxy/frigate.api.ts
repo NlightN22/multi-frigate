@@ -5,7 +5,9 @@ import {
     GetCameraWHostWConfig, GetRole,
     GetRoleWCameras, GetExportedFile, recordingSchema,
     oidpConfig,
-    OIDPConfig
+    OIDPConfig,
+    GetCameraWHost,
+    GetCamera
 } from "./frigate.schema";
 import { FrigateConfig } from "../../types/frigateConfig";
 import { RecordSummary } from "../../types/record";
@@ -40,21 +42,13 @@ export const frigateApi = {
     putConfigs: (config: PutConfig[]) => instanceApi.put('apiv1/config', config).then(res => res.data),
     putOIDPConfig: (config: OIDPConfig) => instanceApi.put('apiv1/config/oidp', config).then(res => res.data),
     putOIDPConfigTest: (config: OIDPConfig) => instanceApi.put('apiv1/config/oidp/test', config).then(res => res.data),
-    getHosts: () => instanceApi.get<GetFrigateHost[]>('apiv1/frigate-hosts').then(res => {
-        return res.data
-    }),
-    getHost: (id: string) => instanceApi.get<GetFrigateHost>(`apiv1/frigate-hosts/${id}`).then(res => {
-        return res.data
-    }),
+    getHosts: () => instanceApi.get<GetFrigateHost[]>('apiv1/frigate-hosts').then(res => res.data),
+    getHost: (id: string) => instanceApi.get<GetFrigateHost>(`apiv1/frigate-hosts/${id}`).then(res => res.data),
     getCamerasByHostId: (hostId: string) => instanceApi.get<GetCameraWHostWConfig[]>(`apiv1/cameras/host/${hostId}`).then(res => res.data),
     getCamerasWHost: () => instanceApi.get<GetCameraWHostWConfig[]>(`apiv1/cameras`).then(res => res.data),
-    getCameraWHost: (id: string) => instanceApi.get<GetCameraWHostWConfig>(`apiv1/cameras/${id}`).then(res => { return res.data }),
-    putHosts: (hosts: PutFrigateHost[]) => instanceApi.put<GetFrigateHost[]>('apiv1/frigate-hosts', hosts).then(res => {
-        return res.data
-    }),
-    deleteHosts: (hosts: DeleteFrigateHost[]) => instanceApi.delete<GetFrigateHost[]>('apiv1/frigate-hosts', { data: hosts }).then(res => {
-        return res.data
-    }),
+    getCameraWHost: (id: string) => instanceApi.get<GetCameraWHostWConfig>(`apiv1/cameras/${id}`).then(res => res.data),
+    putHosts: (hosts: PutFrigateHost[]) => instanceApi.put<GetFrigateHost[]>('apiv1/frigate-hosts', hosts).then(res => res.data),
+    deleteHosts: (hosts: DeleteFrigateHost[]) => instanceApi.delete<GetFrigateHost[]>('apiv1/frigate-hosts', { data: hosts }).then(res => res.data),
     getRoles: () => instanceApi.get<GetRole[]>('apiv1/roles').then(res => res.data),
     putRoles: () => instanceApi.put<GetRole[]>('apiv1/roles').then(res => res.data),
     putRoleWCameras: (roleId: string, cameraIDs: string[]) => instanceApi.put<GetRoleWCameras>(`apiv1/roles/${roleId}/cameras`,
@@ -64,7 +58,9 @@ export const frigateApi = {
     getAdminRole: () => instanceApi.get<GetConfig>('apiv1/config/admin').then(res => res.data),
     getUserTags: () => instanceApi.get<GetUserTag[]>('apiv1/tags').then(res => res.data),
     putUserTag: (tag: PutUserTag) => instanceApi.put<GetUserTag>('apiv1/tags', tag).then(res => res.data),
-    delUserTag: (tagId: string) => instanceApi.delete<GetUserTag>(`apiv1/tags/${tagId}`).then(res => res.data)
+    delUserTag: (tagId: string) => instanceApi.delete<GetUserTag>(`apiv1/tags/${tagId}`).then(res => res.data),
+    putTagToCamera: (cameraId: string, tagId: string) => instanceApi.put<GetCamera>(`apiv1/cameras/${cameraId}/tag/${tagId}`).then(res => res.data),
+    deleteTagFromCamera: (cameraId: string, tagId: string) => instanceApi.delete<GetCamera>(`apiv1/cameras/${cameraId}/tag/${tagId}`).then(res => res.data),
 }
 
 export const proxyPrefix = `${proxyURL.protocol}//${proxyURL.host}/proxy/`

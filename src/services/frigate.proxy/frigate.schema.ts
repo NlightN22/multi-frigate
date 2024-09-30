@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { CameraConfig, FrigateConfig } from "../../types/frigateConfig";
+import { cameraTag } from "../../types/tags";
 
 export const putConfigSchema = z.object({
     key: z.string(),
@@ -48,6 +49,7 @@ const getCameraSchema = z.object({
     name: z.string(),
     url: z.string(),
     state: z.boolean().nullable(),
+    tags: cameraTag.array()
 });
 
 export const getRoleSchema = z.object({
@@ -127,6 +129,7 @@ export type OIDPConfig = z.infer<typeof oidpConfig>
 export type GetFrigateHost = z.infer<typeof getFrigateHostSchema>
 // export type GetFrigateHostWithCameras = z.infer<typeof getFrigateHostWithCamerasSchema>
 export type GetFrigateHostWConfig = GetFrigateHost & { config: FrigateConfig }
+export type GetCamera = z.infer<typeof getCameraSchema>
 export type GetCameraWHost = z.infer<typeof getCameraWithHostSchema>
 export type GetCameraWHostWConfig = GetCameraWHost & { config?: CameraConfig }
 export type PutFrigateHost = z.infer<typeof putFrigateHostSchema>

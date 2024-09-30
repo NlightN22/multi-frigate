@@ -3,7 +3,6 @@ import { z } from "zod";
 
 export const putUserTag = z.object({
     value: z.string(),
-    cameraIds: z.string().array()
 })
 
 export const getUserTag = z.object({
@@ -12,9 +11,14 @@ export const getUserTag = z.object({
     updatedAt: z.string().datetime(),
     value: z.string(),
     userId: z.string(),
-    cameraIds: z.string().array(),
 })
 
+export const cameraTag = z.object({
+    id: z.string(),
+    value: z.string(),
+})
+
+export type CameraTag = z.infer<typeof cameraTag>
 export type GetUserTag = z.infer<typeof getUserTag>
 export type PutUserTag = z.infer<typeof putUserTag>
 
@@ -24,3 +28,4 @@ export const mapUserTagsToSelectItems = (tags: GetUserTag[]): SelectItem[] => {
         label: tag.value
     }))
 }
+

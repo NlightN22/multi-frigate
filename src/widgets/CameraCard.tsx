@@ -1,14 +1,15 @@
 import { Button, Card, Flex, Grid, Group, Text, createStyles } from '@mantine/core';
 import { useIntersection } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useAdminRole } from '../hooks/useAdminRole';
 import { recordingsPageQuery } from '../pages/RecordingsPage';
 import { routesPath } from '../router/routes.path';
 import { mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
 import AutoUpdatedImage from '../shared/components/images/AutoUpdatedImage';
-import { useTranslation } from 'react-i18next';
-import { useAdminRole } from '../hooks/useAdminRole';
+import CameraTagsList from './CameraTagsList';
 
 const useStyles = createStyles((theme) => ({
     mainCard: {
@@ -55,7 +56,7 @@ const CameraCard = ({
     useEffect(() => {
         if (entry?.isIntersecting)
             setRenderImage(true)
-     }, [entry?.isIntersecting])
+    }, [entry?.isIntersecting])
 
     const handleOpenLiveView = () => {
         const url = routesPath.LIVE_PATH.replace(':id', camera.id)
@@ -73,6 +74,8 @@ const CameraCard = ({
         }
     }
 
+
+
     return (
         <Grid.Col md={6} lg={3} p='0.2rem'>
             <Card ref={ref} h='100%' radius="lg" padding='0.5rem' className={classes.mainCard}>
@@ -87,6 +90,7 @@ const CameraCard = ({
                         {!isAdmin ? null : <Button size='sm' onClick={handleOpenEditCamera}>{t('edit')}</Button>}
                     </Flex>
                 </Group>
+                <CameraTagsList camera={camera} />
             </Card>
         </Grid.Col >
     );

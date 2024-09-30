@@ -132,8 +132,6 @@ const EditCameraPage = () => {
 
     const handleSave = () => {
         if (!selectedMask || !points) return
-        console.log('type', selectedMask?.type)
-        console.log('save', points)
         mutate()
     }
 

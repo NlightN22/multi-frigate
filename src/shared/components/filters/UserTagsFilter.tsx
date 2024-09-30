@@ -43,7 +43,7 @@ const UserTagsFilter = () => {
         return true
     }
 
-    const { mutate } = useMutation({
+    const { mutate: addTag } = useMutation({
         mutationFn: (newTag: PutUserTag) => frigateApi.putUserTag(newTag)
             .catch(error => {
                 if (error.response && error.response.data) {
@@ -52,8 +52,8 @@ const UserTagsFilter = () => {
                 return Promise.reject(error)
             }),
         onSuccess: (data) => {
-            setSelectedList([...selectedList, data.id])
             queryClient.invalidateQueries({ queryKey: [frigateQueryKeys.getUserTags] })
+            queryClient.invalidateQueries({ queryKey: [frigateQueryKeys.getCamerasWHost] })
         },
         onError: (e) => {
             if (e && e.message) {
@@ -67,7 +67,6 @@ const UserTagsFilter = () => {
                     icon: <IconAlertCircle />,
                 })
             }
-            queryClient.invalidateQueries({ queryKey: [frigateQueryKeys.getFrigateHosts] })
         }
     })
 
@@ -81,6 +80,7 @@ const UserTagsFilter = () => {
             }),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: [frigateQueryKeys.getUserTags] })
+            queryClient.invalidateQueries({ queryKey: [frigateQueryKeys.getCamerasWHost] })
             const updatedList = selectedList.filter(item => data.id === item)
             setSelectedList(updatedList)
         },
@@ -103,9 +103,8 @@ const UserTagsFilter = () => {
     const saveNewTag = (value: string) => {
         const newTag: PutUserTag = {
             value,
-            cameraIds: []
         }
-        mutate(newTag)
+        addTag(newTag)
     }
 
     const onCreate = (query: string | SelectItem | null | undefined) => {
@@ -128,7 +127,6 @@ const UserTagsFilter = () => {
     if (isError) return <RetryError onRetry={refetch} />
 
     const handleOnChange = (value: string[]) => {
-        console.log('cahnged:', value)
         const updatedList = selectedList.filter(item => value.includes(item))
         const newItems = value.filter(item => !selectedList.includes(item))
         setSelectedList([...updatedList, ...newItems])
