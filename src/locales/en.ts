@@ -17,6 +17,7 @@ const en = {
     eventsPage: {
         selectStartTime: 'Select start time:',
         selectEndTime: 'Select end time:',
+        startTimeBiggerThanEnd: 'Start time bigger than end time',
     },
     frigateConfigPage: {
         copyConfig: 'Copy Config',

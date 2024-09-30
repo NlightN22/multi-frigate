@@ -15,6 +15,7 @@ interface EventsBodyProps {
     endTime?: string,
 }
 
+
 const EventsBody: FC<EventsBodyProps> = ({
     hostId,
     cameraId,

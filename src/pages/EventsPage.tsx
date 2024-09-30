@@ -1,12 +1,14 @@
 import { Flex, Text } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { t } from 'i18next';
 import { observer } from 'mobx-react-lite';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Context } from '..';
+import { isStartBiggerThanEndTime } from '../shared/utils/dateUtil';
 import EventsBody from '../widgets/EventsBody';
 import EventsRightFilters from '../widgets/sidebars/EventsRightFilters';
 import { SideBarContext } from '../widgets/sidebars/SideBarContext';
-import { isProduction } from '../shared/env.const';
+import { IconAlertCircle } from '@tabler/icons-react';
 
 export const eventsPageQuery = {
     hostId: 'hostId',
@@ -16,7 +18,14 @@ export const eventsPageQuery = {
     hour: 'hour',
 }
 
+interface TimePeriod  {
+    startTime: string,
+    endTime: string,
+}
+
 const EventsPage = () => {
+
+    const [timePeriod, setTimePeriod] = useState<TimePeriod>()
 
     const { setRightChildren } = useContext(SideBarContext)
 
@@ -25,8 +34,34 @@ const EventsPage = () => {
         return () => setRightChildren(null)
     }, [])
 
+
+
     const { eventsStore } = useContext(Context)
     const { hostId, cameraId, period, startTime, endTime } = eventsStore.filters
+
+    useEffect(() => {
+        const startTime = eventsStore.filters.startTime
+        const endTime = eventsStore.filters.endTime
+        if (startTime && endTime) {
+            if (isStartBiggerThanEndTime(startTime, endTime)) {
+                const message = t('eventsPage.startTimeBiggerThanEnd')
+                notifications.show({
+                    id: message,
+                    withCloseButton: true,
+                    autoClose: 5000,
+                    title: t('error'),
+                    message: message,
+                    color: 'red',
+                    icon: <IconAlertCircle />,
+                })
+                return
+            }
+            setTimePeriod({
+                startTime,
+                endTime
+            })
+        }
+    }, [eventsStore.filters.startTime, eventsStore.filters.endTime])
 
     if (hostId && cameraId && period && period[0] && period[1]) {
         return (
@@ -34,8 +69,8 @@ const EventsPage = () => {
                 hostId={hostId}
                 cameraId={cameraId}
                 period={[period[0], period[1]]}
-                startTime={startTime}
-                endTime={endTime}
+                startTime={timePeriod?.startTime}
+                endTime={timePeriod?.endTime}
             />
         )
     }

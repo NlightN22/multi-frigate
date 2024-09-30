@@ -168,6 +168,18 @@ export const dayTimeToUnixTime = (day: Date, time: string) => {
   return Math.floor(day.getTime() / 1000)
 }
 
+export const isStartBiggerThanEndTime = (startTime: string, endTime: string) => {
+  const [hours1, minutes1] = startTime.split(':').map(Number)
+  const [hours2, minutes2] = endTime.split(':').map(Number)
+
+  const date1 = new Date();
+  const date2 = new Date();
+
+  date1.setHours(hours1, minutes1, 0, 0)
+  date2.setHours(hours2, minutes2, 0, 0)
+  return date1 > date2
+}
+
 /**
  * This function takes in a Unix timestamp, configuration options for date/time display, and an optional strftime format string,
  * and returns a formatted date/time string.

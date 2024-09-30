@@ -63,7 +63,7 @@ const FrigateHostsPage = () => {
                     id: e.message,
                     withCloseButton: true,
                     autoClose: 5000,
-                    title: "Error",
+                    title: t('error'),
                     message: e.message,
                     color: 'red',
                     icon: <IconAlertCircle />,

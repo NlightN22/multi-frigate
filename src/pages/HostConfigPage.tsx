@@ -85,7 +85,7 @@ const HostConfigPage = () => {
         id: e.message,
         withCloseButton: true,
         autoClose: false,
-        title: "Error",
+        title: t('error'),
         message: e.message,
         color: 'red',
         icon: <IconAlertCircle />,

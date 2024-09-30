@@ -8,6 +8,7 @@ import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema'
 import AddBadge from '../shared/components/AddBadge';
 import TagBadge from '../shared/components/TagBadge';
 import { CameraTag } from '../types/tags';
+import { useTranslation } from 'react-i18next';
 
 
 interface CameraTagsListProps {
@@ -18,6 +19,7 @@ const CameraTagsList: React.FC<CameraTagsListProps> = ({
     camera
 }) => {
 
+    const { t } = useTranslation()
     const queryClient = useQueryClient()
 
     const [tagsList, setTagsList] = useState<CameraTag[]>(camera.tags)
@@ -45,7 +47,7 @@ const CameraTagsList: React.FC<CameraTagsListProps> = ({
                     id: e.message,
                     withCloseButton: true,
                     autoClose: 5000,
-                    title: "Error",
+                    title: t('error'),
                     message: e.message,
                     color: 'red',
                     icon: <IconAlertCircle />,
@@ -73,7 +75,7 @@ const CameraTagsList: React.FC<CameraTagsListProps> = ({
                     id: e.message,
                     withCloseButton: true,
                     autoClose: 5000,
-                    title: "Error",
+                    title: t('error'),
                     message: e.message,
                     color: 'red',
                     icon: <IconAlertCircle />,
