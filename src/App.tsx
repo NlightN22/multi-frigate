@@ -67,7 +67,6 @@ function App() {
                 ActionIcon: {
                   styles: (theme) => ({
                     root: {
-                      // backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[4],
                       '&:hover': {
                         backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[2],
                       },

@@ -36,7 +36,6 @@ const AppBody = () => {
 
     const theme = useMantineTheme();
 
-
     if (!isProduction) console.log("render Main")
     return (
         <AppShell
