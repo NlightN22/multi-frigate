@@ -123,13 +123,11 @@ const UserTagsFilter: React.FC<UserTagsFilterProps> = ({
         if (typeof query === 'string') {
             if (!validateNewTag(query)) return undefined
             saveNewTag(query)
-            // return query
         }
         else if (parseQuery.success) {
             const parsedQuery = parseQuery.data as SelectItem
             if (!validateNewTag(parsedQuery.value)) return undefined
             saveNewTag(parsedQuery.value)
-            // return parsedQuery
         }
     }
 

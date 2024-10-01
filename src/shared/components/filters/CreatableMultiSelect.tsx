@@ -1,4 +1,4 @@
-import { Box, Flex, Group, MultiSelect, MultiSelectProps, SelectItem, SpacingValue, SystemProp, Text } from '@mantine/core';
+import { ActionIcon, Box, Flex, Group, MultiSelect, MultiSelectProps, SelectItem, SpacingValue, SystemProp, Text } from '@mantine/core';
 import React, { CSSProperties, forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import CloseWithTooltip from '../buttons/CloseWithTooltip';
@@ -28,20 +28,24 @@ interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
 }
 
 const DeletableItem = forwardRef<HTMLDivElement, ItemProps>(
-    ({ label, value, onTrashClick, ...others }, ref) => (
-        <div {...others} ref={ref}>
-            <Flex justify='space-between'>
-                <Text>{label}</Text>
-                <IconTrash
-                    onMouseDown={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (onTrashClick) onTrashClick(value);
-                    }}
-                />
-            </Flex>
-        </div>
-    )
+    ({ label, value, onTrashClick, ...others }, ref) => {
+        const handleTrashClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (onTrashClick) onTrashClick(value);
+        }
+        return (
+            <div {...others} ref={ref}>
+                <Flex justify='space-between'>
+                    <Text>{label}</Text>
+                    <ActionIcon onMouseDown={handleTrashClick}>
+                        <IconTrash color='#dc4e41'/>
+                    </ActionIcon>
+                </Flex>
+            </div>
+        )
+
+    }
 );
 
 const CreatableMultiSelect: React.FC<CreatableMultiSelectProps> = ({
