@@ -1,5 +1,5 @@
-import { Card, Flex, Group, Text } from '@mantine/core';
-import { IconZoomCheck, IconZoomQuestion } from '@tabler/icons-react';
+import { Card, Flex, Text } from '@mantine/core';
+import { IconZoomQuestion } from '@tabler/icons-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

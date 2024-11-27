@@ -1,4 +1,4 @@
-import { Card, Flex, Group, Text } from '@mantine/core';
+import { Card, Flex, Text } from '@mantine/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
