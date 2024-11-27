@@ -120,12 +120,12 @@ const HostSystemPage = () => {
                 />
             </Grid.Col>
         ))
-    };
+    }
 
     const detectorsStats = () => {
         if (!data?.detectors) return null
 
-        Object.entries(data.detectors).map(([name, stats]) => {
+        return Object.entries(data.detectors).map(([name, stats]) => {
             const pid = stats.pid
             const cpu = data.cpu_usages ? data.cpu_usages[pid]?.cpu : '0'
             const mem = data.cpu_usages ? data.cpu_usages[pid]?.mem : '0'
