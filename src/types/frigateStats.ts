@@ -35,17 +35,17 @@ export interface Stream {
 export interface FrigateStats {
   cameras: {
     [cameraName: string]: CameraStat
-  }
+  } | undefined
   cpu_usages: {
     [processId: string]: ProcessStat
-  }
+  } | undefined
   detection_fps: number
   detectors: {
     [detectorName: string]: DetectorStat
-  }
+  } | undefined
   gpu_usages: {
     [gpuName: string]: GpuStat
-  }
+  } | undefined
   processes: Processes
   service: Service
 }

@@ -50,15 +50,15 @@ const HostSystemPage = () => {
     })
 
     const mapCameraData = useCallback(() => {
-        if (!data) return []
+        if (!data || !data.cameras) return []
         return Object.entries(data.cameras).flatMap(([name, stats]) => {
             return (['Ffmpeg', 'Capture', 'Detect'] as ProcessType[]).map(type => {
                 const pid = type === ProcessType.Ffmpeg ? stats.ffmpeg_pid :
                     type === ProcessType.Capture ? stats.capture_pid : stats.pid;
                 const fps = type === ProcessType.Ffmpeg ? stats.camera_fps :
                     type === ProcessType.Capture ? stats.process_fps : stats.detection_fps;
-                const cpu = data.cpu_usages[pid]?.cpu;
-                const mem = data.cpu_usages[pid]?.mem;
+                const cpu = data.cpu_usages ? data.cpu_usages[pid]?.cpu : '0'
+                const mem = data.cpu_usages ? data.cpu_usages[pid]?.mem : '0'
 
                 return {
                     cameraName: name,
@@ -105,37 +105,43 @@ const HostSystemPage = () => {
         }
     })
 
-    const gpuStats = Object.entries(data.gpu_usages).map(([name, stats]) => {
-        return (
-            <Grid.Col key={name + stats.gpu} xs={7} sm={6} md={5} lg={4} p='0.2rem'>
+    const gpuStats = () => {
+        if (!data?.gpu_usages) return null
+
+        return Object.entries(data.gpu_usages).map(([name, stats]) => (
+            <Grid.Col key={`${name}-${stats.gpu}`} xs={7} sm={6} md={5} lg={4} p="0.2rem">
                 <GpuStat
                     name={name}
                     decoder={stats.dec}
                     encoder={stats.enc}
                     gpu={stats.gpu}
                     mem={stats.mem}
-                    onVaInfoClick={() => handleVaInfoClick()}
+                    onVaInfoClick={handleVaInfoClick}
                 />
             </Grid.Col>
-        )
-    })
+        ))
+    };
 
-    const detectorsStats = Object.entries(data.detectors).map(([name, stats]) => {
-        const pid = stats.pid
-        const cpu = data.cpu_usages[pid]?.cpu;
-        const mem = data.cpu_usages[pid]?.mem;
-        return (
-            <Grid.Col key={pid} xs={6} sm={5} md={4} lg={3} p='0.2rem'>
-                <DetectorsStat
-                    name={name}
-                    pid={pid}
-                    inferenceSpeed={stats.inference_speed}
-                    cpu={cpu}
-                    mem={mem}
-                />
-            </Grid.Col>
-        )
-    })
+    const detectorsStats = () => {
+        if (!data?.detectors) return null
+
+        Object.entries(data.detectors).map(([name, stats]) => {
+            const pid = stats.pid
+            const cpu = data.cpu_usages ? data.cpu_usages[pid]?.cpu : '0'
+            const mem = data.cpu_usages ? data.cpu_usages[pid]?.mem : '0'
+            return (
+                <Grid.Col key={pid} xs={6} sm={5} md={4} lg={3} p='0.2rem'>
+                    <DetectorsStat
+                        name={name}
+                        pid={pid}
+                        inferenceSpeed={stats.inference_speed}
+                        cpu={cpu}
+                        mem={mem}
+                    />
+                </Grid.Col>
+            )
+        })
+    }
 
     const handleFfprobeClick = (cameraName: string) => openContextModal({
         modal: 'ffprobeModal',
@@ -164,8 +170,8 @@ const HostSystemPage = () => {
                 {storageStats}
             </Grid>
             <Grid mt='sm' justify="center" mb='sm' align='stretch'>
-                {gpuStats}
-                {detectorsStats}
+                {gpuStats()}
+                {detectorsStats()}
             </Grid>
             <SegmentedControl
                 value={selector}
