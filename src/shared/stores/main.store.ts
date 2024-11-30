@@ -34,19 +34,25 @@ export class MainStore {
     }
 
     setHostId(hostId: string, navigate: (path: string, options?: NavigateOptions) => void) {
-        this.filters.hostId = hostId;
-        this.updateURL(navigate)
+        if (hostId !== this.filters.hostId) {
+            this.filters.hostId = hostId;
+            this.updateURL(navigate)
+        }
     }
 
     setSearchQuery(searchQuery: string, navigate: (path: string, options?: NavigateOptions) => void) {
-        this.filters.searchQuery = searchQuery;
-        this.updateURL(navigate)
+        if (searchQuery !== this.filters.searchQuery) {
+            this.filters.searchQuery = searchQuery;
+            this.updateURL(navigate)
+        }
     }
 
     setSelectedTags(selectedTags: string[], navigate: (path: string, options?: NavigateOptions) => void) {
-        if (!isProduction) console.log('MainPage set filters.selectedTags ', selectedTags)
-        this.filters.selectedTags = selectedTags ? selectedTags : []
-        this.updateURL(navigate)
+        if (selectedTags !== this.filters.selectedTags) {
+            if (!isProduction) console.log('MainPage set filters.selectedTags ', selectedTags)
+            this.filters.selectedTags = selectedTags ? selectedTags : []
+            this.updateURL(navigate)
+        }
     }
 
     getArrayParam = (key: string): string[] => {

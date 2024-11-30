@@ -115,7 +115,7 @@ const MainPage = () => {
                 justify='center'
             >
                 <ClearableTextInput
-                    clerable
+                    clearable
                     maw={400}
                     style={{ flexGrow: 1 }}
                     placeholder={t('search')}

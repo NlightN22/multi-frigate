@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { CameraConfig } from "../../../types/frigateConfig";
-import { Flex, Text, Image } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
-import { frigateApi, proxyApi } from "../../../services/frigate.proxy/frigate.api";
+import { Flex, Image, Text } from "@mantine/core";
 import { useIntersection } from "@mantine/hooks";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { proxyApi } from "../../../services/frigate.proxy/frigate.api";
+import { CameraConfig } from "../../../types/frigateConfig";
+import { isProduction } from "../../env.const";
 import CogwheelLoader from "../loaders/CogwheelLoader";
-import RetryError from "../RetryError";
 
 interface AutoUpdatedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   className?: string;
@@ -26,10 +26,13 @@ const AutoUpdatedImage = ({
 
   const { data: imageBlob, refetch, isPending, isError } = useQuery({
     queryKey: [imageUrl],
-    queryFn: () => proxyApi.getImageFrigate(imageUrl, 522),
+    queryFn: () => {
+      if (enabled) return proxyApi.getImageFrigate(imageUrl, 522)
+      return null
+    },
     staleTime: 60 * 1000,
     gcTime: 5 * 60 * 1000,
-    refetchInterval: isVisible ? 30 * 1000 : undefined,
+    refetchInterval: isVisible ? 60 * 1000 : undefined,
     retry: 1,
   });
 
@@ -55,14 +58,15 @@ const AutoUpdatedImage = ({
     }
   }, [imageBlob])
 
+  if (!enabled) return <Text align="center">Camera is disabled in config, no stream or snapshot available!</Text>
+
   if (isPending || !imageSrc) return <CogwheelLoader />
+
+  if (!isProduction) console.log('AutoUpdatedImage rendered')
 
   return (
     <Flex direction="column" justify="center" h="100%">
-      {enabled ? <Image ref={ref} src={imageSrc} alt="Dynamic Content" {...rest} withPlaceholder />
-        :
-        <Text align="center">Camera is disabled in config, no stream or snapshot available!</Text>
-      }
+      <Image ref={ref} src={imageSrc} alt="Dynamic Content" {...rest} withPlaceholder />
     </Flex>)
 };
 

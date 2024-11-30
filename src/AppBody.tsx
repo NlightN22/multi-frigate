@@ -1,5 +1,4 @@
 import { AppShell, useMantineTheme, } from "@mantine/core";
-import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from "react-router-dom";
@@ -21,28 +20,27 @@ const AppBody = () => {
         { link: routesPath.ACCESS_PATH, label: t('header.acessSettings'), admin: true },
     ]
 
-
     const location = useLocation()
 
     const pathsWithLeftSidebar: string[] = []
     const pathsWithRightSidebar: string[] = [routesPath.MAIN_PATH, routesPath.RECORDINGS_PATH, routesPath.EVENTS_PATH]
 
-    const [leftSideBar, setLeftSidebar] = useState(pathsWithLeftSidebar.includes(location.pathname))
-    const [rightSideBar, setRightSidebar] = useState(pathsWithRightSidebar.includes(location.pathname))
+    const [isLeftSideBarVisible, setVisibleLeftSidebar] = useState(pathsWithLeftSidebar.includes(location.pathname))
+    const [isRightSideBarVisible, setVisibleRightSidebar] = useState(pathsWithRightSidebar.includes(location.pathname))
 
     const handleRightSidebarChange = (isVisible: boolean) => {
-        setRightSidebar(isVisible);
+        setVisibleRightSidebar(isVisible);
     };
 
     const theme = useMantineTheme();
 
-    if (!isProduction) console.log("render Main")
+    if (!isProduction) console.log("render AppBody")
     return (
         <AppShell
             styles={{
                 main: {
-                    paddingLeft: !leftSideBar ? "1rem" : '',
-                    paddingRight: !rightSideBar ? '1rem' : '',
+                    paddingLeft: !isLeftSideBarVisible ? "1rem" : '',
+                    paddingRight: !isRightSideBarVisible ? '1rem' : '',
                     background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : undefined,
                 },
             }}
@@ -63,4 +61,4 @@ const AppBody = () => {
     )
 };
 
-export default observer(AppBody);
+export default AppBody;

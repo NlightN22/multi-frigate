@@ -1,18 +1,24 @@
 import { CloseButton, TextInput, TextInputProps } from '@mantine/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface ClearableTextInputProps extends TextInputProps {
-    clerable?: boolean
+    clearable?: boolean
 }
 
 
 const ClearableTextInput: React.FC<ClearableTextInputProps> = ({
     value,
     onChange,
-    clerable,
+    clearable,
     ...textInputProps
 }) => {
-    const [text, setText] = useState(value)
+    const [text, setText] = useState(value || '')
+
+    useEffect(() => {
+        if (value !== undefined) {
+          setText(value);
+        }
+      }, [value]);
 
     const handleClear = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         setText('')
@@ -32,7 +38,7 @@ const ClearableTextInput: React.FC<ClearableTextInputProps> = ({
 
     return (
         <TextInput
-            rightSection={clerable ? <CloseButton onClick={handleClear} /> : null}
+            rightSection={clearable ? <CloseButton onClick={handleClear} /> : null}
             value={text}
             onChange={handleChange}
             {...textInputProps}
