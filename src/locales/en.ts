@@ -70,11 +70,12 @@ const en = {
         memory: 'Memory %'
     },
     hostMenu: {
-        editConfig: 'Edit config',
-        restart: 'Restart',
-        system: 'System',
-        storage: 'Storage',
-    }, 
+        editConfig: 'Редакт. конфиг.',
+        restart: 'Перезагрузка',
+        system: 'Система',
+        storage: 'Хранилище',
+    },
+
     header: {
         home: 'Main',
         settings: 'Settings',

@@ -10,6 +10,7 @@ import { mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.a
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
 import AutoUpdatedImage from '../shared/components/images/AutoUpdatedImage';
 import CameraTagsList from './CameraTagsList';
+import { eventsQueryParams } from '../shared/stores/events.store';
 
 const useStyles = createStyles((theme) => ({
     mainCard: {
@@ -66,6 +67,10 @@ const CameraCard = ({
         const url = `${routesPath.RECORDINGS_PATH}?${recordingsPageQuery.hostId}=${camera.frigateHost?.id}&${recordingsPageQuery.cameraId}=${camera.id}`
         navigate(url)
     }
+    const handleOpenEvents = () => {
+        const url = `${routesPath.EVENTS_PATH}?${eventsQueryParams.hostId}=${camera.frigateHost?.id}&${eventsQueryParams.cameraId}=${camera.id}`
+        navigate(url)
+    }
 
     const handleOpenEditCamera = () => {
         if (camera.frigateHost) {
@@ -73,8 +78,6 @@ const CameraCard = ({
             navigate(url)
         }
     }
-
-
 
     return (
         <Grid.Col md={6} lg={3} p='0.2rem'>
@@ -85,8 +88,9 @@ const CameraCard = ({
                 }
                 <Group
                     className={classes.bottomGroup}>
-                    <Flex justify='space-evenly' mt='0.5rem' w='100%'>
+                    <Flex justify='space-evenly' mt='0.5rem' w='100%' wrap='wrap' gap="0.2rem">
                         <Button size='sm' onClick={handleOpenRecordings}>{t('recordings')}</Button>
+                        <Button size='sm' onClick={handleOpenEvents}>{t('events')}</Button>
                         {!isAdmin ? null : <Button size='sm' onClick={handleOpenEditCamera}>{t('edit')}</Button>}
                     </Flex>
                 </Group>

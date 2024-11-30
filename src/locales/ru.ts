@@ -105,7 +105,7 @@ const ru = {
     config: 'Конфиг.',
     create: 'Создать',
     clear: 'Очистить',
-    edit: 'Изменить',
+    edit: 'Редакт.',
     version: 'Версия',
     uptime: 'Время работы',
     pleaseSelectRole: 'Пожалуйста выберите роль',

@@ -1,5 +1,5 @@
 import { Button, Menu, rem } from '@mantine/core';
-import { IconEdit, IconGraph, IconRotateClockwise, IconServer, IconSettings } from '@tabler/icons-react';
+import { IconEdit, IconGraph, IconRotateClockwise, IconSettings } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';

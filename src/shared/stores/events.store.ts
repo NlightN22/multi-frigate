@@ -8,6 +8,15 @@ interface Filters {
     endTime?: string
 }
 
+export const eventsQueryParams = {
+    hostId: 'hostId',
+    cameraId: 'cameraId',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    startTime: 'startTime',
+    endTime: 'endTime',
+  }
+
 export class EventsStore {
     filters: Filters = {}
 
@@ -18,15 +27,15 @@ export class EventsStore {
 
     loadFiltersFromURL() {
         const params = new URLSearchParams(window.location.search);
-        this.filters.hostId = params.get('hostId') || undefined;
-        this.filters.cameraId = params.get('cameraId') || undefined;
-        const startDate = params.get('startDate');
-        const endDate = params.get('endDate');
+        this.filters.hostId = params.get(eventsQueryParams.hostId) || undefined;
+        this.filters.cameraId = params.get(eventsQueryParams.cameraId) || undefined;
+        const startDate = params.get(eventsQueryParams.startDate);
+        const endDate = params.get(eventsQueryParams.endDate);
         if (startDate && endDate) {
             this.filters.period = [new Date(startDate), new Date(endDate)]
         }
-        this.filters.startTime = params.get('startTime') || undefined
-        this.filters.endTime = params.get('endTime') || undefined
+        this.filters.startTime = params.get(eventsQueryParams.startTime) || undefined
+        this.filters.endTime = params.get(eventsQueryParams.endTime) || undefined
     }
 
     setHostId(hostId: string, navigate: (path: string) => void) {
