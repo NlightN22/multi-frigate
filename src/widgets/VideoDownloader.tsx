@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import { proxyApi } from '../services/frigate.proxy/frigate.api';
 import RetryError from '../shared/components/RetryError';
 import { formatFileTimestamps } from '../shared/utils/dateUtil';
+import { useTranslation } from 'react-i18next';
+import DownloadButton from '../shared/components/buttons/DownloadButton';
 
 interface VideoDownloaderProps {
     cameraName: string
@@ -20,6 +22,9 @@ const VideoDownloader = ({
     startUnixTime,
     endUnixTime,
 }: VideoDownloaderProps) => {
+
+    const { t } = useTranslation()
+
     const maxVideoTime = 70 * 60
     const [createName, setCreateName] = useState<string>()
     const [link, setLink] = useState<string>()
@@ -138,17 +143,13 @@ const VideoDownloader = ({
 
     const preparingVideo = (
         <>
-            <Text>Preparing video...<Loader /></Text>
+            <Text>{t('preparingVideo')}<Loader /></Text>
         </>
     )
     if (createName) return preparingVideo
 
     return (
-        <Button
-            onClick={handleDownload}
-        >
-            Download
-        </Button>
+        <DownloadButton onClick={handleDownload}/>
     );
 };
 

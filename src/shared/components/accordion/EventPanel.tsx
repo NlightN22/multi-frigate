@@ -1,10 +1,11 @@
 import { Button, Flex, Group, Text } from '@mantine/core';
-import { IconExternalLink } from '@tabler/icons-react';
+import { IconDownload } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { EventFrigate } from '../../../types/event';
 import { getDurationFromTimestamps, unixTimeToDate } from '../../utils/dateUtil';
 import VideoPlayer from '../players/VideoPlayer';
+import DownloadButton from '../buttons/DownloadButton';
 
 interface EventPanelProps {
     event: EventFrigate
@@ -46,14 +47,9 @@ const EventPanel = ({
                 <Flex direction='column' align='end' justify='center'>
                     {!hostName ? '' :
                         <Flex>
-                            <Button
-                                component="a"
-                                href={proxyApi.eventDownloadURL(hostName, event.id)}
-                                download
-                                variant="outline"
-                                leftIcon={<IconExternalLink size="0.9rem" />}>
-                                Download event
-                            </Button>
+                            <DownloadButton 
+                            link={proxyApi.eventDownloadURL(hostName, event.id)}
+                            />
                         </Flex>
                     }
                 </Flex>

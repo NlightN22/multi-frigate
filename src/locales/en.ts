@@ -104,6 +104,8 @@ const en = {
         doubleClickToFullHint: 'Double click for fullscreen',
         rating: 'Rating',
     },
+    preparingVideo: 'Preparing video...',
+    download: 'Download',
     maxRetries: 'Error: Unable to fetch data after {{maxRetries}} retries. Please try again later or change period to smaller.',
     config: 'Config',
     create: 'Create',
