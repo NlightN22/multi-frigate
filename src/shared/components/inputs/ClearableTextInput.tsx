@@ -15,7 +15,7 @@ const ClearableTextInput: React.FC<ClearableTextInputProps> = ({
     const [text, setText] = useState(value)
 
     const handleClear = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        setText(''); // обновляем локальное состояние
+        setText('')
         if (onChange) {
             const fakeEvent = {
                 target: { value: '' },

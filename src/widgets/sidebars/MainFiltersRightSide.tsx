@@ -13,7 +13,7 @@ const MainFiltersRightSide = () => {
     const navigate = useNavigate()
 
     const { mainStore } = useContext(Context)
-    const { hostId } = mainStore.filters
+    const { hostId, selectedTags } = mainStore.filters
 
     const handleSelectHost = (value: string) => {
         if (!isProduction) console.log('handleSelectHost value', value)
@@ -35,6 +35,7 @@ const MainFiltersRightSide = () => {
             />
 
             <UserTagsFilter
+                selectedTags={selectedTags}
                 onChange={handleSelectTags}
             />
 

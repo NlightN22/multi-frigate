@@ -2,9 +2,11 @@ import { Flex, Grid } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Context } from '..';
+import { useDebounce } from '../hooks/useDebounce';
 import { useRealmUser } from '../hooks/useRealmUser';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
@@ -15,7 +17,6 @@ import CameraCard from '../widgets/CameraCard';
 import MainFiltersRightSide from '../widgets/sidebars/MainFiltersRightSide';
 import { SideBarContext } from '../widgets/sidebars/SideBarContext';
 import RetryErrorPage from './RetryErrorPage';
-import { useSearchParams } from 'react-router-dom';
 
 export const mainPageParams = {
     hostId: 'hostId',
@@ -25,12 +26,12 @@ export const mainPageParams = {
 
 const MainPage = () => {
     const { t } = useTranslation()
+    const navigate = useNavigate()
     const { mainStore } = useContext(Context)
     const [searchParams] = useSearchParams()
 
     const { setRightChildren } = useContext(SideBarContext)
-    const { hostId: selectedHostId, selectedTags } = mainStore.filters
-    const [searchQuery, setSearchQuery] = useState<string>()
+    const { hostId: selectedHostId, selectedTags, searchQuery } = mainStore.filters
     const [filteredCameras, setFilteredCameras] = useState<GetCameraWHostWConfig[]>()
 
     const realmUser = useRealmUser()
@@ -42,14 +43,14 @@ const MainPage = () => {
     })
 
     useEffect(() => {
-        setRightChildren(<MainFiltersRightSide />);
-        const serializedTags = searchParams.get(mainPageParams.selectedTags)
-        const deSerializedTags = serializedTags ? mainStore.getArrayParam(serializedTags) : []
+        const deSerializedTags = mainStore.getArrayParam(mainPageParams.selectedTags)
         mainStore.loadFiltersFromPage({
             hostId: searchParams.get(mainPageParams.hostId) || undefined,
             searchQuery: searchParams.get(mainPageParams.searchQuery) || undefined,
             selectedTags: deSerializedTags,
         })
+
+        setRightChildren(<MainFiltersRightSide />);
         return () => setRightChildren(null);
     }, []);
 
@@ -62,7 +63,7 @@ const MainPage = () => {
         const filterCameras = (camera: GetCameraWHostWConfig) => {
             const matchesHostId = selectedHostId ? camera.frigateHost?.id === selectedHostId : true
             const matchesSearchQuery = searchQuery ? camera.name.toLowerCase().includes(searchQuery.toLowerCase()) : true
-            const matchesTags =  selectedTags.length === 0 || camera.tags.some( tag => selectedTags.includes(tag.id))
+            const matchesTags = selectedTags ? selectedTags.length === 0 || camera.tags.some(tag => selectedTags.includes(tag.id)) : true
             return matchesHostId && matchesSearchQuery && matchesTags
         }
 
@@ -94,6 +95,14 @@ const MainPage = () => {
         else return []
     }, [cameras, filteredCameras])
 
+    const debouncedHandleSearchQuery = useDebounce((value: string) => {
+        mainStore.setSearchQuery(value, navigate);
+    }, 600);
+
+    const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        debouncedHandleSearchQuery(event.currentTarget.value)
+    }
+
     if (isPending) return <CenterLoader />
 
     if (isError) return <RetryErrorPage onRetry={refetch} />
@@ -111,8 +120,8 @@ const MainPage = () => {
                     style={{ flexGrow: 1 }}
                     placeholder={t('search')}
                     icon={<IconSearch size="0.9rem" stroke={1.5} />}
-                    value={searchQuery}
-                    onChange={(event) => setSearchQuery(event.currentTarget.value)}
+                    value={searchQuery || undefined}
+                    onChange={onInputChange}
                 />
             </Flex>
             <Flex justify='center' h='100%' direction='column' w='100%' >

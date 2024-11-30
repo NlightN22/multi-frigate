@@ -7,18 +7,18 @@ import { isProduction } from "../env.const";
 interface Filters {
     hostId?: string | null
     searchQuery?: string | null
-    selectedTags: string[]
+    selectedTags?: string[]
 }
 
 export class MainStore {
-    filters: Filters = { selectedTags: []}
+    filters: Filters = {}
 
     constructor() {
         makeAutoObservable(this)
     }
 
     loadFiltersFromPage(filters: Filters) {
-        if (!isProduction) console.log('MainPage load filters')
+        if (!isProduction) console.log('MainPage load filters', filters)
         this.filters = filters
     }
 

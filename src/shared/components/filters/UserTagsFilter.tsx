@@ -14,17 +14,19 @@ import { IconAlertCircle } from '@tabler/icons-react';
 
 
 interface UserTagsFilterProps {
+    selectedTags?: string[]
     onChange?(tagIds: string[]): void
 }
 
 
 const UserTagsFilter: React.FC<UserTagsFilterProps> = ({
+    selectedTags,
     onChange
 }) => {
     const { t } = useTranslation()
     const queryClient = useQueryClient()
 
-    const [selectedList, setSelectedList] = useState<string[]>([])
+    const [selectedList, setSelectedList] = useState<string[]>(selectedTags || [])
 
     useEffect(() => { 
         if (onChange) onChange(selectedList)
