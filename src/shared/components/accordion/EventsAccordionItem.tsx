@@ -12,6 +12,7 @@ import { routesPath } from '../../../router/routes.path';
 import { proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { useTranslation } from 'react-i18next';
 import BlobImage from '../images/BlobImage';
+import OnScreenImage from '../images/OnScreenImage';
 
 
 interface EventsAccordionItemProps {
@@ -80,7 +81,7 @@ const EventsAccordionItem = ({
             <Accordion.Control key={event.id + 'Control'}>
                 <Flex justify='space-between'>
                     {!hostName ? <></> :
-                        <BlobImage
+                        <OnScreenImage
                             maw={200}
                             mr='1rem'
                             fit="contain"
