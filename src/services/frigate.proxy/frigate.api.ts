@@ -82,7 +82,7 @@ export const proxyApi = {
     getVideoFrigate: async (videoUrl: string, onProgress: (percentage: number | undefined) => void) => {
         const response = await instanceApi.get<Blob>(videoUrl, {
             responseType: 'blob',
-            timeout: 10 * 60 * 1000,
+            timeout: 20 * 60 * 1000,
             onDownloadProgress: (progressEvent) => {
                 const total = progressEvent.total
                 const current = progressEvent.loaded;

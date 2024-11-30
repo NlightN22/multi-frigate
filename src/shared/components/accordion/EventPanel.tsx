@@ -1,11 +1,10 @@
-import { Button, Flex, Group, Text } from '@mantine/core';
-import { IconDownload } from '@tabler/icons-react';
+import { Flex, Group, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { EventFrigate } from '../../../types/event';
 import { getDurationFromTimestamps, unixTimeToDate } from '../../utils/dateUtil';
-import VideoPlayer from '../players/VideoPlayer';
 import DownloadButton from '../buttons/DownloadButton';
+import VideoPlayer from '../players/VideoPlayer';
 
 interface EventPanelProps {
     event: EventFrigate
