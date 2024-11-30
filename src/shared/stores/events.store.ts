@@ -1,4 +1,6 @@
 import { makeAutoObservable } from "mobx";
+import { eventsQueryParams } from "../../pages/EventsPage";
+import { NavigateOptions } from "react-router-dom";
 
 interface Filters {
     hostId?: string
@@ -8,21 +10,12 @@ interface Filters {
     endTime?: string
 }
 
-export const eventsQueryParams = {
-    hostId: 'hostId',
-    cameraId: 'cameraId',
-    startDate: 'startDate',
-    endDate: 'endDate',
-    startTime: 'startTime',
-    endTime: 'endTime',
-  }
-
 export class EventsStore {
     filters: Filters = {}
 
     constructor() {
         makeAutoObservable(this);
-        this.loadFiltersFromURL();
+        // this.loadFiltersFromURL();
     }
 
     loadFiltersFromURL() {
@@ -38,32 +31,48 @@ export class EventsStore {
         this.filters.endTime = params.get(eventsQueryParams.endTime) || undefined
     }
 
-    setHostId(hostId: string, navigate: (path: string) => void) {
+    loadFiltersFromPage(
+        paramHostId: string | undefined,
+        paramCameraId: string | undefined,
+        paramStartDate: string | undefined,
+        paramEndDate: string | undefined,
+        paramStartTime: string | undefined,
+        paramEndTime: string | undefined) {
+        this.filters.hostId = paramHostId
+        this.filters.cameraId = paramCameraId
+        if (paramStartDate && paramEndDate) {
+            this.filters.period = [new Date(paramStartDate), new Date(paramEndDate)]
+        }
+        this.filters.startTime = paramStartTime
+        this.filters.endTime = paramEndTime
+    }
+
+    setHostId(hostId: string, navigate: (path: string, options?: NavigateOptions) => void) {
         this.filters.hostId = hostId;
         this.updateURL(navigate)
     }
 
-    setCameraId(cameraId: string, navigate: (path: string) => void) {
+    setCameraId(cameraId: string, navigate: (path: string, options?: NavigateOptions) => void) {
         this.filters.cameraId = cameraId;
         this.updateURL(navigate)
     }
 
-    setPeriod(period: [Date | null, Date | null], navigate: (path: string) => void) {
+    setPeriod(period: [Date | null, Date | null], navigate: (path: string, options?: NavigateOptions) => void) {
         this.filters.period = period;
         this.updateURL(navigate)
     }
 
-    setStartTime(startTime: string, navigate: (path: string) => void) {
+    setStartTime(startTime: string, navigate: (path: string, options?: NavigateOptions) => void) {
         this.filters.startTime = startTime
         this.updateURL(navigate)
     }
 
-    setEndTime(endTime: string, navigate: (path: string) => void) {
+    setEndTime(endTime: string, navigate: (path: string, options?: NavigateOptions) => void) {
         this.filters.endTime = endTime
         this.updateURL(navigate)
     }
 
-    updateURL(navigate: (path: string) => void) {
+    updateURL(navigate: (path: string, options?: NavigateOptions) => void) {
         const params = new URLSearchParams();
         if (this.filters.hostId) params.set('hostId', this.filters.hostId);
         if (this.filters.cameraId) params.set('cameraId', this.filters.cameraId);
@@ -80,7 +89,7 @@ export class EventsStore {
         if (this.filters.startTime) params.set('startTime', this.filters.startTime)
         if (this.filters.endTime) params.set('endTime', this.filters.endTime)
 
-        navigate(`?${params.toString()}`);
+        navigate(`?${params.toString()}`, { replace: true });
     }
 
     isPeriodSet() {

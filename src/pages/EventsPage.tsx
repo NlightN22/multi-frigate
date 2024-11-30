@@ -1,16 +1,28 @@
 import { Flex, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import { IconAlertCircle } from '@tabler/icons-react';
 import { t } from 'i18next';
 import { observer } from 'mobx-react-lite';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { Context } from '..';
 import { isStartBiggerThanEndTime } from '../shared/utils/dateUtil';
 import EventsBody from '../widgets/EventsBody';
 import EventsRightFilters from '../widgets/sidebars/EventsRightFilters';
 import { SideBarContext } from '../widgets/sidebars/SideBarContext';
-import { IconAlertCircle } from '@tabler/icons-react';
+import { useLocation, useSearchParams } from 'react-router-dom';
+
+export const eventsQueryParams = {
+    hostId: 'hostId',
+    cameraId: 'cameraId',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    startTime: 'startTime',
+    endTime: 'endTime',
+}
 
 const EventsPage = () => {
+
+    const [searchParams] = useSearchParams()
 
     const { setRightChildren } = useContext(SideBarContext)
 
@@ -20,7 +32,19 @@ const EventsPage = () => {
     }, [])
 
     const { eventsStore } = useContext(Context)
+
+
     const { hostId, cameraId, period, startTime, endTime } = eventsStore.filters
+
+    useEffect(() => {
+        const paramHostId = searchParams.get(eventsQueryParams.hostId) || undefined
+        const paramCameraId = searchParams.get(eventsQueryParams.cameraId) || undefined
+        const paramStartDate = searchParams.get(eventsQueryParams.startDate) || undefined
+        const paramEndDate = searchParams.get(eventsQueryParams.endDate) || undefined
+        const paramStartTime = searchParams.get(eventsQueryParams.startTime) || undefined
+        const paramEndTime = searchParams.get(eventsQueryParams.endTime) || undefined
+        eventsStore.loadFiltersFromPage(paramHostId, paramCameraId, paramStartDate, paramEndDate, paramStartTime, paramEndTime)
+    }, [searchParams])
 
     useEffect(() => {
         if (startTime && endTime) {

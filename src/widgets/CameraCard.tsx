@@ -10,7 +10,7 @@ import { mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.a
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
 import AutoUpdatedImage from '../shared/components/images/AutoUpdatedImage';
 import CameraTagsList from './CameraTagsList';
-import { eventsQueryParams } from '../shared/stores/events.store';
+import { eventsQueryParams } from '../pages/EventsPage';
 
 const useStyles = createStyles((theme) => ({
     mainCard: {
@@ -53,9 +53,8 @@ const CameraCard = ({
     const imageUrl = hostName ? proxyApi.cameraImageURL(hostName, camera.name) : '' //todo implement get URL from live cameras
     const { isAdmin } = useAdminRole()
 
-
     useEffect(() => {
-        if (entry?.isIntersecting)
+        if (entry && entry.isIntersecting)
             setRenderImage(true)
     }, [entry?.isIntersecting])
 
@@ -83,7 +82,7 @@ const CameraCard = ({
         <Grid.Col md={6} lg={3} p='0.2rem'>
             <Card ref={ref} h='100%' radius="lg" padding='0.5rem' className={classes.mainCard}>
                 <Text align='center' size='md' className={classes.headText} >{camera.name} / {camera.frigateHost?.name}</Text>
-                {!renderImage ? '' :
+                {!renderImage ? null :
                     <AutoUpdatedImage onClick={handleOpenLiveView} enabled={camera.config?.enabled} imageUrl={imageUrl} />
                 }
                 <Group
