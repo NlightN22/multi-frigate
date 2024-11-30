@@ -46,10 +46,11 @@ const SettingsPage = () => {
                 : null
             }
             <Flex direction='column' h='100%' w='100%' justify='stretch'>
-                <OIDPSettingsForm isConfigValid={handleOIDPConfigValid} />
+                <OIDPSettingsForm key='OIDPSettingsForm' isConfigValid={handleOIDPConfigValid} />
                 {
                     showRoles && allRoles ?
                         <RolesSettingsForm
+                            key='RolesSettingsForm'
                             allRoles={allRoles}
                             refetchRoles={() => getRoles.mutate()}
                         />

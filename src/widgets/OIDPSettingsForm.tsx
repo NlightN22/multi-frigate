@@ -16,6 +16,13 @@ interface OIDPSettingsFormProps {
     isConfigValid?: (valid: boolean) => void
 }
 
+/**
+ * [DOM] Multiple forms should be contained in their own form elements; break up complex forms into ones that represent a single action: (More info: https://goo.gl/9p2vKq)
+ * This is because you have several type=password inside one form
+ * Can not fixed
+ * 
+ */
+
 const OIDPSettingsForm: React.FC<OIDPSettingsFormProps> = ({
     isConfigValid
 }) => {
@@ -98,54 +105,52 @@ const OIDPSettingsForm: React.FC<OIDPSettingsFormProps> = ({
     if (isError) return <RetryError onRetry={refetch} />
 
     return (
-        <>
-            <form onSubmit={handleSubmit}>
-                <FloatingLabelInput
-                    name="clientId"
-                    label={t('settingsPage.oidpClientId')}
-                    value={config.clientId}
-                    placeholder={t('settingsPage.oidpClientIdPH')}
-                    encrypted={false}
-                    onChange={handleInputChange}
-                />
-                <FloatingLabelInput
-                    name="clientSecret"
-                    label={t('settingsPage.clientSecret')}
-                    value={config.clientSecret}
-                    placeholder={t('settingsPage.clientSecretPH')}
-                    encrypted={true}
-                    onChange={handleInputChange}
-                />
-                <FloatingLabelInput
-                    name="clientUsername"
-                    label={t('settingsPage.clientUsername')}
-                    value={config.clientUsername}
-                    placeholder={t('settingsPage.clientUsernamePH')}
-                    encrypted={false}
-                    onChange={handleInputChange}
-                />
-                <FloatingLabelInput
-                    name="clientPassword"
-                    label={t('settingsPage.clientPassword')}
-                    value={config.clientPassword}
-                    placeholder={t('settingsPage.clientPasswordPH')}
-                    encrypted={true}
-                    onChange={handleInputChange}
-                />
-                <FloatingLabelInput
-                    name="clientURL"
-                    label={t('settingsPage.realmUrl')}
-                    value={config.clientURL}
-                    placeholder={t('settingsPage.realmUrlPH')}
-                    encrypted={false}
-                    onChange={handleInputChange}
-                />
-                <Flex w='100%' justify='stretch' wrap='nowrap' align='center' mt='lg'>
-                    <Button w='100%' onClick={handleDiscard} m='0.5rem'>{t('discard')}</Button>
-                    <Button w='100%' type="submit" m='0.5rem'>{t('confirm')}</Button>
-                </Flex>
-            </form>
-        </>
+        <form onSubmit={handleSubmit}>
+            <FloatingLabelInput
+                name="clientId"
+                label={t('settingsPage.oidpClientId')}
+                value={config.clientId}
+                placeholder={t('settingsPage.oidpClientIdPH')}
+                encrypted={false}
+                onChange={handleInputChange}
+            />
+            <FloatingLabelInput
+                name="clientSecret"
+                label={t('settingsPage.clientSecret')}
+                value={config.clientSecret}
+                placeholder={t('settingsPage.clientSecretPH')}
+                encrypted={true}
+                onChange={handleInputChange}
+            />
+            <FloatingLabelInput
+                name="clientUsername"
+                label={t('settingsPage.clientUsername')}
+                value={config.clientUsername}
+                placeholder={t('settingsPage.clientUsernamePH')}
+                encrypted={false}
+                onChange={handleInputChange}
+            />
+            <FloatingLabelInput
+                name="clientPassword"
+                label={t('settingsPage.clientPassword')}
+                value={config.clientPassword}
+                placeholder={t('settingsPage.clientPasswordPH')}
+                encrypted={true}
+                onChange={handleInputChange}
+            />
+            <FloatingLabelInput
+                name="clientURL"
+                label={t('settingsPage.realmUrl')}
+                value={config.clientURL}
+                placeholder={t('settingsPage.realmUrlPH')}
+                encrypted={false}
+                onChange={handleInputChange}
+            />
+            <Flex w='100%' justify='stretch' wrap='nowrap' align='center' mt='lg'>
+                <Button id="discard-button" w='100%' onClick={handleDiscard} m='0.5rem'>{t('discard')}</Button>
+                <Button id="confirm-button" w='100%' type="submit" m='0.5rem'>{t('confirm')}</Button>
+            </Flex>
+        </form>
     );
 };
 
