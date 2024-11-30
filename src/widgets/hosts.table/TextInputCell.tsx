@@ -12,9 +12,10 @@ interface TextImputCellProps {
         propertyName: string,
         value?: string | number | boolean,
     ) => void,
+    placeholder?: string | undefined
 }
 
-const TextInputCell = ({ text, width, id, propertyName, onChange }: TextImputCellProps) => {
+const TextInputCell = ({ text, width, id, propertyName, onChange, placeholder }: TextImputCellProps) => {
     const [value, setValue] = useState(text);
     const [debouncedValue] = useDebouncedValue(value, 300)
     useEffect(() => {
@@ -28,7 +29,12 @@ const TextInputCell = ({ text, width, id, propertyName, onChange }: TextImputCel
     }
     return (
         <td style={{ width: width, textAlign: 'center' }}>
-            <TextInput onChange={handleChange} size='sm' value={String(value)} />
+            <TextInput
+                onChange={handleChange}
+                size='sm'
+                value={String(value)}
+                placeholder={placeholder}
+            />
         </td>
     )
 }

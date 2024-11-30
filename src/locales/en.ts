@@ -83,11 +83,15 @@ const en = {
         hostsConfig: 'Frigate servers',
         acessSettings: 'Access settings',
     }, 
-    hostArr: {
-        host: 'Host',
-        name: 'Host name',
-        url: 'Address',
-        enabled: 'Enabled',
+    frigateHostTableTitles: {
+        host: 'Хост',
+        name: 'Имя хоста',
+        url: 'Адрес',
+        enabled: 'Включен',
+    },
+    frigateHostTablePlaceholders: {
+        host: 'http://host.docker.internal:5000 or http://192.168.1.1:5000',
+        name: 'YourFrigateHostName',
     },
     player: {
         startVideo: 'Enable Video',

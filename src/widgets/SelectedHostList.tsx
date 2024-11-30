@@ -60,7 +60,7 @@ const SelectedHostList = ({
 
     return (
         <Flex w='100%' h='100%' direction='column' align='center'>
-            <Text>{t('hostArr.host')}: {camerasQuery[0].frigateHost?.name}</Text>
+            <Text>{t('frigateHostTableTitles.host')}: {camerasQuery[0].frigateHost?.name}</Text>
             <Accordion
                 mt='1rem'
                 variant='separated'

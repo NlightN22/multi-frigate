@@ -30,11 +30,11 @@ const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedC
 
     useEffect(() => {
         setTableData(data);
-      }, [data]);
+    }, [data]);
 
     useEffect(() => {
         if (!isProduction) console.log('TableData', tableData)
-        if (changedCallback) 
+        if (changedCallback)
             changedCallback(tableData)
     }, [tableData])
 
@@ -48,9 +48,9 @@ const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedC
     }
 
     const headTitle = [
-        { propertyName: 'name', title: t('hostArr.host') },
-        { propertyName: 'host', title: t('hostArr.url') },
-        { propertyName: 'enabled', title: t('hostArr.enabled') },
+        { propertyName: 'name', title: t('frigateHostTableTitles.host') },
+        { propertyName: 'host', title: t('frigateHostTableTitles.url') },
+        { propertyName: 'enabled', title: t('frigateHostTableTitles.enabled') },
         { title: '', sorting: false },
     ]
 
@@ -108,8 +108,22 @@ const FrigateHostsTable = ({ data, showAddButton = false, saveCallback, changedC
     const rows = tableData.map(item => {
         return (
             <tr key={item.id}>
-                <TextInputCell text={item.name} width='40%' id={item.id} propertyName='name' onChange={handleTextChange} />
-                <TextInputCell text={item.host} width='40%' id={item.id} propertyName='host' onChange={handleTextChange} />
+                <TextInputCell
+                    text={item.name}
+                    width='40%'
+                    id={item.id}
+                    propertyName='name'
+                    onChange={handleTextChange}
+                    placeholder={t('frigateHostTablePlaceholders.name')}
+                />
+                <TextInputCell
+                    text={item.host}
+                    width='40%'
+                    id={item.id}
+                    propertyName='host'
+                    onChange={handleTextChange}
+                    placeholder={t('frigateHostTablePlaceholders.host')}
+                    />
                 <SwitchCell value={item.enabled} width='5%' id={item.id} propertyName='enabled' toggle={handleSwitchChange} />
                 <StateCell id={item.id} width='5%' />
                 <td align='right' style={{ width: '10%', padding: '0', }}>

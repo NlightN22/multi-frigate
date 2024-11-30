@@ -81,11 +81,15 @@ const ru = {
         hostsConfig: 'Серверы Frigate',
         acessSettings: 'Настройка доступа',
     },
-    hostArr: {
+    frigateHostTableTitles: {
         host: 'Хост',
         name: 'Имя хоста',
         url: 'Адрес',
         enabled: 'Включен',
+    },
+    frigateHostTablePlaceholders: {
+        host: 'http://host.docker.internal:5000 or http://192.168.1.1:5000',
+        name: 'YourFrigateHostName',
     },
     player: {
         startVideo: 'Вкл. Видео',
