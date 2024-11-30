@@ -10,22 +10,7 @@ import EventsRightFilters from '../widgets/sidebars/EventsRightFilters';
 import { SideBarContext } from '../widgets/sidebars/SideBarContext';
 import { IconAlertCircle } from '@tabler/icons-react';
 
-export const eventsPageQuery = {
-    hostId: 'hostId',
-    cameraId: 'cameraId',
-    startDay: 'startDay',
-    endDay: 'endDay',
-    hour: 'hour',
-}
-
-interface TimePeriod  {
-    startTime: string,
-    endTime: string,
-}
-
 const EventsPage = () => {
-
-    const [timePeriod, setTimePeriod] = useState<TimePeriod>()
 
     const { setRightChildren } = useContext(SideBarContext)
 
@@ -34,14 +19,10 @@ const EventsPage = () => {
         return () => setRightChildren(null)
     }, [])
 
-
-
     const { eventsStore } = useContext(Context)
     const { hostId, cameraId, period, startTime, endTime } = eventsStore.filters
 
     useEffect(() => {
-        const startTime = eventsStore.filters.startTime
-        const endTime = eventsStore.filters.endTime
         if (startTime && endTime) {
             if (isStartBiggerThanEndTime(startTime, endTime)) {
                 const message = t('eventsPage.startTimeBiggerThanEnd')
@@ -56,12 +37,8 @@ const EventsPage = () => {
                 })
                 return
             }
-            setTimePeriod({
-                startTime,
-                endTime
-            })
         }
-    }, [eventsStore.filters.startTime, eventsStore.filters.endTime])
+    }, [startTime, endTime])
 
     if (hostId && cameraId && period && period[0] && period[1]) {
         return (
@@ -69,8 +46,8 @@ const EventsPage = () => {
                 hostId={hostId}
                 cameraId={cameraId}
                 period={[period[0], period[1]]}
-                startTime={timePeriod?.startTime}
-                endTime={timePeriod?.endTime}
+                startTime={startTime}
+                endTime={endTime}
             />
         )
     }
