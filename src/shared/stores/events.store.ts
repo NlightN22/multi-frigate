@@ -15,20 +15,6 @@ export class EventsStore {
 
     constructor() {
         makeAutoObservable(this);
-        // this.loadFiltersFromURL();
-    }
-
-    loadFiltersFromURL() {
-        const params = new URLSearchParams(window.location.search);
-        this.filters.hostId = params.get(eventsQueryParams.hostId) || undefined;
-        this.filters.cameraId = params.get(eventsQueryParams.cameraId) || undefined;
-        const startDate = params.get(eventsQueryParams.startDate);
-        const endDate = params.get(eventsQueryParams.endDate);
-        if (startDate && endDate) {
-            this.filters.period = [new Date(startDate), new Date(endDate)]
-        }
-        this.filters.startTime = params.get(eventsQueryParams.startTime) || undefined
-        this.filters.endTime = params.get(eventsQueryParams.endTime) || undefined
     }
 
     loadFiltersFromPage(
@@ -74,20 +60,20 @@ export class EventsStore {
 
     updateURL(navigate: (path: string, options?: NavigateOptions) => void) {
         const params = new URLSearchParams();
-        if (this.filters.hostId) params.set('hostId', this.filters.hostId);
-        if (this.filters.cameraId) params.set('cameraId', this.filters.cameraId);
+        if (this.filters.hostId) params.set(eventsQueryParams.hostId, this.filters.hostId);
+        if (this.filters.cameraId) params.set(eventsQueryParams.cameraId, this.filters.cameraId);
         if (this.filters.period) {
             const [startDate, endDate] = this.filters.period;
             if (startDate instanceof Date && !isNaN(startDate.getTime())) {
-                params.set('startDate', startDate.toISOString());
+                params.set(eventsQueryParams.startDate, startDate.toISOString());
             }
             if (endDate instanceof Date && !isNaN(endDate.getTime())) {
-                params.set('endDate', endDate.toISOString());
+                params.set(eventsQueryParams.endDate, endDate.toISOString());
             }
         }
 
-        if (this.filters.startTime) params.set('startTime', this.filters.startTime)
-        if (this.filters.endTime) params.set('endTime', this.filters.endTime)
+        if (this.filters.startTime) params.set(eventsQueryParams.startTime, this.filters.startTime)
+        if (this.filters.endTime) params.set(eventsQueryParams.endTime, this.filters.endTime)
 
         navigate(`?${params.toString()}`, { replace: true });
     }

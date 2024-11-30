@@ -5,37 +5,36 @@ import { Context } from '../..';
 import HostSelect from '../../shared/components/filters/HostSelect';
 import UserTagsFilter from '../../shared/components/filters/UserTagsFilter';
 import { isProduction } from '../../shared/env.const';
-
-
-
+import { useNavigate } from 'react-router-dom';
 
 
 const MainFiltersRightSide = () => {
     const { t } = useTranslation()
+    const navigate = useNavigate()
 
     const { mainStore } = useContext(Context)
-    const { selectedHostId } = mainStore
+    const { hostId } = mainStore.filters
 
     const handleSelectHost = (value: string) => {
         if (!isProduction) console.log('handleSelectHost value', value)
-        mainStore.selectedHostId = value
+        mainStore.setHostId(value, navigate)
     }
 
     const handleSelectTags = (tags: string[]) => {
         if (!isProduction) console.log('handleSelectTags value', tags)
-            mainStore.selectedTags = tags
+        mainStore.setSelectedTags(tags, navigate)
     }
 
     return (
         <>
             <HostSelect
                 label={t('selectHost')}
-                valueId={selectedHostId}
-                defaultId={selectedHostId}
+                valueId={hostId || undefined}
+                defaultId={hostId || undefined}
                 onChange={handleSelectHost}
             />
 
-            <UserTagsFilter 
+            <UserTagsFilter
                 onChange={handleSelectTags}
             />
 

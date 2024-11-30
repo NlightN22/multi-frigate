@@ -1,4 +1,5 @@
 import { Flex, Grid } from '@mantine/core';
+import { IconSearch } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
 import { useContext, useEffect, useMemo, useState } from 'react';
@@ -7,24 +8,30 @@ import { Context } from '..';
 import { useRealmUser } from '../hooks/useRealmUser';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
+import ClearableTextInput from '../shared/components/inputs/ClearableTextInput';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import { isProduction } from '../shared/env.const';
 import CameraCard from '../widgets/CameraCard';
 import MainFiltersRightSide from '../widgets/sidebars/MainFiltersRightSide';
 import { SideBarContext } from '../widgets/sidebars/SideBarContext';
 import RetryErrorPage from './RetryErrorPage';
-import { IconSearch } from '@tabler/icons-react';
-import ClearableTextInput from '../shared/components/inputs/ClearableTextInput';
-import { CameraTag } from '../types/tags';
+import { useSearchParams } from 'react-router-dom';
+
+export const mainPageParams = {
+    hostId: 'hostId',
+    selectedTags: 'selectedTags',
+    searchQuery: 'searchQuery',
+}
 
 const MainPage = () => {
     const { t } = useTranslation()
     const { mainStore } = useContext(Context)
+    const [searchParams] = useSearchParams()
+
     const { setRightChildren } = useContext(SideBarContext)
-    const { selectedHostId, selectedTags } = mainStore
+    const { hostId: selectedHostId, selectedTags } = mainStore.filters
     const [searchQuery, setSearchQuery] = useState<string>()
     const [filteredCameras, setFilteredCameras] = useState<GetCameraWHostWConfig[]>()
-    const [filteredTags, setFilteredTags] = useState<CameraTag[]>()
 
     const realmUser = useRealmUser()
     if (!isProduction) console.log('Realmuser:', realmUser)
@@ -36,6 +43,13 @@ const MainPage = () => {
 
     useEffect(() => {
         setRightChildren(<MainFiltersRightSide />);
+        const serializedTags = searchParams.get(mainPageParams.selectedTags)
+        const deSerializedTags = serializedTags ? mainStore.getArrayParam(serializedTags) : []
+        mainStore.loadFiltersFromPage({
+            hostId: searchParams.get(mainPageParams.hostId) || undefined,
+            searchQuery: searchParams.get(mainPageParams.searchQuery) || undefined,
+            selectedTags: deSerializedTags,
+        })
         return () => setRightChildren(null);
     }, []);
 
@@ -48,7 +62,7 @@ const MainPage = () => {
         const filterCameras = (camera: GetCameraWHostWConfig) => {
             const matchesHostId = selectedHostId ? camera.frigateHost?.id === selectedHostId : true
             const matchesSearchQuery = searchQuery ? camera.name.toLowerCase().includes(searchQuery.toLowerCase()) : true
-            const matchesTags = selectedTags.length === 0 || camera.tags.some( tag => selectedTags.includes(tag.id))
+            const matchesTags =  selectedTags.length === 0 || camera.tags.some( tag => selectedTags.includes(tag.id))
             return matchesHostId && matchesSearchQuery && matchesTags
         }
 

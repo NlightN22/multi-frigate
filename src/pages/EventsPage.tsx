@@ -3,13 +3,13 @@ import { notifications } from '@mantine/notifications';
 import { IconAlertCircle } from '@tabler/icons-react';
 import { t } from 'i18next';
 import { observer } from 'mobx-react-lite';
-import { useContext, useEffect, useMemo } from 'react';
+import { useContext, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Context } from '..';
 import { isStartBiggerThanEndTime } from '../shared/utils/dateUtil';
 import EventsBody from '../widgets/EventsBody';
 import EventsRightFilters from '../widgets/sidebars/EventsRightFilters';
 import { SideBarContext } from '../widgets/sidebars/SideBarContext';
-import { useLocation, useSearchParams } from 'react-router-dom';
 
 export const eventsQueryParams = {
     hostId: 'hostId',
@@ -28,6 +28,13 @@ const EventsPage = () => {
 
     useEffect(() => {
         setRightChildren(<EventsRightFilters />)
+        const paramHostId = searchParams.get(eventsQueryParams.hostId) || undefined
+        const paramCameraId = searchParams.get(eventsQueryParams.cameraId) || undefined
+        const paramStartDate = searchParams.get(eventsQueryParams.startDate) || undefined
+        const paramEndDate = searchParams.get(eventsQueryParams.endDate) || undefined
+        const paramStartTime = searchParams.get(eventsQueryParams.startTime) || undefined
+        const paramEndTime = searchParams.get(eventsQueryParams.endTime) || undefined
+        eventsStore.loadFiltersFromPage(paramHostId, paramCameraId, paramStartDate, paramEndDate, paramStartTime, paramEndTime)
         return () => setRightChildren(null)
     }, [])
 
@@ -37,13 +44,7 @@ const EventsPage = () => {
     const { hostId, cameraId, period, startTime, endTime } = eventsStore.filters
 
     useEffect(() => {
-        const paramHostId = searchParams.get(eventsQueryParams.hostId) || undefined
-        const paramCameraId = searchParams.get(eventsQueryParams.cameraId) || undefined
-        const paramStartDate = searchParams.get(eventsQueryParams.startDate) || undefined
-        const paramEndDate = searchParams.get(eventsQueryParams.endDate) || undefined
-        const paramStartTime = searchParams.get(eventsQueryParams.startTime) || undefined
-        const paramEndTime = searchParams.get(eventsQueryParams.endTime) || undefined
-        eventsStore.loadFiltersFromPage(paramHostId, paramCameraId, paramStartDate, paramEndDate, paramStartTime, paramEndTime)
+
     }, [searchParams])
 
     useEffect(() => {
