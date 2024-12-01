@@ -7,9 +7,11 @@
 - Recordings page: Filter recordings by host, camera, and date.
 - Recordings page: Options to play, download, and share videos.
 - Recordings player page.
+- Events page: Filter recordings by host, camera, and date and time.
 - Access settings page: Configure which cameras are allowed and which are not.
 - Frigate config editor page: Save and restart configuration using JSON schema from the host.
 - Frigate system page: Display camera capture, ffmpeg, and decode stats. Show camera recordings storage stats.
+- Frigate mask camera editor: Add, edit, delete camera masks.
 - Admin pages access control: Restrict access to certain pages for administrators only.
 - Keycloak OpenID provider authorization using JWT tokens.
 # Instruction
