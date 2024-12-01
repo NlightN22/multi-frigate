@@ -27,21 +27,21 @@ export const FfprobeModal = ({ context, id, innerProps }: ContextModalProps<Ffpr
     const streamItems = data.map((res, streamIndex) => {
         if (res.return_code !== 0) {
             return (
-                <>
+                <div key={streamIndex}>
                     <Center><Text weight={700}>Stream: {streamIndex}</Text></Center>
                     <Text>{res.return_code}</Text>
                     <Text>{res.stderr}</Text>
-                </>
+                </div>
             )
         }
-        const flows = res.stdout.streams.map((stream) => (
-            <>
+        const flows = res.stdout.streams.map((stream, flowIndex) => (
+            <div key={streamIndex + flowIndex}>
                 <Text>Codec: {stream.codec_long_name}</Text>
                 {!stream.width && !stream.height ? null :
                     <Text>Resolution: {stream.width}x{stream.height} </Text>
                 }
                 <Text>FPS: {stream.avg_frame_rate}</Text>
-            </>
+            </div>
         ))
         return (
             <>

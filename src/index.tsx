@@ -8,6 +8,9 @@ import './services/i18n';
 import keycloakInstance from './services/keycloak-config';
 import CenterLoader from './shared/components/loaders/CenterLoader';
 import RootStore from './shared/stores/root.store';
+import { isProduction } from './shared/env.const';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from './shared/components/error.boundaries/ErrorFallback';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -19,11 +22,11 @@ const rootStore = new RootStore()
 export const Context = createContext<RootStore>(rootStore)
 
 const eventLogger = (event: string, error?: any) => {
-  console.log('onKeycloakEvent', event, error);
+  if (!isProduction) console.log('onKeycloakEvent', event, error);
 };
 
 const tokenLogger = (tokens: any) => {
-  console.log('onKeycloakTokens', tokens);
+  if (!isProduction) console.log('onKeycloakTokens', tokens);
 }
 
 root.render(
@@ -37,11 +40,13 @@ root.render(
       checkLoginIframe: false
     }}
   >
-    <Context.Provider value={rootStore}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </Context.Provider>
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <Context.Provider value={rootStore}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </Context.Provider>
+    </ErrorBoundary>
   </ReactKeycloakProvider>
 );
 
