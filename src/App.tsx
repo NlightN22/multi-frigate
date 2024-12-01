@@ -7,7 +7,7 @@ import { getCookie, setCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
 import AppBody from './AppBody';
 import { SideBarProvider } from './widgets/sidebars/SideBarContext';
-import { modals } from './shared/modals';
+import { modals } from './shared/components/modal.windows/modals';
 
 const queryClient = new QueryClient({
   defaultOptions: {
