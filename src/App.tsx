@@ -6,9 +6,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getCookie, setCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
 import AppBody from './AppBody';
-import { FfprobeModal } from './shared/components/modal.windows/FfprobeModal';
-import { VaInfoModal } from './shared/components/modal.windows/VaInfoModal';
 import { SideBarProvider } from './widgets/sidebars/SideBarContext';
+import { modals } from './shared/modals';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,17 +16,6 @@ const queryClient = new QueryClient({
     }
   }
 })
-
-const modals = {
-  ffprobeModal: FfprobeModal,
-  vaInfoModal: VaInfoModal,
-}
-
-declare module '@mantine/modals' {
-  export interface MantineModalsOverride {
-    modals: typeof modals;
-  }
-}
 
 function App() {
   const systemColorScheme = useColorScheme()
