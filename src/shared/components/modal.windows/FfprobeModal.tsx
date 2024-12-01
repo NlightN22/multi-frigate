@@ -20,6 +20,7 @@ export const FfprobeModal = ({ context, id, innerProps }: ContextModalProps<Ffpr
         }
     })
 
+
     if (isPending) return <CogwheelLoader />
     if (isError) return <RetryError onRetry={refetch} />
     if (!data || data.length < 1) return <Text>Data is empty</Text>
