@@ -1,16 +1,15 @@
 import { Button, Card, Flex, Grid, Group, Text, createStyles } from '@mantine/core';
-import { useIntersection } from '@mantine/hooks';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useAdminRole } from '../hooks/useAdminRole';
-import { recordingsPageQuery } from '../pages/RecordingsPage';
-import { routesPath } from '../router/routes.path';
-import { mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
-import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
-import AutoUpdatedImage from '../shared/components/images/AutoUpdatedImage';
-import CameraTagsList from './CameraTagsList';
-import { eventsQueryParams } from '../pages/EventsPage';
+import { useAdminRole } from '../../hooks/useAdminRole';
+import { useOnWhenVisible } from '../../hooks/useOnWhenVisible';
+import { eventsQueryParams } from '../../pages/EventsPage';
+import { recordingsPageQuery } from '../../pages/RecordingsPage';
+import { routesPath } from '../../router/routes.path';
+import { mapHostToHostname, proxyApi } from '../../services/frigate.proxy/frigate.api';
+import { GetCameraWHostWConfig } from '../../services/frigate.proxy/frigate.schema';
+import AutoUpdatedImage from '../../shared/components/images/AutoUpdatedImage';
+import CameraTagsList from '../CameraTagsList';
 
 const useStyles = createStyles((theme) => ({
     mainCard: {
@@ -45,18 +44,13 @@ const CameraCard = ({
     camera
 }: CameraCardProps) => {
     const { t } = useTranslation()
-    const [renderImage, setRenderImage] = useState<boolean>(false)
     const { classes } = useStyles();
-    const { ref, entry } = useIntersection({ threshold: 0.5, })
+    const [ref, isVisible] = useOnWhenVisible({ threshold: 0.5 })
     const navigate = useNavigate()
     const hostName = mapHostToHostname(camera.frigateHost)
     const imageUrl = hostName ? proxyApi.cameraImageURL(hostName, camera.name) : '' //todo implement get URL from live cameras
     const { isAdmin } = useAdminRole()
 
-    useEffect(() => {
-        if (entry && entry.isIntersecting)
-            setRenderImage(true)
-    }, [entry?.isIntersecting])
 
     const handleOpenLiveView = () => {
         const url = routesPath.LIVE_PATH.replace(':id', camera.id)
@@ -82,7 +76,7 @@ const CameraCard = ({
         <Grid.Col md={6} lg={3} p='0.2rem'>
             <Card ref={ref} h='100%' radius="lg" padding='0.5rem' className={classes.mainCard}>
                 <Text align='center' size='md' className={classes.headText} >{camera.name} / {camera.frigateHost?.name}</Text>
-                {!renderImage ? null :
+                {!isVisible ? null :
                     <AutoUpdatedImage onClick={handleOpenLiveView} enabled={camera.config?.enabled} imageUrl={imageUrl} />
                 }
                 <Group

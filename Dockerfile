@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # Build commands:
-# - $VERSION=1.7
+# - $VERSION=1.8
 # - rm build -r -Force ; rm ./node_modules/.cache/babel-loader -r -Force ; yarn build
 # - docker build --pull --rm -t oncharterliz/multi-frigate:latest -t oncharterliz/multi-frigate:$VERSION "."
 # - docker image push oncharterliz/multi-frigate:$VERSION ; docker image push oncharterliz/multi-frigate:latest

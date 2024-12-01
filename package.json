@@ -1,6 +1,6 @@
 {
   "name": "multi-frigate",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "private": true,
   "dependencies": {
     "@cycjimmy/jsmpeg-player": "^6.0.5",
@@ -48,6 +48,7 @@
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
     "react-i18next": "^14.1.0",
+    "react-intersection-observer": "^9.13.1",
     "react-konva": "^18.2.10",
     "react-router-dom": "^6.14.1",
     "react-scripts": "5.0.1",

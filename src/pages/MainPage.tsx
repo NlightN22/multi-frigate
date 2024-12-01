@@ -13,10 +13,11 @@ import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema'
 import ClearableTextInput from '../shared/components/inputs/ClearableTextInput';
 import CenterLoader from '../shared/components/loaders/CenterLoader';
 import { isProduction } from '../shared/env.const';
-import CameraCard from '../widgets/CameraCard';
 import MainFiltersRightSide from '../widgets/sidebars/MainFiltersRightSide';
 import { SideBarContext } from '../widgets/sidebars/SideBarContext';
 import RetryErrorPage from './RetryErrorPage';
+import CameraCard from '../widgets/card/CameraCard';
+import { useInView } from 'react-intersection-observer';
 
 export const mainPageParams = {
     hostId: 'hostId',
@@ -32,7 +33,10 @@ const MainPage = () => {
 
     const { setRightChildren } = useContext(SideBarContext)
     const { hostId: selectedHostId, selectedTags, searchQuery } = mainStore.filters
-    const [filteredCameras, setFilteredCameras] = useState<GetCameraWHostWConfig[]>()
+    const [filteredCameras, setFilteredCameras] = useState<GetCameraWHostWConfig[]>([])
+
+    const { ref, inView } = useInView({ threshold: 0.5 })
+    const [visibleCameras, setVisibleCameras] = useState<GetCameraWHostWConfig[]>([])
 
     const realmUser = useRealmUser()
     if (!isProduction) console.log('Realmuser:', realmUser)
@@ -41,6 +45,23 @@ const MainPage = () => {
         queryKey: [frigateQueryKeys.getCamerasWHost],
         queryFn: frigateApi.getCamerasWHost
     })
+
+    useEffect(() => {
+        const pageSize = 20; 
+        if (inView && filteredCameras.length > visibleCameras.length) {
+            const nextBatch = filteredCameras.slice(visibleCameras.length, visibleCameras.length + pageSize);
+            setVisibleCameras(prev => [...prev, ...nextBatch]);
+        }
+    }, [inView, filteredCameras, visibleCameras]);
+
+    useEffect(() => {
+        const hostId = searchParams.get(mainPageParams.hostId) || ''
+        const searchQuery = searchParams.get(mainPageParams.searchQuery) || ''
+        const selectedTags = mainStore.getArrayParam(mainPageParams.selectedTags)
+        mainStore.setHostId(hostId, navigate)
+        mainStore.setSearchQuery(searchQuery, navigate)
+        mainStore.setSelectedTags(selectedTags, navigate)
+    }, [searchParams])
 
     useEffect(() => {
         const deSerializedTags = mainStore.getArrayParam(mainPageParams.selectedTags)
@@ -56,7 +77,7 @@ const MainPage = () => {
 
     useEffect(() => {
         if (!cameras) {
-            setFilteredCameras(undefined)
+            setFilteredCameras([])
             return
         }
 
@@ -68,32 +89,33 @@ const MainPage = () => {
         }
 
         setFilteredCameras(cameras.filter(filterCameras))
+        setVisibleCameras([])
     }, [searchQuery, cameras, selectedHostId, selectedTags])
 
 
-    const cards = useMemo(() => {
-        if (filteredCameras)
-            return filteredCameras.filter(camera => {
-                if (camera.frigateHost && !camera.frigateHost.enabled) return false
-                return true
-            }).map(camera => (
-                <CameraCard
-                    key={camera.id}
-                    camera={camera}
-                />)
-            )
-        else if (cameras)
-            return cameras.filter(camera => {
-                if (camera.frigateHost && !camera.frigateHost.enabled) return false
-                return true
-            }).map(camera => (
-                <CameraCard
-                    key={camera.id}
-                    camera={camera}
-                />)
-            )
-        else return []
-    }, [cameras, filteredCameras])
+    // const cards = useMemo(() => {
+    //     if (filteredCameras)
+    //         return filteredCameras.filter(camera => {
+    //             if (camera.frigateHost && !camera.frigateHost.enabled) return false
+    //             return true
+    //         }).map(camera => (
+    //             <CameraCard
+    //                 key={camera.id}
+    //                 camera={camera}
+    //             />)
+    //         ).slice(0,5)
+    //     else if (cameras)
+    //         return cameras.filter(camera => {
+    //             if (camera.frigateHost && !camera.frigateHost.enabled) return false
+    //             return true
+    //         }).map(camera => (
+    //             <CameraCard
+    //                 key={camera.id}
+    //                 camera={camera}
+    //             />)
+    //         ).slice(0,5)
+    //     else return []
+    // }, [cameras, filteredCameras])
 
     const debouncedHandleSearchQuery = useDebounce((value: string) => {
         mainStore.setSearchQuery(value, navigate);
@@ -126,8 +148,11 @@ const MainPage = () => {
             </Flex>
             <Flex justify='center' h='100%' direction='column' w='100%' >
                 <Grid mt='sm' justify="center" mb='sm' align='stretch'>
-                    {cards}
+                    {visibleCameras.map(camera => (
+                        <CameraCard key={camera.id} camera={camera} />
+                    ))}
                 </Grid>
+                <div ref={ref} style={{ height: '50px' }} /> {/* trigger point */}
             </Flex>
         </Flex>
     );

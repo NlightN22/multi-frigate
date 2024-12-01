@@ -26,7 +26,7 @@ export class MainStore {
         const params = new URLSearchParams();
         if (this.filters.hostId) params.set(mainPageParams.hostId, this.filters.hostId);
         if (this.filters.searchQuery) params.set(mainPageParams.searchQuery, this.filters.searchQuery);
-        if (this.filters.selectedTags) {
+        if (this.filters.selectedTags && this.filters.selectedTags.length > 0) {
             const serializedTags = this.filters.selectedTags.join(",")
             params.set(mainPageParams.selectedTags, serializedTags);
         }
