@@ -27,9 +27,9 @@ const CameraAccordion = ({
 
     const { data: recordings, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getRecordingsSummary, camera?.id],
-        queryFn: () => {
+        queryFn: ({signal}) => {
             if (camera && hostName) {
-                return proxyApi.getRecordingsSummary(hostName, camera.name, getResolvedTimeZone())
+                return proxyApi.getRecordingsSummary(hostName, camera.name, getResolvedTimeZone(), signal)
             }
             return null
         }

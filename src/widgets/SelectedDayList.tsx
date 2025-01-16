@@ -30,11 +30,11 @@ const SelectedDayList = ({
 
     const { data, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getRecordingsSummary, recStore.filteredCamera?.id, day],
-        queryFn: async () => {
+        queryFn: async ({signal}) => {
             if (camera && host) {
                 const hostName = mapHostToHostname(host)
                 if (hostName) {
-                    return proxyApi.getRecordingsSummary(hostName, camera.name, getResolvedTimeZone())
+                    return proxyApi.getRecordingsSummary(hostName, camera.name, getResolvedTimeZone(), signal)
                 }
             }
             return null

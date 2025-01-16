@@ -106,10 +106,12 @@ export const proxyApi = {
         hostName: string,
         cameraName: string,
         timezone: string,
+        abortSignal?: AbortSignal,
     ) =>
         instanceApi.get<RecordSummary[]>(`proxy/${hostName}/api/${cameraName}/recordings/summary`, {
             params: { timezone },
             timeout: 5 * 60 * 1000,
+            signal: abortSignal
         }).then(res => res.data),
 
     // E.g. http://127.0.0.1:5000/api/events?before=1708534799&after=1708448400&camera=CameraName&has_clip=1&include_thumbnails=0&limit=5000
@@ -125,6 +127,7 @@ export const proxyApi = {
         includeThumnails?: boolean,
         minScore?: number,
         maxScore?: number,
+        abortSignal?: AbortSignal,
     ) =>
         instanceApi.get<EventFrigate[]>(`proxy/${hostName}/api/events`, {
             params: {
@@ -140,6 +143,7 @@ export const proxyApi = {
                 max_score: maxScore,
             },
             timeout: 5 * 60 * 1000,
+            signal: abortSignal
         }).then(res => res.data),
 
     getEventsSummary: (hostName: string, cameraName: string) =>

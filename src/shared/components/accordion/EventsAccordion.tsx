@@ -53,7 +53,7 @@ const EventsAccordion = ({
 
     const { data, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getEvents, host, camera, day, hour, startTime, endTime],
-        queryFn: () => {
+        queryFn: ({signal}) => {
             if (!isRequiredParams) return null
             let queryStartTime: number
             let queryEndTime: number
@@ -84,7 +84,8 @@ const EventsAccordion = ({
                     parsed.data.limit,
                     parsed.data.includeThumnails,
                     parsed.data.minScore,
-                    parsed.data.maxScore
+                    parsed.data.maxScore,
+                    signal
                 )
             }
             return null
