@@ -50,7 +50,7 @@ export const frigateApi = {
         name?: string | null | undefined;
         frigateHostId?: string | null | undefined;
         tagIds?: string | string[];
-        offset?: number;
+        offset?: any;
         limit?: number;
     } = {}) =>
         instanceApi

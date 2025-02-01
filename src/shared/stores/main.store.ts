@@ -7,11 +7,11 @@ import { isProduction } from "../env.const";
 interface Filters {
     hostId?: string | null
     searchQuery?: string | null
-    selectedTags?: string[]
+    selectedTags: string[]
 }
 
 export class MainStore {
-    filters: Filters = {}
+    filters: Filters = { selectedTags: [] }
 
     constructor() {
         makeAutoObservable(this)
