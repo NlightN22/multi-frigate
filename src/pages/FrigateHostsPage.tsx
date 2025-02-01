@@ -24,7 +24,7 @@ const FrigateHostsPage = () => {
         queryFn: frigateApi.getHosts,
     })
 
-    const { isAdmin, isLoading: adminLoading } = useAdminRole()
+    const { isAdmin, isLoading: adminLoading, isError: adminError } = useAdminRole()
     const [pageData, setPageData] = useState(data)
 
     useEffect(() => {
@@ -90,7 +90,7 @@ const FrigateHostsPage = () => {
 
     if (hostsPending || adminLoading) return <CenterLoader />
     if (!isAdmin) return <Forbidden />
-    if (hostsError) return <RetryErrorPage />
+    if (hostsError || adminError) return <RetryErrorPage />
     if (!pageData) return <Text>Empty server response</Text>
 
     return (

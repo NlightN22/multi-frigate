@@ -101,11 +101,11 @@ const EditCameraPage = () => {
         },
     })
 
-    const { isAdmin, isLoading: adminLoading } = useAdminRole()
+    const { isAdmin, isLoading: adminLoading, isError: adminError } = useAdminRole()
 
     if (isPending || adminLoading) return <CenterLoader />
     if (!isAdmin) return <Forbidden />
-    if (isError) return <RetryErrorPage onRetry={refetch} />
+    if (isError || adminError) return <RetryErrorPage onRetry={refetch} />
 
     const hostName = mapHostToHostname(camera.frigateHost)
 

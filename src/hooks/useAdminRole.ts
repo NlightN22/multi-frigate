@@ -8,10 +8,11 @@ import { getConfigSchema } from "../services/frigate.proxy/frigate.schema";
 export interface AdminRole {
     isLoading: boolean
     isAdmin: boolean
+    isError: boolean
 }
 
 export const useAdminRole = (): AdminRole => {
-    const { data: adminConfig, isError, isLoading } = useQuery({
+    const { data: adminConfig, isError, isLoading, error } = useQuery({
         queryKey: [frigateQueryKeys.getAdminRole],
         queryFn: frigateApi.getAdminRole,
         staleTime: 1000 * 60 * 60,
@@ -21,9 +22,9 @@ export const useAdminRole = (): AdminRole => {
     const roles = useRealmAccessRoles()
     const [isAdmin, setIsAdmin] = useState(false)
 
-    if (isError) setIsAdmin(false)
-
     useEffect(() => {
+        if (isLoading) return
+
         const parsedConfig = getConfigSchema.safeParse(adminConfig)
         if (!isProduction) console.log('useAdminRole parsedConfig success:', parsedConfig.success)
         if (!parsedConfig.success) {
@@ -38,5 +39,12 @@ export const useAdminRole = (): AdminRole => {
         }
     }, [roles, adminConfig, isLoading])
 
-    return { isLoading, isAdmin }
+    useEffect(() => {
+        if (isError) {
+            console.error("useAdminRole error: ", error.message);
+            setIsAdmin(false);
+        }
+    }, [isError]);
+
+    return { isLoading, isAdmin, isError }
 }

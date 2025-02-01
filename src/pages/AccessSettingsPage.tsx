@@ -20,7 +20,7 @@ const AccessSettings = () => {
         queryKey: [frigateQueryKeys.getRoles],
         queryFn: frigateApi.getRoles
     })
-    const { isAdmin, isLoading: adminLoading } = useAdminRole()
+    const { isAdmin, isLoading: adminLoading, isError: adminError } = useAdminRole()
 
 
 
@@ -29,7 +29,7 @@ const AccessSettings = () => {
 
 
     if (isPending || adminLoading) return <CenterLoader />
-    if (isError || !data) return <RetryErrorPage onRetry={refetch} />
+    if (isError || adminError || !data) return <RetryErrorPage onRetry={refetch} />
     if (!isAdmin) return <Forbidden />
 
     const handleSelectRole = (value: string) => {
