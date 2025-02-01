@@ -93,30 +93,6 @@ const MainPage = () => {
     }, [searchQuery, cameras, selectedHostId, selectedTags])
 
 
-    // const cards = useMemo(() => {
-    //     if (filteredCameras)
-    //         return filteredCameras.filter(camera => {
-    //             if (camera.frigateHost && !camera.frigateHost.enabled) return false
-    //             return true
-    //         }).map(camera => (
-    //             <CameraCard
-    //                 key={camera.id}
-    //                 camera={camera}
-    //             />)
-    //         ).slice(0,5)
-    //     else if (cameras)
-    //         return cameras.filter(camera => {
-    //             if (camera.frigateHost && !camera.frigateHost.enabled) return false
-    //             return true
-    //         }).map(camera => (
-    //             <CameraCard
-    //                 key={camera.id}
-    //                 camera={camera}
-    //             />)
-    //         ).slice(0,5)
-    //     else return []
-    // }, [cameras, filteredCameras])
-
     const debouncedHandleSearchQuery = useDebounce((value: string) => {
         mainStore.setSearchQuery(value, navigate);
     }, 600);
