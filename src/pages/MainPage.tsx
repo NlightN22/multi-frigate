@@ -42,9 +42,20 @@ const MainPage = () => {
     if (!isProduction) console.log('Realmuser:', realmUser)
 
     const { data: cameras, isPending, isError, refetch } = useQuery({
-        queryKey: [frigateQueryKeys.getCamerasWHost],
-        queryFn: frigateApi.getCamerasWHost
+        queryKey: [frigateQueryKeys.getCamerasWHost, selectedHostId, searchQuery, selectedTags],
+        queryFn: () =>
+            frigateApi.getCamerasWHost({
+                name: searchQuery,            // filter by camera name
+                frigateHostId: selectedHostId,  // filter by host id
+                tagIds: selectedTags,            // filter by tag id(s)
+                // offset and limit can be added later for pagination
+            }),
     })
+
+    useEffect(() => {
+        setFilteredCameras(cameras || []);
+        setVisibleCameras([]); // reset visible cameras for pagination
+    }, [cameras]);
 
     useEffect(() => {
         const pageSize = 20; 
@@ -74,23 +85,6 @@ const MainPage = () => {
         setRightChildren(<MainFiltersRightSide />);
         return () => setRightChildren(null);
     }, []);
-
-    useEffect(() => {
-        if (!cameras) {
-            setFilteredCameras([])
-            return
-        }
-
-        const filterCameras = (camera: GetCameraWHostWConfig) => {
-            const matchesHostId = selectedHostId ? camera.frigateHost?.id === selectedHostId : true
-            const matchesSearchQuery = searchQuery ? camera.name.toLowerCase().includes(searchQuery.toLowerCase()) : true
-            const matchesTags = selectedTags ? selectedTags.length === 0 || camera.tags.some(tag => selectedTags.includes(tag.id)) : true
-            return matchesHostId && matchesSearchQuery && matchesTags
-        }
-
-        setFilteredCameras(cameras.filter(filterCameras))
-        setVisibleCameras([])
-    }, [searchQuery, cameras, selectedHostId, selectedTags])
 
 
     const debouncedHandleSearchQuery = useDebounce((value: string) => {

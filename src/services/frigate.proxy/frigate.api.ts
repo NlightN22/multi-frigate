@@ -46,7 +46,16 @@ export const frigateApi = {
     getHost: (id: string) => instanceApi.get<GetFrigateHost>(`apiv1/frigate-hosts/${id}`).then(res => res.data),
     getCameraById: (cameraId: string) => instanceApi.get<GetCameraWHostWConfig>(`apiv1/cameras/${cameraId}`).then(res => res.data),
     getCamerasByHostId: (hostId: string) => instanceApi.get<GetCameraWHostWConfig[]>(`apiv1/cameras/host/${hostId}`).then(res => res.data),
-    getCamerasWHost: () => instanceApi.get<GetCameraWHostWConfig[]>(`apiv1/cameras`).then(res => res.data),
+    getCamerasWHost: (params: {
+        name?: string | null | undefined;
+        frigateHostId?: string | null | undefined;
+        tagIds?: string | string[];
+        offset?: number;
+        limit?: number;
+    } = {}) =>
+        instanceApi
+            .get<GetCameraWHostWConfig[]>('apiv1/cameras', { params })
+            .then(res => res.data),
     getCameraWHost: (id: string) => instanceApi.get<GetCameraWHostWConfig>(`apiv1/cameras/${id}`).then(res => res.data),
     putHosts: (hosts: PutFrigateHost[]) => instanceApi.put<GetFrigateHost[]>('apiv1/frigate-hosts', hosts).then(res => res.data),
     deleteHosts: (hosts: DeleteFrigateHost[]) => instanceApi.delete<GetFrigateHost[]>('apiv1/frigate-hosts', { data: hosts }).then(res => res.data),

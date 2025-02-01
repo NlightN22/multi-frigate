@@ -18,7 +18,7 @@ const CamerasTransferList = ({
     const queryClient = useQueryClient()
     const { data: cameras, isPending, isError, refetch } = useQuery({
         queryKey: [frigateQueryKeys.getCamerasWHost, roleId],
-        queryFn: frigateApi.getCamerasWHost
+        queryFn: () => frigateApi.getCamerasWHost()
     })
 
     const [lists, setLists] = useState<[TransferListItem[], TransferListItem[]]>([[], []])
