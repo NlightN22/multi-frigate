@@ -18,7 +18,6 @@ import CameraCard from '../widgets/card/CameraCard';
 import MainFiltersRightSide from '../widgets/sidebars/MainFiltersRightSide';
 import { SideBarContext } from '../widgets/sidebars/SideBarContext';
 import RetryErrorPage from './RetryErrorPage';
-import { useIntersection } from '@mantine/hooks';
 
 export const mainPageParams = {
     hostId: 'hostId',
@@ -43,55 +42,55 @@ const MainPage = () => {
 
     const pageSize = 20;
 
-    // const {
-    //     data,
-    //     isLoading,
-    //     isError,
-    //     fetchNextPage,
-    //     hasNextPage,
-    //     isFetching,
-    //     isFetchingNextPage,
-    //     refetch,
-    // } = useInfiniteQuery<GetCameraWHostWConfig[]>({
-    //     queryKey: [frigateQueryKeys.getCamerasWHost, selectedHostId, searchQuery, selectedTags],
-    //     queryFn: ({ pageParam = 0 }) =>
-    //         // Pass pagination parameters to the backend
-    //         frigateApi.getCamerasWHost({
-    //             name: searchQuery,
-    //             frigateHostId: selectedHostId,
-    //             tagIds: selectedTags,
-    //             offset: pageParam,
-    //             limit: pageSize,
-    //         }),
-    //     getNextPageParam: (lastPage, pages) => {
-    //         // If last page size is less than pageSize, no more pages
-    //         if (lastPage.length < pageSize) return undefined;
-    //         // Next page offset is pages.length * pageSize
-    //         return pages.length * pageSize;
-    //     },
-    //     initialPageParam: 0,
-    // });
+    const {
+        data,
+        isLoading,
+        isError,
+        fetchNextPage,
+        hasNextPage,
+        isFetching,
+        isFetchingNextPage,
+        refetch,
+    } = useInfiniteQuery<GetCameraWHostWConfig[]>({
+        queryKey: [frigateQueryKeys.getCamerasWHost, selectedHostId, searchQuery, selectedTags],
+        queryFn: ({ pageParam = 0 }) =>
+            // Pass pagination parameters to the backend
+            frigateApi.getCamerasWHost({
+                name: searchQuery,
+                frigateHostId: selectedHostId,
+                tagIds: selectedTags,
+                offset: pageParam,
+                limit: pageSize,
+            }),
+        getNextPageParam: (lastPage, pages) => {
+            // If last page size is less than pageSize, no more pages
+            if (lastPage.length < pageSize) return undefined;
+            // Next page offset is pages.length * pageSize
+            return pages.length * pageSize;
+        },
+        initialPageParam: 0,
+    });
 
-    // const cameras: GetCameraWHostWConfig[] = data?.pages.flat() || [];
-    const cameras: GetCameraWHostWConfig[] = [];
+    const cameras: GetCameraWHostWConfig[] = data?.pages.flat() || [];
+    // const cameras: GetCameraWHostWConfig[] = [];
 
     const [visibleCount, setVisibleCount] = useState(pageSize)
 
-    // useEffect(() => {
-    //     if (inView && !isFetching) {
-    //         if (visibleCount < cameras.length) {
-    //             setVisibleCount(prev => Math.min(prev + pageSize, cameras.length));
-    //         } else if (hasNextPage && !isFetchingNextPage) {
-    //             loadTriggered.current = true;
-    //             fetchNextPage().then(() => {
-    //                 // Add a small delay before resetting the flag
-    //                 setTimeout(() => {
-    //                   loadTriggered.current = false;
-    //                 }, 300); // delay in milliseconds; adjust as needed
-    //               });
-    //         }
-    //     }
-    // }, [inView, cameras, visibleCount, hasNextPage, isFetchingNextPage, isFetching, fetchNextPage])
+    useEffect(() => {
+        if (inView && !isFetching) {
+            if (visibleCount < cameras.length) {
+                setVisibleCount(prev => Math.min(prev + pageSize, cameras.length));
+            } else if (hasNextPage && !isFetchingNextPage) {
+                loadTriggered.current = true;
+                fetchNextPage().then(() => {
+                    // Add a small delay before resetting the flag
+                    setTimeout(() => {
+                      loadTriggered.current = false;
+                    }, 300); // delay in milliseconds; adjust as needed
+                  });
+            }
+        }
+    }, [inView, cameras, visibleCount, hasNextPage, isFetchingNextPage, isFetching, fetchNextPage])
 
     useEffect(() => {
         const hostId = searchParams.get(mainPageParams.hostId) || ''
@@ -110,8 +109,8 @@ const MainPage = () => {
             selectedTags: deSerializedTags,
         })
 
-        // setRightChildren(<MainFiltersRightSide />);
-        // return () => setRightChildren(null);
+        setRightChildren(<MainFiltersRightSide />);
+        return () => setRightChildren(null);
     }, []);
 
 
@@ -123,8 +122,8 @@ const MainPage = () => {
         debouncedHandleSearchQuery(event.currentTarget.value)
     }
 
-    // if (isLoading) return <CogwheelLoader />;
-    // if (isError) return <RetryErrorPage onRetry={refetch} />
+    if (isLoading) return <CogwheelLoader />;
+    if (isError) return <RetryErrorPage onRetry={refetch} />
     if (!isProduction) console.log('MainPage rendered')
 
 
@@ -133,7 +132,7 @@ const MainPage = () => {
             <Flex w='100%'
                 justify='center'
             >
-                {/* <ClearableTextInput
+                <ClearableTextInput
                     clearable
                     maw={400}
                     style={{ flexGrow: 1 }}
@@ -141,17 +140,17 @@ const MainPage = () => {
                     icon={<IconSearch size="0.9rem" stroke={1.5} />}
                     value={searchQuery || undefined}
                     onChange={onInputChange}
-                /> */}
+                />
             </Flex>
             <Flex justify='center' h='100%' direction='column' w='100%' >
-                {/* <Grid mt='sm' justify="center" mb='sm' align='stretch'>
+                <Grid mt='sm' justify="center" mb='sm' align='stretch'>
                     {cameras.slice(0, visibleCount).map(camera => (
                         <CameraCard key={camera.id} camera={camera} />
                     ))}
                 </Grid>
                 { isFetching && !isFetchingNextPage ? <CogwheelLoader /> : null}
                 {/* trigger point. Rerender twice when enabled */}
-                {/* <div ref={ref} style={{ height: '50px' }} /> */}
+                <div ref={ref} style={{ height: '50px' }} />
             </Flex>
         </Flex>
     );
