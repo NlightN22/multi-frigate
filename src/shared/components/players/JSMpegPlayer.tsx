@@ -1,74 +1,249 @@
 // @ts-ignore we know this doesn't have types
 import JSMpeg from "@cycjimmy/jsmpeg-player";
 import { useViewportSize } from "@mantine/hooks";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { cn } from "../../utils/class.merge";
+import { PlayerStatsType } from "../../../types/live";
 
 type JSMpegPlayerProps = {
-  wsUrl: string;
-  cameraHeight?: number,
-  cameraWidth?: number,
+  url: string;
+  camera: string
+  className?: string;
+  width: number;
+  height: number;
+  containerRef: React.MutableRefObject<HTMLDivElement | null>;
+  playbackEnabled: boolean;
+  useWebGL: boolean;
+  setStats?: (stats: PlayerStatsType) => void;
+  onPlaying?: () => void;
 };
 
 const JSMpegPlayer = (
   {
-    wsUrl,
-    cameraWidth = 1200,
-    cameraHeight = 800,
+    url,
+    camera,
+    width,
+    height,
+    className,
+    containerRef,
+    playbackEnabled,
+    useWebGL = false,
+    setStats,
+    onPlaying,
   }: JSMpegPlayerProps
 ) => {
-  const { t } = useTranslation()
-  const playerRef = useRef<HTMLDivElement>(null);
-  const [playerInitialized, setPlayerInitialized] = useState(false)
+  const videoRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const internalContainerRef = useRef<HTMLDivElement | null>(null);
+  const onPlayingRef = useRef(onPlaying);
+  const [showCanvas, setShowCanvas] = useState(false);
+  const [hasData, setHasData] = useState(false);
+  const hasDataRef = useRef(hasData);
+  const [dimensionsReady, setDimensionsReady] = useState(false);
+  const bytesReceivedRef = useRef(0);
+  const lastTimestampRef = useRef(Date.now());
+  const statsIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { height: maxHeight, width: maxWidth } = useViewportSize()
+  const selectedContainerRef = useMemo(
+    () => (containerRef.current ? containerRef : internalContainerRef),
+    // we know that these deps are correct
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [containerRef, containerRef.current, internalContainerRef],
+  );
+
+  const { height: containerHeight, width: containerWidth } = useViewportSize()
+
+  const stretch = true;
+  const aspectRatio = width / height;
+
+  const fitAspect = useMemo(
+    () => containerWidth / containerHeight,
+    [containerWidth, containerHeight],
+  );
+
+  const scaledHeight = useMemo(() => {
+    if (selectedContainerRef?.current && width && height) {
+      const scaledHeight =
+        aspectRatio < (fitAspect ?? 0)
+          ? Math.floor(
+              Math.min(
+                containerHeight,
+                selectedContainerRef.current?.clientHeight,
+              ),
+            )
+          : aspectRatio >= fitAspect
+            ? Math.floor(containerWidth / aspectRatio)
+            : Math.floor(containerWidth / aspectRatio) / 1.5;
+      const finalHeight = stretch
+        ? scaledHeight
+        : Math.min(scaledHeight, height);
+
+      if (finalHeight > 0) {
+        return finalHeight;
+      }
+    }
+    return undefined;
+  }, [
+    aspectRatio,
+    containerWidth,
+    containerHeight,
+    fitAspect,
+    height,
+    width,
+    stretch,
+    selectedContainerRef,
+  ]);
+
+  const scaledWidth = useMemo(() => {
+    if (aspectRatio && scaledHeight) {
+      return Math.ceil(scaledHeight * aspectRatio);
+    }
+    return undefined;
+  }, [scaledHeight, aspectRatio]);
 
   useEffect(() => {
-    const video = new JSMpeg.VideoElement(
-      playerRef.current,
-      wsUrl,
-      {},
-      { protocols: [], audio: false, videoBufferSize: 1024 * 1024 * 4 }
-    );
+    if (scaledWidth && scaledHeight) {
+      setDimensionsReady(true);
+    }
+  }, [scaledWidth, scaledHeight]);
 
-    const toggleFullscreen = () => {
-      const canvas = video.els.canvas;
-      if (!document.fullscreenElement && !(document as any).webkitFullscreenElement) { // Use bracket notation for webkit
-        // Enter fullscreen
-        if (canvas.requestFullscreen) {
-          canvas.requestFullscreen();
-        } else if ((canvas as any).webkitRequestFullScreen) { // Use bracket notation for webkit
-          (canvas as any).webkitRequestFullScreen();
-        } else if (canvas.mozRequestFullScreen) {
-          canvas.mozRequestFullScreen();
+  useEffect(() => {
+    onPlayingRef.current = onPlaying;
+  }, [onPlaying]);
+
+  useEffect(() => {
+    if (!selectedContainerRef?.current || !url) {
+      return;
+    }
+
+    const videoWrapper = videoRef.current;
+    const canvas = canvasRef.current;
+    let videoElement: JSMpeg.VideoElement | null = null;
+
+    let frameCount = 0;
+
+    setHasData(false);
+
+    if (videoWrapper && playbackEnabled) {
+      // Delayed init to avoid issues with react strict mode
+      const initPlayer = setTimeout(() => {
+        videoElement = new JSMpeg.VideoElement(
+          videoWrapper,
+          url,
+          { canvas: canvas },
+          {
+            protocols: [],
+            audio: false,
+            disableGl: !useWebGL,
+            disableWebAssembly: !useWebGL,
+            videoBufferSize: 1024 * 1024 * 4,
+            onVideoDecode: () => {
+              if (!hasDataRef.current) {
+                setHasData(true);
+                onPlayingRef.current?.();
+              }
+              frameCount++;
+            },
+          },
+        );
+
+        // Set up WebSocket message handler
+        if (
+          videoElement.player &&
+          videoElement.player.source &&
+          videoElement.player.source.socket
+        ) {
+          const socket = videoElement.player.source.socket;
+          socket.addEventListener("message", (event: MessageEvent) => {
+            if (event.data instanceof ArrayBuffer) {
+              bytesReceivedRef.current += event.data.byteLength;
+            }
+          });
         }
-      } else {
-        // Exit fullscreen
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if ((document as any).webkitExitFullscreen) { // Use bracket notation for webkit
-          (document as any).webkitExitFullscreen();
-        } else if ((document as any).mozCancelFullScreen) {
-          (document as any).mozCancelFullScreen();
+
+        // Update stats every second
+        statsIntervalRef.current = setInterval(() => {
+          const currentTimestamp = Date.now();
+          const timeDiff = (currentTimestamp - lastTimestampRef.current) / 1000; // in seconds
+          const bitrate = (bytesReceivedRef.current * 8) / timeDiff / 1000; // in kbps
+
+          setStats?.({
+            streamType: "jsmpeg",
+            bandwidth: Math.round(bitrate),
+            totalFrames: frameCount,
+            latency: undefined,
+            droppedFrames: undefined,
+            decodedFrames: undefined,
+            droppedFrameRate: undefined,
+          });
+
+          bytesReceivedRef.current = 0;
+          lastTimestampRef.current = currentTimestamp;
+        }, 1000);
+
+        return () => {
+          if (statsIntervalRef.current) {
+            clearInterval(statsIntervalRef.current);
+            frameCount = 0;
+            statsIntervalRef.current = null;
+          }
+        };
+      }, 0);
+
+      return () => {
+        clearTimeout(initPlayer);
+        if (statsIntervalRef.current) {
+          clearInterval(statsIntervalRef.current);
+          statsIntervalRef.current = null;
         }
-      }
-    };
+        if (videoElement) {
+          try {
+            // this causes issues in react strict mode
+            // https://stackoverflow.com/questions/76822128/issue-with-cycjimmy-jsmpeg-player-in-react-18-cannot-read-properties-of-null-o
+            videoElement.destroy();
+            // eslint-disable-next-line no-empty
+          } catch (e) {}
+        }
+      };
+    }
+    // we know that these deps are correct
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playbackEnabled, url]);
 
-    video.els.canvas.addEventListener('dblclick', toggleFullscreen);
+  useEffect(() => {
+    setShowCanvas(hasData && dimensionsReady);
+  }, [hasData, dimensionsReady]);
 
-    return () => {
-      video.destroy();
-      video.els.canvas.removeEventListener('dblclick', toggleFullscreen);
-    };
-  }, [wsUrl]);
+  useEffect(() => {
+    hasDataRef.current = hasData;
+  }, [hasData]);
 
   return (
-    <div
-      ref={playerRef}
-      key={wsUrl}
-      title={t('player.doubleClickToFullHint')}
-      style={{ width: cameraWidth, height: cameraHeight, maxWidth: maxWidth, maxHeight: maxHeight - 100, }} />
-  )
-};
+    <div className={cn(className, !containerRef.current && "size-full")}>
+      <div
+        className="internal-jsmpeg-container size-full"
+        ref={internalContainerRef}
+      >
+        <div
+          ref={videoRef}
+          className={cn(
+            "jsmpeg flex h-full w-auto items-center justify-center",
+            !showCanvas && "hidden",
+          )}
+        >
+          <canvas
+            ref={canvasRef}
+            className="rounded-lg md:rounded-2xl"
+            style={{
+              width: scaledWidth,
+              height: scaledHeight,
+            }}
+          ></canvas>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default JSMpegPlayer

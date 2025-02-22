@@ -27,7 +27,11 @@ const LiveCameraPage = () => {
     return (
         <Flex w='100%' h='100%' justify='center' align='center' direction='column'>
             <CameraPageHeader camera={camera} editButton />
-            <Player camera={camera} />
+            <Player 
+            camera={camera} 
+            useWebGL={true}
+            preferredLiveMode='jsmpeg'
+            />
         </Flex>
     );
 }
