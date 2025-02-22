@@ -1,16 +1,16 @@
+import { Button, Flex } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconAlertCircle, IconCircleCheck } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { v4 } from 'uuid';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { OIDPConfig } from '../services/frigate.proxy/frigate.schema';
 import RetryError from '../shared/components/RetryError';
 import { FloatingLabelInput } from '../shared/components/inputs/FloatingLabelInput';
-import CogwheelLoader from '../shared/components/loaders/CogwheelLoader';
-import { Flex, Button } from '@mantine/core';
+import CenteredCogwheelLoader from '../shared/components/loaders/CenteredCogwheelLoader';
 import { isProduction } from '../shared/env.const';
-import { useEffect, useState } from 'react';
 
 interface OIDPSettingsFormProps {
     isConfigValid?: (valid: boolean) => void
@@ -101,7 +101,7 @@ const OIDPSettingsForm: React.FC<OIDPSettingsFormProps> = ({
         if (data) setConfig(data)
     }
 
-    if (isPending) return <CogwheelLoader />
+    if (isPending) return <CenteredCogwheelLoader />
     if (isError) return <RetryError onRetry={refetch} />
 
     return (

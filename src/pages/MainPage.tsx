@@ -12,6 +12,7 @@ import { useRealmUser } from '../hooks/useRealmUser';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { GetCameraWHostWConfig } from '../services/frigate.proxy/frigate.schema';
 import ClearableTextInput from '../shared/components/inputs/ClearableTextInput';
+import CenteredCogwheelLoader from '../shared/components/loaders/CenteredCogwheelLoader';
 import CogwheelLoader from '../shared/components/loaders/CogwheelLoader';
 import { isProduction } from '../shared/env.const';
 import CameraCard from '../widgets/card/CameraCard';
@@ -122,7 +123,7 @@ const MainPage = () => {
         debouncedHandleSearchQuery(event.currentTarget.value)
     }
 
-    if (isLoading) return <CogwheelLoader />;
+    if (isLoading) return <CenteredCogwheelLoader />;
     if (isError) return <RetryErrorPage onRetry={refetch} />
     if (!isProduction) console.log('MainPage rendered')
 

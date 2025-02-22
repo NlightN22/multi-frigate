@@ -13,7 +13,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
 import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
+import OverlayCogwheelLoader from '../shared/components/loaders/OverlayCogwheelLoader';
 import { isProduction } from '../shared/env.const';
 import { SaveOption } from '../types/saveConfig';
 import Forbidden from './403';
@@ -148,7 +148,7 @@ const HostConfigPage = () => {
       saveConfig({ saveOption: saveOption, config: editorRef.current.getValue() })
     }, [editorRef])
 
-  if (configPending || adminLoading) return <CenterLoader />
+  if (configPending || adminLoading) return <OverlayCogwheelLoader />
 
   if (configError) return <RetryErrorPage onRetry={refetch} />
   if (!isAdmin) return <Forbidden />

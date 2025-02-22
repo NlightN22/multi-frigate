@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { frigateApi, frigateQueryKeys } from '../../../services/frigate.proxy/frigate.api';
 import RetryError from '../RetryError';
-import CogwheelLoader from '../loaders/CogwheelLoader';
+import CenteredCogwheelLoader from '../loaders/CenteredCogwheelLoader';
 import { OneSelectItem } from './OneSelectFilter';
 
 interface RoleSelectFilterProps extends Omit<SelectProps, 'data'> {
@@ -21,7 +21,7 @@ const RoleSelectFilter: React.FC<RoleSelectFilterProps> = ({
         queryFn: frigateApi.getRoles
     })
 
-    if (isPending) return <CogwheelLoader />
+    if (isPending) return <CenteredCogwheelLoader />
     if (isError || !data) return <RetryError onRetry={refetch} />
 
     const rolesSelect: OneSelectItem[] = data.map(role => ({ value: role.id, label: role.name }))

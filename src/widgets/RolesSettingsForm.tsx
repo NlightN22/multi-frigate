@@ -1,16 +1,16 @@
+import { Button, Flex, Text } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { IconAlertCircle, IconCircleCheck } from '@tabler/icons-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { v4 } from 'uuid';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
+import { GetRole } from '../services/frigate.proxy/frigate.schema';
 import RetryError from '../shared/components/RetryError';
 import RoleSelectFilter from '../shared/components/filters/RoleSelectFilter';
-import CogwheelLoader from '../shared/components/loaders/CogwheelLoader';
-import { GetRole } from '../services/frigate.proxy/frigate.schema';
+import CenteredCogwheelLoader from '../shared/components/loaders/CenteredCogwheelLoader';
 import { isProduction } from '../shared/env.const';
-import { Flex, Button, Text } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
-import { IconCircleCheck, IconAlertCircle } from '@tabler/icons-react';
-import { v4 } from 'uuid';
 
 interface Roles {
     adminRole?: {
@@ -174,7 +174,7 @@ const RolesSettingsForm: React.FC<RolesSettingsFormProps> = ({
         if (!isProduction) console.log('Roles:', roles)
     }, [roles])
 
-    if (isPending) return <CogwheelLoader />
+    if (isPending) return <CenteredCogwheelLoader />
     if (isError) return <RetryError onRetry={refetch} />
     if (allRoles.length < 1) return (
         <>

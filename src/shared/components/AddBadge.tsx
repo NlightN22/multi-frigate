@@ -1,9 +1,9 @@
-import { ActionIcon, Badge, Button, Menu, rem } from '@mantine/core';
+import { ActionIcon, Badge, Menu, rem } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
-import { frigateQueryKeys, frigateApi } from '../../services/frigate.proxy/frigate.api';
-import CogwheelLoader from './loaders/CogwheelLoader';
+import { frigateApi, frigateQueryKeys } from '../../services/frigate.proxy/frigate.api';
+import CenteredCogwheelLoader from './loaders/CenteredCogwheelLoader';
 import RetryError from './RetryError';
 
 interface AddBadgeProps {
@@ -24,7 +24,7 @@ const AddBadge: React.FC<AddBadgeProps> = ({
         if (onClick) onClick(tagId)
     }
 
-    if (isPending) return <CogwheelLoader />
+    if (isPending) return <CenteredCogwheelLoader />
     if (isError) return <RetryError onRetry={refetch} />
 
     if (!data || data.length < 1) return (

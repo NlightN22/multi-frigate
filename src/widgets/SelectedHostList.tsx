@@ -1,12 +1,12 @@
 import { Accordion, Flex, Text } from '@mantine/core';
-import React, { Suspense, lazy, useContext, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { frigateQueryKeys, frigateApi } from '../services/frigate.proxy/frigate.api';
-import { Context } from '..';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
-import RetryErrorPage from '../pages/RetryErrorPage';
 import { observer } from 'mobx-react-lite';
+import { Suspense, lazy, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Context } from '..';
+import RetryErrorPage from '../pages/RetryErrorPage';
+import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
+import CenteredCogwheelLoader from '../shared/components/loaders/CenteredCogwheelLoader';
 const CameraAccordion = lazy(() => import('../shared/components/accordion/CameraAccordion'));
 
 interface SelectedHostListProps {
@@ -38,7 +38,7 @@ const SelectedHostList = ({
         if (recStore.filteredHost) hostRefetch()
     }
 
-    if (hostPending) return <CenterLoader />
+    if (hostPending) return <CenteredCogwheelLoader />
     if (hostError) return <RetryErrorPage onRetry={handleRetry} />
 
     if (!camerasQuery || camerasQuery.length < 1) return null

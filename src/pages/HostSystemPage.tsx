@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
 import { GetFrigateHost } from '../services/frigate.proxy/frigate.schema';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
+import OverlayCogwheelLoader from '../shared/components/loaders/OverlayCogwheelLoader';
 import DetectorsStat from '../shared/components/stats/DetectorsStat';
 import GpuStat from '../shared/components/stats/GpuStat';
 import StorageRingStat from '../shared/components/stats/StorageRingStat';
@@ -72,7 +72,7 @@ const HostSystemPage = () => {
         });
     }, [data]);
 
-    if (isPending) return <CenterLoader />
+    if (isPending) return <OverlayCogwheelLoader />
     if (isError) return <RetryErrorPage onRetry={refetch} />
     if (!isAdmin) return <Forbidden />
     if (!paramHostId || !data) return null

@@ -1,15 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
-import React, { useContext, useState } from 'react';
-import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
-import { dateToQueryString, getResolvedTimeZone } from '../shared/utils/dateUtil';
-import { Context } from '..';
 import { Center, Flex, Text } from '@mantine/core';
-import RetryErrorPage from '../pages/RetryErrorPage';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
+import { useQuery } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
-import DayAccordion from '../shared/components/accordion/DayAccordion';
-import { isProduction } from '../shared/env.const';
+import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Context } from '..';
+import RetryErrorPage from '../pages/RetryErrorPage';
+import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
+import DayAccordion from '../shared/components/accordion/DayAccordion';
+import CenteredCogwheelLoader from '../shared/components/loaders/CenteredCogwheelLoader';
+import { isProduction } from '../shared/env.const';
+import { dateToQueryString, getResolvedTimeZone } from '../shared/utils/dateUtil';
 
 interface SelectedDayListProps {
     day: Date
@@ -52,7 +52,7 @@ const SelectedDayList = ({
         if (recStore.filteredHost) refetch()
     }
 
-    if (isPending) return <CenterLoader />
+    if (isPending) return <CenteredCogwheelLoader />
 
     if (isError && retryCount >= MAX_RETRY_COUNT) {
         return (

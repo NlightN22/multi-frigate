@@ -6,7 +6,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './services/i18n';
 import keycloakInstance from './services/keycloak-config';
-import CenterLoader from './shared/components/loaders/CenterLoader';
+import OverlayCogwheelLoader from './shared/components/loaders/OverlayCogwheelLoader';
 import RootStore from './shared/stores/root.store';
 import { isProduction } from './shared/env.const';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -32,7 +32,7 @@ const tokenLogger = (tokens: any) => {
 root.render(
   <ReactKeycloakProvider
     authClient={keycloakInstance}
-    LoadingComponent={<CenterLoader />}
+    LoadingComponent={<OverlayCogwheelLoader />}
     onEvent={eventLogger}
     onTokens={tokenLogger}
     initOptions={{

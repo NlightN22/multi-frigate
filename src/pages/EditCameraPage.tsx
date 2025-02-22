@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys, mapHostToHostname, proxyApi } from '../services/frigate.proxy/frigate.api';
 import MaskSelect, { MaskItem, MaskType } from '../shared/components/filters/MaskSelect';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
+import OverlayCogwheelLoader from '../shared/components/loaders/OverlayCogwheelLoader';
 import { Point, extractMaskNumber } from '../shared/utils/maskPoint';
 import CameraMaskDrawer from '../widgets/CameraMaskDrawer';
 import CameraPageHeader from '../widgets/header/CameraPageHeader';
@@ -103,7 +103,7 @@ const EditCameraPage = () => {
 
     const { isAdmin, isLoading: adminLoading, isError: adminError } = useAdminRole()
 
-    if (isPending || adminLoading) return <CenterLoader />
+    if (isPending || adminLoading) return <OverlayCogwheelLoader />
     if (!isAdmin) return <Forbidden />
     if (isError || adminError) return <RetryErrorPage onRetry={refetch} />
 

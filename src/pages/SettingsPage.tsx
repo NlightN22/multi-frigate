@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { GetRole } from '../services/frigate.proxy/frigate.schema';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
+import OverlayCogwheelLoader from '../shared/components/loaders/OverlayCogwheelLoader';
 import { dimensions } from '../shared/dimensions/dimensions';
 import OIDPSettingsForm from '../widgets/OIDPSettingsForm';
 import RolesSettingsForm from '../widgets/RolesSettingsForm';
@@ -37,7 +37,7 @@ const SettingsPage = () => {
     }
 
     if (!isAdmin) return <Forbidden />
-    if (adminLoading) return <CenterLoader />
+    if (adminLoading) return <OverlayCogwheelLoader />
 
     return (
         <Flex h='100%'>

@@ -1,4 +1,4 @@
-import { Accordion, Center, Flex, Loader, Text } from '@mantine/core';
+import { Accordion, Flex, Text } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
 import { useContext, useState } from 'react';
@@ -7,9 +7,9 @@ import { Context } from '../../..';
 import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../../../services/frigate.proxy/frigate.api';
 import { GetCameraWHostWConfig, GetFrigateHost, getEventsQuerySchema } from '../../../services/frigate.proxy/frigate.schema';
 import { getUnixTime } from '../../utils/dateUtil';
+import CenteredCogwheelLoader from '../loaders/CenteredCogwheelLoader';
 import RetryError from '../RetryError';
 import EventsAccordionItem from './EventsAccordionItem';
-import CogwheelLoader from '../loaders/CogwheelLoader';
 
 /**
  * @param day frigate format, e.g day: 2024-02-23
@@ -99,7 +99,7 @@ const EventsAccordion = ({
         }
     })
 
-    if (isPending) return <Flex w='100%' h='100%' direction='column' justify='center' align='center'><CogwheelLoader /></Flex>
+    if (isPending) return <CenteredCogwheelLoader />
     if (isError && retryCount >= MAX_RETRY_COUNT) {
         return (
             <Flex w='100%' h='100%' direction='column' justify='center' align='center'>

@@ -1,16 +1,15 @@
 import { SelectItem } from '@mantine/core';
-import { t } from 'i18next';
-import { useEffect, useState } from 'react';
-import { z } from 'zod';
-import CreatableMultiSelect from './CreatableMultiSelect';
-import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { frigateApi, frigateQueryKeys } from '../../../services/frigate.proxy/frigate.api';
-import RetryError from '../RetryError';
-import CogwheelLoader from '../loaders/CogwheelLoader';
-import { mapUserTagsToSelectItems, PutUserTag } from '../../../types/tags';
 import { notifications } from '@mantine/notifications';
 import { IconAlertCircle } from '@tabler/icons-react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
+import { frigateApi, frigateQueryKeys } from '../../../services/frigate.proxy/frigate.api';
+import { mapUserTagsToSelectItems, PutUserTag } from '../../../types/tags';
+import RetryError from '../RetryError';
+import CenteredCogwheelLoader from '../loaders/CenteredCogwheelLoader';
+import CreatableMultiSelect from './CreatableMultiSelect';
 
 
 interface UserTagsFilterProps {
@@ -133,7 +132,7 @@ const UserTagsFilter: React.FC<UserTagsFilterProps> = ({
         }
     }
 
-    if (isPending) return <CogwheelLoader />
+    if (isPending) return <CenteredCogwheelLoader />
     if (isError) return <RetryError onRetry={refetch} />
 
     const handleOnChange = (value: string[]) => {

@@ -1,16 +1,16 @@
+import { Center, Table, Text } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import React, { useCallback, useEffect, useState } from 'react';
-import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../../services/frigate.proxy/frigate.api';
-import { GetFrigateHost } from '../../services/frigate.proxy/frigate.schema';
-import CogwheelLoader from '../../shared/components/loaders/CogwheelLoader';
-import RetryError from '../../shared/components/RetryError';
-import { Center, Flex, Table, Text } from '@mantine/core';
-import { TableHead } from '../../types/table';
-import SortedTh from '../../shared/components/table.aps/SortedTh';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
-import { sortByKey } from '../../shared/utils/sort.array';
+import { frigateQueryKeys, mapHostToHostname, proxyApi } from '../../services/frigate.proxy/frigate.api';
+import { GetFrigateHost } from '../../services/frigate.proxy/frigate.schema';
+import CenteredCogwheelLoader from '../../shared/components/loaders/CenteredCogwheelLoader';
+import RetryError from '../../shared/components/RetryError';
+import SortedTh from '../../shared/components/table.aps/SortedTh';
 import { formatMBytes } from '../../shared/utils/data.size';
+import { sortByKey } from '../../shared/utils/sort.array';
+import { TableHead } from '../../types/table';
 
 
 export interface StorageItem {
@@ -69,7 +69,7 @@ const FrigateStorageStateTable: React.FC<TableProps> = ({
         setSortedName(headName)
     }
 
-    if (isPending) return <CogwheelLoader />
+    if (isPending) return <CenteredCogwheelLoader />
     if (isError) return <RetryError onRetry={refetch} />
     if (!tableData ) return <Center><Text>{t('errors.emptyResponse')}</Text></Center>
 

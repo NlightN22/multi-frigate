@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { FC } from 'react';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import EventsAccordion from '../shared/components/accordion/EventsAccordion';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
+import OverlayCogwheelLoader from '../shared/components/loaders/OverlayCogwheelLoader';
 import RetryError from '../shared/components/RetryError';
 import { dayTimeToUnixTime } from '../shared/utils/dateUtil';
 
@@ -36,7 +36,7 @@ const EventsBody: FC<EventsBodyProps> = ({
         }
     })
 
-    if (isPending) return <CenterLoader />
+    if (isPending) return <OverlayCogwheelLoader />
     if (isError) return <RetryError onRetry={refetch} />
     if (!data) return null
 

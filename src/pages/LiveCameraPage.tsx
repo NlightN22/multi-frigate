@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
+import OverlayCogwheelLoader from '../shared/components/loaders/OverlayCogwheelLoader';
 import Player from '../widgets/Player';
 import CameraPageHeader from '../widgets/header/CameraPageHeader';
 import RetryErrorPage from './RetryErrorPage';
@@ -19,7 +19,7 @@ const LiveCameraPage = () => {
         queryFn: () => frigateApi.getCameraWHost(cameraId!)
     })
 
-    if (isPending) return <CenterLoader />
+    if (isPending) return <OverlayCogwheelLoader />
 
     if (isError) return <RetryErrorPage onRetry={refetch} />
 

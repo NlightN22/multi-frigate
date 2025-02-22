@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { frigateApi, frigateQueryKeys } from '../../services/frigate.proxy/frigate.api';
 import { isProduction } from '../env.const';
 import RetryError from './RetryError';
-import CogwheelLoader from './loaders/CogwheelLoader';
+import CenteredCogwheelLoader from './loaders/CenteredCogwheelLoader';
 
 interface CamerasTransferListProps {
     roleId: string
@@ -48,7 +48,7 @@ const CamerasTransferList = ({
     }, [cameras])
 
 
-    if (isPending) return <CogwheelLoader />
+    if (isPending) return <CenteredCogwheelLoader />
     if (isError || !cameras) return <RetryError onRetry={refetch} />
     if (cameras.length < 1) return <Text> {t('camersDoesNotExist')}</Text>
 

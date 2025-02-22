@@ -8,7 +8,7 @@ import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import CamerasTransferList from '../shared/components/CamerasTransferList';
 import RoleSelectFilter from '../shared/components/filters/RoleSelectFilter';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
+import OverlayCogwheelLoader from '../shared/components/loaders/OverlayCogwheelLoader';
 import { dimensions } from '../shared/dimensions/dimensions';
 import { isProduction } from '../shared/env.const';
 import Forbidden from './403';
@@ -28,7 +28,7 @@ const AccessSettings = () => {
     const [roleId, setRoleId] = useState<string>()
 
 
-    if (isPending || adminLoading) return <CenterLoader />
+    if (isPending || adminLoading) return <OverlayCogwheelLoader />
     if (isError || adminError || !data) return <RetryErrorPage onRetry={refetch} />
     if (!isAdmin) return <Forbidden />
 

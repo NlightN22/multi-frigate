@@ -1,12 +1,12 @@
 import { Flex, Text } from '@mantine/core';
-import React, { Suspense, useContext } from 'react';
-import CameraAccordion from '../shared/components/accordion/CameraAccordion';
 import { useQuery } from '@tanstack/react-query';
-import { Context } from '..';
-import { frigateQueryKeys, frigateApi } from '../services/frigate.proxy/frigate.api';
-import RetryErrorPage from '../pages/RetryErrorPage';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
 import { observer } from 'mobx-react-lite';
+import { Suspense, useContext } from 'react';
+import { Context } from '..';
+import RetryErrorPage from '../pages/RetryErrorPage';
+import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
+import CameraAccordion from '../shared/components/accordion/CameraAccordion';
+import CenteredCogwheelLoader from '../shared/components/loaders/CenteredCogwheelLoader';
 
 
 const SelectedCameraList = () => {
@@ -27,7 +27,7 @@ const SelectedCameraList = () => {
         cameraRefetch()
     }
 
-    if (cameraPending) return <CenterLoader />
+    if (cameraPending) return <CenteredCogwheelLoader />
     if (cameraError) return <RetryErrorPage onRetry={handleRetry} />
 
     if (!camera || !camera?.frigateHost) return null

@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
 import { GetFrigateHost, deleteFrigateHostSchema, putFrigateHostSchema } from '../services/frigate.proxy/frigate.schema';
-import CenterLoader from '../shared/components/loaders/CenterLoader';
+import OverlayCogwheelLoader from '../shared/components/loaders/OverlayCogwheelLoader';
 import { isProduction } from '../shared/env.const';
 import FrigateHostsTable from '../widgets/hosts.table/FrigateHostsTable';
 import Forbidden from './403';
@@ -88,7 +88,7 @@ const FrigateHostsPage = () => {
         if (data) setPageData([...data])
     }
 
-    if (hostsPending || adminLoading) return <CenterLoader />
+    if (hostsPending || adminLoading) return <OverlayCogwheelLoader />
     if (!isAdmin) return <Forbidden />
     if (hostsError || adminError) return <RetryErrorPage />
     if (!pageData) return <Text>Empty server response</Text>
