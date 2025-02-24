@@ -17,7 +17,7 @@ const CamerasTransferList = ({
     const { t } = useTranslation()
     const queryClient = useQueryClient()
     const { data: cameras, isPending, isError, refetch } = useQuery({
-        queryKey: [frigateQueryKeys.getCamerasWHost],
+        queryKey: [frigateQueryKeys.getCamerasWHost, roleId],
         queryFn: () => frigateApi.getCamerasWHost()
     })
 
