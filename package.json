@@ -1,6 +1,6 @@
 {
   "name": "multi-frigate",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "@cycjimmy/jsmpeg-player": "^6.0.5",
