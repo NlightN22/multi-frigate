@@ -2,7 +2,7 @@ import { Flex, Group, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAdminRole } from '../hooks/useAdminRole';
 import { frigateApi, frigateQueryKeys } from '../services/frigate.proxy/frigate.api';
@@ -21,8 +21,6 @@ const AccessSettings = () => {
         queryFn: frigateApi.getRoles
     })
     const { isAdmin, isLoading: adminLoading, isError: adminError } = useAdminRole()
-
-
 
     const isMobile = useMediaQuery(dimensions.mobileSize)
     const [roleId, setRoleId] = useState<string>()
