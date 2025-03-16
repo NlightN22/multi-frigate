@@ -5,6 +5,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../../utils/class.merge";
 import { PlayerStatsType } from "../../../types/live";
+import { isProduction } from "../../env.const";
+import { useResizeObserver } from "../../../hooks/resize-observer";
 
 type JSMpegPlayerProps = {
   url: string;
@@ -52,7 +54,8 @@ const JSMpegPlayer = (
     [containerRef, containerRef.current, internalContainerRef],
   );
 
-  const { height: containerHeight, width: containerWidth } = useViewportSize()
+  const [{ width: containerWidth, height: containerHeight }] =
+    useResizeObserver(selectedContainerRef);
 
   const stretch = true;
   const aspectRatio = width / height;

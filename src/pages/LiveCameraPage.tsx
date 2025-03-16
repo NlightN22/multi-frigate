@@ -8,9 +8,11 @@ import OverlayCogwheelLoader from '../shared/components/loaders/OverlayCogwheelL
 import Player from '../widgets/Player';
 import CameraPageHeader from '../widgets/header/CameraPageHeader';
 import RetryErrorPage from './RetryErrorPage';
+import { LegacyRef, useRef } from 'react';
 
 const LiveCameraPage = () => {
     const { t } = useTranslation()
+    const containerRef = useRef<HTMLDivElement | null>(null)
     let { id: cameraId } = useParams<'id'>()
     if (!cameraId) throw Error('Camera id does not exist')
 
@@ -25,12 +27,13 @@ const LiveCameraPage = () => {
 
 
     return (
-        <Flex w='100%' h='100%' justify='center' align='center' direction='column'>
+        <Flex ref={containerRef} w='100%' h='100%' justify='center' align='center' direction='column'>
             <CameraPageHeader camera={camera} editButton />
             <Player 
             camera={camera} 
             useWebGL={true}
             preferredLiveMode='jsmpeg'
+            containerRef={containerRef}
             />
         </Flex>
     );
