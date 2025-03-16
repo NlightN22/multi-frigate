@@ -12,6 +12,7 @@ import { dimensions } from '../shared/dimensions/dimensions';
 import OIDPSettingsForm from '../widgets/OIDPSettingsForm';
 import RolesSettingsForm from '../widgets/RolesSettingsForm';
 import Forbidden from './403';
+import VersionTag from '../shared/components/VersionTag';
 
 const SettingsPage = () => {
     const { t } = useTranslation()
@@ -41,6 +42,7 @@ const SettingsPage = () => {
 
     return (
         <Flex h='100%'>
+            <VersionTag />
             {!isMobile ?
                 < Space w='20%' />
                 : null

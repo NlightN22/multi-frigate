@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 # Build commands:
 # - $VERSION="0.2.1"
+# - yarn update-browserslist-db@latest
 # - rm build -r -Force ; rm ./node_modules/.cache/babel-loader -r -Force ; yarn build
 # - docker build --pull --rm -t oncharterliz/multi-frigate:latest -t oncharterliz/multi-frigate:$VERSION "."
 # - docker save -o ./release/multi-frigate.$VERSION.tar oncharterliz/multi-frigate:$VERSION

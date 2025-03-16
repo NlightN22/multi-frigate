@@ -9,6 +9,7 @@ import Player from '../widgets/Player';
 import CameraPageHeader from '../widgets/header/CameraPageHeader';
 import RetryErrorPage from './RetryErrorPage';
 import { LegacyRef, useRef } from 'react';
+import CenteredCogwheelLoader from '../shared/components/loaders/CenteredCogwheelLoader';
 
 const LiveCameraPage = () => {
     const { t } = useTranslation()
@@ -21,7 +22,7 @@ const LiveCameraPage = () => {
         queryFn: () => frigateApi.getCameraWHost(cameraId!)
     })
 
-    if (isPending) return <OverlayCogwheelLoader />
+    if (isPending) return <CenteredCogwheelLoader />
 
     if (isError) return <RetryErrorPage onRetry={refetch} />
 
